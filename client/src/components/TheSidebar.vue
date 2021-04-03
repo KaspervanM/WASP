@@ -79,4 +79,7 @@ export default Vue.extend({
 .mobile {
   width: 100vw;
 }
+.collapsing {
+  transition: none !important;
+}
 </style>
