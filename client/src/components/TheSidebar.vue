@@ -63,12 +63,13 @@ export default Vue.extend({
 .menu-button {
   position: absolute;
   left: 0;
+  z-index: 10;
 }
 .notcollapsed {
   display: none;
 }
 .sidebar {
-  position: absolute;
+  position: static;
   width: 20vw;
   min-width: 200px;
   max-width: 300px;
@@ -77,9 +78,13 @@ export default Vue.extend({
   left: 0;
 }
 .mobile {
+  position: absolute;
   width: 100vw;
+  z-index: 10;
 }
 .collapsing {
+  -webkit-transition: none !important;
   transition: none !important;
+  display: none;
 }
 </style>
