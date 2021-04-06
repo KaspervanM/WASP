@@ -5,49 +5,63 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+interface task {
+  id: string;
+  title: string;
+  description: string;
+  code: string;
+}
 
 let tasks = {
-  1: {
-    id: '1',
-    title: 'Very important task n.1',
-    description: 'Description of task n.1',
-  },
-  2: {
-    id: '2',
-    title: 'Very important task n.2',
-    description: 'Description of task n.2',
-  },
+'1default-task-uuid-wasp-twelvecharss': { //Default task
+  id: '1default-task-uuid-wasp-twelvecharss',
+  title: 'Default Task',
+  description: 'Congratulations! WASP is working correctly.',
+  code: 'alert("Congratulations! WASP is working correctly.");',
+},
 };
 
 app.get('/task', (req, res) => {
   return res.send(Object.values(tasks));
-}); //Read all tasks
+}); //Read all tasks (JSON: response contains id, title, description and code)
  
-app.get('/task/:tId', (req, res) => {
-  return res.send(tasks[req.params.tId]);
-}); //Read one task
+app.get('/task/:id', (req, res) => {
+  return res.send(tasks[req.params.id]);
+}); //Read one task (URL: request contains id, JSON: response contains id, title, description and code)
 
 app.post('/task', (req, res) => {
   const id = uuidv4();
-  const task = {
+  const newTask: task = {
     id,
     title: req.body.title,
     description: req.body.description,
+    code: req.body.code,
   };
  
-  tasks[id] = task;
+  tasks[id] = newTask;
+
+  return res.send(newTask);
+}); //Add one task (JSON: request contains title, description and code, response contains id, title, description and code)
  
-  return res.send(task);
-}); //Add one task
+app.put('/task', (req, res) => {
+  const upTask: task = {
+    id: req.body.id,
+    title: req.body.title,
+    description: req.body.description,
+    code: req.body.code,
+  };
  
-app.put('/task/:tId', (req, res) => {
-  return res.send(`PUT HTTP method on task/${req.params.tId} resource`,);
-}); //Update one task
+  tasks[req.body.id] = upTask;
  
-app.delete('/task/:tId', (req, res) => {
-  return res.send(`DELETE HTTP method on task/${req.params.tId} resource`,);
-}); //Delete one task
+  return res.send(upTask);
+}); //Update one task (JSON: request contains id, title, description and code, response contains id, title, description and code)
+ 
+app.delete('/task/:id', (req, res) => {
+  const delTask: task = tasks[req.params.id];
+  delete tasks[req.params.id];
+  return res.send(delTask);
+}); //Delete one task (URL: request contains id, JSON: response contains id, title, description and code)
 
 app.listen(port, () => {
   return console.log(`Server is listening on ${port}`);

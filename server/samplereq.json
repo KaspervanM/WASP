@@ -1,0 +1,6 @@
+{
+    "id":"1default-task-uuid-wasp-twelvecharss",
+    "title":"Requested added task",
+    "description":"Description for the added task.",
+    "code":"alert(1);"
+}
