@@ -9,8 +9,15 @@ const port = 3000;
 app.get("/", (req, res) => {
     res.send("The sedulous hyena ate the antelope!");
 });
+var code = "function testFunc(min,max) {return ((max-min)+1) * (min + max) / 2;} testFunc(a,b);";
+code = "const a = 0; const b = 100; " + code;
+const task = {
+    title: "testTask",
+    description: "This is a demo task for testing purposes only.",
+    code: code
+};
 app.get("/taskplease", (req, res) => {
-    res.send("Hey, it's me. The server.");
+    res.send(JSON.stringify(task));
 });
 app.listen(port, () => {
     return console.log(`server is listening on ${port}`);
