@@ -1,12 +1,22 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+    <TheSidebar></TheSidebar>
     <router-view />
   </div>
 </template>
+
+<script lang="ts">
+import Vue from "vue";
+
+import TheSidebar from "@/components/TheSidebar.vue";
+
+export default Vue.extend({
+  name: "Home",
+  components: {
+    TheSidebar
+  }
+});
+</script>
 
 <style lang="scss">
 #app {
@@ -15,18 +25,12 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  display: flex;
 }
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.header1 {
+  padding: 5px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
 }
 </style>
