@@ -33,7 +33,7 @@ app.get("/task/:id", (req, res) => {
 
 app.post("/task", (req, res) => {
   const id = uuidv4();
-  const newTask: task = {
+  const newTask: Task = {
     id,
     title: req.body.title,
     description: req.body.description,
