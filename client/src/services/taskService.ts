@@ -9,42 +9,38 @@ interface Task {
 }
 
 const taskService = {
-  async getTasks() {
+  async getTasks(): Promise<{ [id: string]: Task }> {
     const res = await axios.get<{ [id: string]: Task }>(
       "http://localhost:3000/task"
     );
     const tasks: { [id: string]: Task } = res.data;
     return tasks;
   },
-  async getTask(taskId: string) {
-    const res = await axios.get("http://localhost:3000/task/" + taskId);
+  async getTask(taskId: string): Promise<Task> {
+    const res = await axios.get<Task>("http://localhost:3000/task/" + taskId);
     return res.data;
   },
-  async addTask(task: Task) {
-    const res = await axios({
-      method: "post",
+  async addTask(task: Task): Promise<string> {
+    const res = await axios.post<Task>("http://localhost:3000/task", task, {
       headers: {
         "Content-Type": "application/json"
-      },
-      url: "http://localhost:3000/task",
-      data: task
+      }
     });
-    return res.data;
+    return res.data.id;
   },
-  async updateTask(task: Task) {
-    const res = await axios({
-      method: "put",
+  async updateTask(task: Task): Promise<string> {
+    const res = await axios.put<Task>("http://localhost:3000/task", task, {
       headers: {
         "Content-Type": "application/json"
-      },
-      url: "http://localhost:3000/task",
-      data: task
+      }
     });
-    return res.data;
+    return res.data.id;
   },
-  async deleteTask(taskId: string) {
-    const res = await axios.delete("http://localhost:3000/task/" + taskId);
-    return res.data;
+  async deleteTask(taskId: string): Promise<string> {
+    const res = await axios.delete<Task>(
+      "http://localhost:3000/task/" + taskId
+    );
+    return res.data.id;
   }
 };
 export default taskService;
