@@ -11,13 +11,13 @@ interface Task {
 const taskService = {
   async getTasks() {
     const res = await axios.get<{ [id: string]: Task }>(
-      "http://localhost:8000/task"
+      "http://localhost:3000/task"
     );
-    let tasks: { [id: string]: Task } = res.data;
+    const tasks: { [id: string]: Task } = res.data;
     return tasks;
   },
   async getTask(taskId: string) {
-    const res = await axios.get("http://localhost:8000/task/" + taskId);
+    const res = await axios.get("http://localhost:3000/task/" + taskId);
     return res.data;
   },
   async addTask(task: Task) {
@@ -26,7 +26,7 @@ const taskService = {
       headers: {
         "Content-Type": "application/json"
       },
-      url: "http://localhost:8000/task",
+      url: "http://localhost:3000/task",
       data: task
     });
     return res.data;
@@ -37,13 +37,13 @@ const taskService = {
       headers: {
         "Content-Type": "application/json"
       },
-      url: "http://localhost:8000/task",
+      url: "http://localhost:3000/task",
       data: task
     });
     return res.data;
   },
   async deleteTask(taskId: string) {
-    const res = await axios.delete("http://localhost:8000/task/" + taskId);
+    const res = await axios.delete("http://localhost:3000/task/" + taskId);
     return res.data;
   }
 };
