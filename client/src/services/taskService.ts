@@ -10,9 +10,11 @@ interface Task {
 
 const taskService = {
   async getTasks() {
-    const res = await axios.get("http://localhost:8000/task");
-    let tasks: Array<Task> = [];
-    return res.data;
+    const res = await axios.get<{ [id: string]: Task }>(
+      "http://localhost:8000/task"
+    );
+    let tasks: { [id: string]: Task } = res.data;
+    return tasks;
   },
   async getTask(taskId: string) {
     const res = await axios.get("http://localhost:8000/task/" + taskId);
