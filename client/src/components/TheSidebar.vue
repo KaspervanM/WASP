@@ -44,7 +44,7 @@ export default Vue.extend({
     console.log(this.visible);
   },
   watch: {
-    $route(to, from) {
+    $route() {
       this.hideSidebar();
     }
   },
