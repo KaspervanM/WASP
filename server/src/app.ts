@@ -13,14 +13,14 @@ interface task {
   code: string;
 }
 
-let tasks = {
-  "1default-task-uuid-wasp-twelvecharss": {
-    //Default task
-    id: "1default-task-uuid-wasp-twelvecharss",
-    title: "Default Task",
-    description: "Congratulations! WASP is working correctly.",
-    code: 'alert("Congratulations! WASP is working correctly.");'
-  }
+let tasks: { [id: string]: Task } = {};
+
+tasks["1default-task-uuid-wasp-twelvecharss"] = {
+  //Default task
+  id: "1default-task-uuid-wasp-twelvecharss",
+  title: "Default Task",
+  description: "Congratulations! WASP is working correctly.",
+  code: 'alert("Congratulations! WASP is working correctly.");'
 };
 
 app.get("/task", (req, res) => {
