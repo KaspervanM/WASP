@@ -6,7 +6,7 @@ const port = 3000;
 
 app.use(express.json());
 
-interface task {
+interface Task {
   id: string;
   title: string;
   description: string;
