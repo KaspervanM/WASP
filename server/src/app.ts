@@ -59,7 +59,7 @@ app.put("/task", (req, res) => {
 }); //Update one task (JSON: request contains id, title, description and code, response contains id, title, description and code)
 
 app.delete("/task/:id", (req, res) => {
-  const delTask: task = tasks[req.params.id];
+  const delTask: Task = tasks[req.params.id];
   delete tasks[req.params.id];
   return res.send(delTask);
 }); //Delete one task (URL: request contains id, JSON: response contains id, title, description and code)
