@@ -71,7 +71,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import taskService from "@/services/taskService.ts";
+import taskService from "@/services/taskService";
 
 interface Task {
   id: string;
