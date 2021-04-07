@@ -46,7 +46,7 @@ app.post("/task", (req, res) => {
 }); //Add one task (JSON: request contains title, description and code, response contains id, title, description and code)
 
 app.put("/task", (req, res) => {
-  const upTask: task = {
+  const upTask: Task = {
     id: req.body.id,
     title: req.body.title,
     description: req.body.description,
