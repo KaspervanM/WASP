@@ -1,39 +1,46 @@
 <template>
   <div class="deletetask">
     <p class="header1" id="title">Delete Task</p>
-    <b-card title="Remove a task" id="form-container" bg-variant="light">
+    <b-container title="Remove a task" id="form-container" bg-variant="light">
       <b-form id="form" @submit="onSubmit">
         <b-form-group
           id="input-group-1"
-          label="Task Id:"
+          label="Task ID:"
           label-for="input-1"
           label-align-sm="left"
-          description="The task Id is given to you when you create a new task."
+          description="The task ID is given to you when you create a new task."
         >
           <b-form-input
             id="input-1"
             v-model="taskId"
             type="text"
             @input="showSuccessAlert = showErrorAlert = false"
-            placeholder="Enter Id (e.g. 1default-task-uuid-wasp-twelvecharss)"
+            :state="taskIdState"
+            placeholder="xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
+            aria-describedby="input-live-help input-live-feedback"
             required
           ></b-form-input>
+          <b-form-invalid-feedback id="input-live-feedback">
+            It should be a uuid. Example: 123e4567-e89b-12d3-a456-426614174000
+          </b-form-invalid-feedback>
         </b-form-group>
 
-        <b-button type="submit" variant="primary">Submit</b-button>
-      </b-form>
-      <br />
-      <b-alert v-model="showSuccessAlert" variant="success" dismissible>
-        Task with ID: {{ taskId }} deleted succesfully!
+        <div>
+          <b-button type="submit" variant="primary">Submit</b-button>
+        </div>
         <br />
-        <router-link to="/addtask" class="alert-link"
-          >Click here to create a new task</router-link
+        <b-alert v-model="showSuccessAlert" variant="success" dismissible>
+          Task with ID: {{ taskId }} deleted succesfully!
+          <br />
+          <router-link to="/addtask" class="alert-link"
+            >Click here to create a new task</router-link
+          >
+        </b-alert>
+        <b-alert v-model="showErrorAlert" variant="danger" dismissible
+          >An error occurred!</b-alert
         >
-      </b-alert>
-      <b-alert v-model="showErrorAlert" variant="danger" dismissible
-        >An error occurred!</b-alert
-      >
-    </b-card>
+      </b-form>
+    </b-container>
   </div>
 </template>
 
@@ -52,6 +59,13 @@ export default Vue.extend({
       showSuccessAlert: false,
       showErrorAlert: false
     };
+  },
+  computed: {
+    taskIdState(): boolean {
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        this.taskId
+      );
+    }
   },
   methods: {
     async onSubmit(event: any): Promise<void> {
