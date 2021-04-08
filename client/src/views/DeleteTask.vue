@@ -3,7 +3,7 @@
     <p class="header1" id="title">Delete Task</p>
     <br />
     <b-card title="Remove a task" class="form" bg-variant="light">
-      <b-form @submit="onSubmit" @reset="onReset">
+      <b-form @submit="onSubmit">
         <b-form-group
           id="input-group-1"
           label="Task Id:"
@@ -15,21 +15,16 @@
             id="input-1"
             v-model="taskId"
             type="text"
+            @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter Id (e.g. 1default-task-uuid-wasp-twelvecharss)"
             required
           ></b-form-input>
         </b-form-group>
 
         <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
       <br />
-      <b-alert
-        v-model="showSuccessAlert"
-        v-if="taskId.length == 36"
-        variant="success"
-        dismissible
-      >
+      <b-alert v-model="showSuccessAlert" variant="success" dismissible>
         Task with ID: {{ taskId }} deleted succesfully!
         <br />
         <router-link to="/addtask" class="alert-link"
@@ -74,12 +69,6 @@ export default Vue.extend({
         this.showSuccessAlert = false; //Hide any old success alert
         this.showErrorAlert = true; //Show error alert
       }
-    },
-    onReset(event: any): void {
-      event.preventDefault();
-      this.taskId = ""; //Reset taskId
-      this.showSuccessAlert = false; //Hide any old success alert
-      this.showErrorAlert = false; //Hide any old error alert
     }
   }
 });

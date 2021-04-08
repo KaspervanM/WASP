@@ -15,6 +15,7 @@
             id="input-1"
             v-model="task.title"
             type="text"
+            @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter title"
             required
           ></b-form-input>
@@ -29,6 +30,7 @@
           <b-form-textarea
             id="input-2"
             v-model="task.description"
+            @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter description"
             rows="3"
             no-resize
@@ -45,6 +47,7 @@
           <b-form-textarea
             id="input-3"
             v-model="task.code"
+            @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter code"
             rows="3"
             no-resize
@@ -55,12 +58,7 @@
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
-      <b-alert
-        v-model="showSuccessAlert"
-        v-if="task.id.length == 36"
-        variant="success"
-        dismissible
-      >
+      <b-alert v-model="showSuccessAlert" variant="success" dismissible>
         Task with ID: {{ task.id }} created succesfully!
         <br />
         <router-link :to="'/' + task.id" class="alert-link"
