@@ -1,7 +1,7 @@
 <template>
   <div class="addtask">
     <p class="header1" id="title">Add Task</p>
-    <b-card title="Submit new task" id="form-container" bg-variant="light">
+    <b-card title="Submit a new task" id="form-container" bg-variant="light">
       <b-form id="form" @submit="onSubmit" @reset="onReset">
         <b-form-group
           id="input-group-1"
@@ -31,7 +31,7 @@
             v-model="task.description"
             @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter description"
-            rows="3"
+            max-rows="4"
             no-resize
             required
           ></b-form-textarea>
@@ -49,6 +49,7 @@
             v-model="task.code"
             @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter code"
+            max-rows="8"
             no-resize
             required
           ></b-form-textarea>
@@ -58,6 +59,7 @@
           <b-button type="reset" variant="danger">Reset</b-button>
         </div>
       </b-form>
+      <br />
       <b-alert v-model="showSuccessAlert" variant="success" dismissible>
         Task with ID: {{ task.id }} created succesfully!
         <br />
@@ -102,7 +104,7 @@ export default Vue.extend({
       const id: string = await taskService.addTask(this.task);
       if (id) {
         this.task.id = id;
-        console.log(`Created task with id: ${this.task.id}`);
+        console.log(`Created task with id: ${id}`);
         this.showErrorAlert = false; //Hide any old error alert
         this.showSuccessAlert = true; //Show success alert
       } else {
@@ -117,8 +119,8 @@ export default Vue.extend({
       this.task.title = "";
       this.task.description = "";
       this.task.code = "";
-      this.showSuccessAlert = false;
-      this.showErrorAlert = false;
+      this.showSuccessAlert = false; //Hide any old success alert
+      this.showErrorAlert = false; //Show error alert
     }
   }
 });

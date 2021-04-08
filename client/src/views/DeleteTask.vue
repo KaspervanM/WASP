@@ -1,9 +1,9 @@
 <template>
-  <div class="addtask">
+  <div class="deletetask">
     <p class="header1" id="title">Delete Task</p>
     <br />
-    <b-card title="Remove a task" class="form" bg-variant="light">
-      <b-form @submit="onSubmit">
+    <b-card title="Remove a task" id="form-container" bg-variant="light">
+      <b-form id="form" @submit="onSubmit">
         <b-form-group
           id="input-group-1"
           label="Task Id:"
@@ -77,18 +77,21 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .addtask {
   width: 100%;
-  height: 100vh;
-}
-.form {
-  position: absolute;
-  width: 50%;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+  height: auto;
+  display: flex;
+  flex-direction: column;
 }
 #title {
   float: left;
   display: inline-flex;
+}
+#form-container {
+  flex-grow: 1;
+  #form {
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+    width: 100%;
+  }
 }
 </style>
