@@ -76,7 +76,8 @@ export default Vue.extend({
   width: 20vw;
   min-width: 200px;
   max-width: 300px;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
   background-color: lightgrey;
   left: 0;
 }
