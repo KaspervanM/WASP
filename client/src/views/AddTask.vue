@@ -1,9 +1,8 @@
 <template>
   <div class="addtask">
     <p class="header1" id="title">Add Task</p>
-    <br />
-    <b-card title="Submit new task" class="form" bg-variant="light">
-      <b-form @submit="onSubmit" @reset="onReset">
+    <b-card title="Submit new task" id="form-container" bg-variant="light">
+      <b-form id="form" @submit="onSubmit" @reset="onReset">
         <b-form-group
           id="input-group-1"
           label="Task title:"
@@ -45,18 +44,19 @@
           label-align-sm="left"
         >
           <b-form-textarea
+            fluid
             id="input-3"
             v-model="task.code"
             @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter code"
-            rows="3"
             no-resize
             required
           ></b-form-textarea>
         </b-form-group>
-
-        <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
+        <div>
+          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button type="reset" variant="danger">Reset</b-button>
+        </div>
       </b-form>
       <b-alert v-model="showSuccessAlert" variant="success" dismissible>
         Task with ID: {{ task.id }} created succesfully!
@@ -127,18 +127,28 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .addtask {
   width: 100%;
-  height: 100vh;
-}
-.form {
-  position: absolute;
-  width: 50%;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+  height: auto;
+  display: flex;
+  flex-direction: column;
 }
 #title {
   float: left;
   display: inline-flex;
+}
+#form-container {
+  flex-grow: 1;
+  #form {
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+    width: 100%;
+  }
+}
+#input-group-3 {
+  flex-grow: 1;
+  border: 2px solid blue;
+}
+#input-3 {
+  border: 2px solid tomato;
 }
 </style>
