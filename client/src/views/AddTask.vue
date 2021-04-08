@@ -100,10 +100,12 @@ export default Vue.extend({
       if (id) {
         this.task.id = id;
         console.log(`Created task with id: ${this.task.id}`);
-        this.showSuccessAlert = true;
+        this.showErrorAlert = false; //Hide any old error alert
+        this.showSuccessAlert = true; //Show success alert
       } else {
         console.error("An error occurred while creating the task!");
-        this.showErrorAlert = true;
+        this.showSuccessAlert = false; //Hide any old success alert
+        this.showErrorAlert = true; //Show error alert
       }
     },
     onReset(event: any): void {
