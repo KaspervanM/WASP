@@ -34,30 +34,39 @@ app.get("/task/:id", (req, res) => {
 }); //Read one task (URL: request contains id, JSON: response contains id, title, description and code)
 
 app.post("/task", (req, res) => {
-  const id = uuidv4();
-  const newTask: Task = {
-    id,
-    title: req.body.title,
-    description: req.body.description,
-    code: req.body.code
-  };
+  if (req.body.title && req.body.description && req.body.code) {
+    const id = uuidv4();
+    const newTask: Task = {
+      id,
+      title: req.body.title,
+      description: req.body.description,
+      code: req.body.code
+    };
+    tasks[id] = newTask;
 
-  tasks[id] = newTask;
-
-  return res.send(newTask);
+    return res.send(newTask);
+  }
+  const errmsg: string = "Bad request";
+  console.error(errmsg);
+  return res.status(400).send(errmsg).end();
 }); //Add one task (JSON: request contains title, description and code, response contains id, title, description and code)
 
 app.put("/task", (req, res) => {
-  const upTask: Task = {
-    id: req.body.id,
-    title: req.body.title,
-    description: req.body.description,
-    code: req.body.code
-  };
+  if (req.body.title && req.body.description && req.body.code) {
+    const upTask: Task = {
+      id: req.body.id,
+      title: req.body.title,
+      description: req.body.description,
+      code: req.body.code
+    };
 
-  tasks[req.body.id] = upTask;
+    tasks[req.body.id] = upTask;
 
-  return res.send(upTask);
+    return res.send(upTask);
+  }
+  const errmsg: string = "Bad request";
+  console.error(errmsg);
+  return res.status(400).send(errmsg).end();
 }); //Update one task (JSON: request contains id, title, description and code, response contains id, title, description and code)
 
 app.delete("/task/:id", (req, res) => {
