@@ -1,9 +1,12 @@
 <template>
   <div class="addtask">
     <p class="header1" id="title">Add Task</p>
-    <br />
-    <b-card title="Submit new task" class="form" bg-variant="light">
-      <b-form @submit="onSubmit" @reset="onReset">
+    <b-container
+      title="Submit a new task"
+      id="form-container"
+      bg-variant="light"
+    >
+      <b-form id="form" @submit="onSubmit" @reset="onReset">
         <b-form-group
           id="input-group-1"
           label="Task title:"
@@ -15,6 +18,7 @@
             id="input-1"
             v-model="task.title"
             type="text"
+            @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter title"
             required
           ></b-form-input>
@@ -29,43 +33,48 @@
           <b-form-textarea
             id="input-2"
             v-model="task.description"
+            @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter description"
-            rows="3"
+            max-rows="4"
             no-resize
             required
           ></b-form-textarea>
         </b-form-group>
 
-        <b-form-group
-          id="input-group-3"
-          label="Your Code:"
-          label-for="input-3"
-          label-align-sm="left"
-        >
+        <div id="input-group-3">
+          <b-label>Your code:</b-label>
           <b-form-textarea
             id="input-3"
             v-model="task.code"
+            @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter code"
-            rows="3"
             no-resize
+            no-auto-shrink
             required
           ></b-form-textarea>
-        </b-form-group>
-
-        <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
-      </b-form>
-      <b-alert v-model="showSuccessAlert" variant="success" dismissible>
-        Task with ID: {{ task.id }} created succesfully!
+        </div>
         <br />
-        <router-link :to="'/' + task.id" class="alert-link"
-          >Click here to view your task</router-link
+        <div>
+          <b-button class="button" type="submit" variant="primary"
+            >Submit</b-button
+          >
+          <b-button class="button" type="reset" variant="danger"
+            >Reset</b-button
+          >
+        </div>
+        <br />
+        <b-alert v-model="showSuccessAlert" variant="success" dismissible>
+          Task with ID: {{ task.id }} created succesfully!
+          <br />
+          <router-link :to="'/' + task.id" class="alert-link"
+            >Click here to view your task</router-link
+          >
+        </b-alert>
+        <b-alert v-model="showErrorAlert" variant="danger" dismissible
+          >An error occurred!</b-alert
         >
-      </b-alert>
-      <b-alert v-model="showErrorAlert" variant="danger" dismissible
-        >An error occurred!</b-alert
-      >
-    </b-card>
+      </b-form>
+    </b-container>
   </div>
 </template>
 
@@ -99,11 +108,13 @@ export default Vue.extend({
       const id: string = await taskService.addTask(this.task);
       if (id) {
         this.task.id = id;
-        console.log(`Created task with id: ${this.task.id}`);
-        this.showSuccessAlert = true;
+        console.log(`Created task with id: ${id}`);
+        this.showErrorAlert = false; //Hide any old error alert
+        this.showSuccessAlert = true; //Show success alert
       } else {
         console.error("An error occurred while creating the task!");
-        this.showErrorAlert = true;
+        this.showSuccessAlert = false; //Hide any old success alert
+        this.showErrorAlert = true; //Show error alert
       }
     },
     onReset(event: any): void {
@@ -112,8 +123,8 @@ export default Vue.extend({
       this.task.title = "";
       this.task.description = "";
       this.task.code = "";
-      this.showSuccessAlert = false;
-      this.showErrorAlert = false;
+      this.showSuccessAlert = false; //Hide any old success alert
+      this.showErrorAlert = false; //Show error alert
     }
   }
 });
@@ -122,18 +133,33 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .addtask {
   width: 100%;
-  height: 100vh;
-}
-.form {
-  position: absolute;
-  width: 50%;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+  height: auto;
+  display: flex;
+  flex-direction: column;
 }
 #title {
   float: left;
   display: inline-flex;
+}
+#form-container {
+  flex-grow: 1;
+  #form {
+    display: flex;
+    flex-direction: column;
+    height: 95%;
+    width: 100%;
+  }
+}
+#input-group-3 {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+#input-3 {
+  flex-grow: 1;
+}
+.button {
+  margin: 5px;
 }
 </style>
