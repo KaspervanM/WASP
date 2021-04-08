@@ -1,7 +1,11 @@
 <template>
   <div class="addtask">
     <p class="header1" id="title">Add Task</p>
-    <b-card title="Submit a new task" id="form-container" bg-variant="light">
+    <b-container
+      title="Submit a new task"
+      id="form-container"
+      bg-variant="light"
+    >
       <b-form id="form" @submit="onSubmit" @reset="onReset">
         <b-form-group
           id="input-group-1"
@@ -37,40 +41,40 @@
           ></b-form-textarea>
         </b-form-group>
 
-        <b-form-group
-          id="input-group-3"
-          label="Your Code:"
-          label-for="input-3"
-          label-align-sm="left"
-        >
+        <div id="input-group-3">
+          <b-label>Your code:</b-label>
           <b-form-textarea
-            fluid
             id="input-3"
             v-model="task.code"
             @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter code"
-            max-rows="8"
             no-resize
+            no-auto-shrink
             required
           ></b-form-textarea>
-        </b-form-group>
-        <div>
-          <b-button type="submit" variant="primary">Submit</b-button>
-          <b-button type="reset" variant="danger">Reset</b-button>
         </div>
-      </b-form>
-      <br />
-      <b-alert v-model="showSuccessAlert" variant="success" dismissible>
-        Task with ID: {{ task.id }} created succesfully!
         <br />
-        <router-link :to="'/' + task.id" class="alert-link"
-          >Click here to view your task</router-link
+        <div>
+          <b-button class="button" type="submit" variant="primary"
+            >Submit</b-button
+          >
+          <b-button class="button" type="reset" variant="danger"
+            >Reset</b-button
+          >
+        </div>
+        <br />
+        <b-alert v-model="showSuccessAlert" variant="success" dismissible>
+          Task with ID: {{ task.id }} created succesfully!
+          <br />
+          <router-link :to="'/' + task.id" class="alert-link"
+            >Click here to view your task</router-link
+          >
+        </b-alert>
+        <b-alert v-model="showErrorAlert" variant="danger" dismissible
+          >An error occurred!</b-alert
         >
-      </b-alert>
-      <b-alert v-model="showErrorAlert" variant="danger" dismissible
-        >An error occurred!</b-alert
-      >
-    </b-card>
+      </b-form>
+    </b-container>
   </div>
 </template>
 
@@ -142,15 +146,20 @@ export default Vue.extend({
   #form {
     display: flex;
     flex-direction: column;
-    height: 90%;
+    height: 95%;
     width: 100%;
   }
 }
 #input-group-3 {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
-  border: 2px solid blue;
 }
 #input-3 {
-  border: 2px solid tomato;
+  flex-grow: 1;
+}
+.button {
+  margin: 5px;
 }
 </style>
