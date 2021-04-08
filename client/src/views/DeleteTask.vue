@@ -75,7 +75,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.addtask {
+.deletetask {
   width: 100%;
   height: auto;
   display: flex;
