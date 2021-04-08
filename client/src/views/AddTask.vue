@@ -42,7 +42,7 @@
         </b-form-group>
 
         <div id="input-group-3">
-          <b-label>Your code:</b-label>
+          <label>Your code:</label>
           <b-form-textarea
             id="input-3"
             v-model="task.code"
