@@ -16,7 +16,7 @@
             type="text"
             @input="showSuccessAlert = showErrorAlert = false"
             :state="taskIdState"
-            placeholder="xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
+            placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             aria-describedby="input-live-help input-live-feedback"
             required
           ></b-form-input>
