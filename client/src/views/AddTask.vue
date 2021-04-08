@@ -55,7 +55,12 @@
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
-      <b-alert v-model="showSuccessAlert" variant="success" dismissible>
+      <b-alert
+        v-model="showSuccessAlert"
+        v-if="task.id.length == 36"
+        variant="success"
+        dismissible
+      >
         Task with ID: {{ task.id }} created succesfully!
         <br />
         <router-link :to="'/' + task.id" class="alert-link"
