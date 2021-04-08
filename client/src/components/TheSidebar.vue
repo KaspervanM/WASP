@@ -21,6 +21,9 @@
         <b-nav-item to="/addtask" exact exact-active-class="active"
           >Add Task</b-nav-item
         >
+        <b-nav-item to="/deletetask" exact exact-active-class="active"
+          >Delete Task</b-nav-item
+        >
         <b-nav-item to="/about" exact exact-active-class="active"
           >About</b-nav-item
         >
