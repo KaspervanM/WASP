@@ -1,4 +1,10 @@
 // client/src/services/taskService.js
+// How to use:
+// Import the taskService:
+//   import taskService from "@/services/taskService";
+// Access functions:
+//   taskService.getTask();
+
 import axios from "axios";
 
 interface Task {
