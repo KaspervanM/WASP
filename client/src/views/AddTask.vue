@@ -48,8 +48,8 @@
             v-model="task.code"
             @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter code"
+            max-rows="100"
             no-resize
-            no-auto-shrink
             required
           ></b-form-textarea>
         </div>
@@ -158,6 +158,7 @@ export default Vue.extend({
 }
 #input-3 {
   flex-grow: 1;
+  max-height: 95vh;
 }
 .button {
   margin: 5px;
