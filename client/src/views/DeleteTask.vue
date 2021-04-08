@@ -1,7 +1,6 @@
 <template>
   <div class="deletetask">
     <p class="header1" id="title">Delete Task</p>
-    <br />
     <b-card title="Remove a task" id="form-container" bg-variant="light">
       <b-form id="form" @submit="onSubmit">
         <b-form-group
