@@ -1,4 +1,4 @@
-// client/src/services/taskService.js
+// client/src/services/taskService.ts
 // How to use:
 // Import the taskService:
 //   import taskService from "@/services/taskService";

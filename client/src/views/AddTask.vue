@@ -66,7 +66,7 @@
         <b-alert v-model="showSuccessAlert" variant="success" dismissible>
           Task with ID: {{ task.id }} created succesfully!
           <br />
-          <router-link :to="'/' + task.id" class="alert-link"
+          <router-link :to="'/id/' + task.id" class="alert-link"
             >Click here to view your task</router-link
           >
         </b-alert>

@@ -1,7 +1,8 @@
 <template>
   <div id="app">
+    {{ id }}
     <TheSidebar></TheSidebar>
-    <router-view />
+    <router-view @start-task="startTaskLoop" />
   </div>
 </template>
 
@@ -14,6 +15,35 @@ export default Vue.extend({
   name: "Home",
   components: {
     TheSidebar
+  },
+  data(): { id: string; taskInterval: number } {
+    return {
+      id: "",
+      taskInterval: 0
+    };
+  },
+  methods: {
+    startTaskLoop: function (id: string) {
+      if (this.id === id) {
+        return;
+      }
+      clearInterval(this.taskInterval);
+      this.id = id;
+      this.taskInterval = setInterval(
+        function () {
+          import("@/services/evaluateCode").then((module) => {
+            console.log(
+              module.evaluate(
+                'function test() {\n\treturn "Congratulations! WASP is working correctly: ' +
+                  this.id +
+                  '!";\n}\ntest();\n'
+              )
+            );
+          });
+        }.bind(this),
+        2000
+      );
+    }
   }
 });
 </script>
