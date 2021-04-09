@@ -2,6 +2,7 @@
   <div class="dashboard">
     <p class="header1" id="title">Dashboard</p>
     <p class="header1" id="task-name">Task name</p>
+    {{ taskId }}
   </div>
 </template>
 
@@ -10,7 +11,8 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "Dashboard",
-  components: {}
+  components: {},
+  props: { taskId: String }
 });
 </script>
 

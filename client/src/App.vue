@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <TheSidebar></TheSidebar>
-    <router-view @start-task="startTaskLoop" />
+    <router-view @start-task="startTaskLoop" :task-id="id" />
   </div>
 </template>
 
