@@ -17,12 +17,13 @@ interface Task {
 
 let tasks: { [id: string]: Task } = {};
 
-tasks["1default-task-uuid-wasp-twelvecharss"] = {
+tasks["123e4567-e89b-12d3-a456-426614174000"] = {
   //Default task
-  id: "1default-task-uuid-wasp-twelvecharss",
+  id: "123e4567-e89b-12d3-a456-426614174000",
   title: "Default Task",
   description: "Congratulations! WASP is working correctly.",
-  code: 'alert("Congratulations! WASP is working correctly.");'
+  code:
+    'function test() {\n\treturn "Congratulations! WASP is working correctly.";\n}\ntest();\n'
 };
 
 app.get("/task", (req, res) => {
