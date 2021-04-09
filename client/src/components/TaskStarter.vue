@@ -15,6 +15,7 @@ export default Vue.extend({
   created() {
     this.id = this.$route.params.id;
     this.$emit("start-task", this.id);
+    this.$router.push("/");
   }
 });
 </script>
