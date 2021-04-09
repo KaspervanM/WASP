@@ -15,7 +15,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/id/:id",
-    name: "Dashboard",
+    name: "id",
     component: TaskStarter
   },
   {
