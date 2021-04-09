@@ -48,6 +48,8 @@
             v-model="task.code"
             @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter code"
+            ref="ta"
+            @keydown.native.tab.exact.prevent="tab"
             max-rows="100"
             no-resize
             required
@@ -125,6 +127,14 @@ export default Vue.extend({
       this.task.code = "";
       this.showSuccessAlert = false; //Hide any old success alert
       this.showErrorAlert = false; //Show error alert
+    },
+    tab() {
+      const index = this.$refs.ta.selectionStart;
+      this.task.code =
+        this.task.code.slice(0, index) + "\t" + this.task.code.slice(index);
+      this.$nextTick(() => {
+        this.$refs.ta.setSelectionRange(index + 1, index + 1);
+      });
     }
   }
 });
