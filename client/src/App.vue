@@ -7,40 +7,38 @@
 
 <script lang="ts">
 import Vue from "vue";
-
 import TheSidebar from "@/components/TheSidebar.vue";
+import taskService from "@/services/taskService";
 
 export default Vue.extend({
   name: "Home",
   components: {
     TheSidebar
   },
-  data(): { id: string; taskInterval: number } {
+  data(): { id: string; code: string; taskInterval: number } {
     return {
       id: "",
+      code: "",
       taskInterval: 0
     };
   },
   methods: {
-    startTaskLoop: function (id: string) {
+    startTaskLoop: async function (id: string) {
       if (this.id === id) {
         return;
       }
-      clearInterval(this.taskInterval);
       this.id = id;
+
+      clearInterval(this.taskInterval);
+      this.code = (await taskService.getTask(this.id)).code;
+      console.log(this.code);
       this.taskInterval = setInterval(
         function () {
           import("@/services/evaluateCode").then((module) => {
-            console.log(
-              module.evaluate(
-                'function test() {\n\treturn "Congratulations! WASP is working correctly: ' +
-                  this.id +
-                  '!";\n}\ntest();\n'
-              )
-            );
+            console.log(module.evaluate(this.code));
           });
         }.bind(this),
-        2000
+        5000
       );
     }
   }
