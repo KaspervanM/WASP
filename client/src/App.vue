@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    {{ id }}
     <TheSidebar></TheSidebar>
     <router-view @start-task="startTaskLoop" />
   </div>
