@@ -4,6 +4,12 @@
       <p class="header1" id="title">Dashboard</p>
       <div id="taskRunning" v-if="taskId.length > 0">
         <p>Congratulations: {{ taskId }} is now running!</p>
+        <b-button
+          class="button"
+          variant="danger"
+          @click="$emit('remove-cookies')"
+          >Click here to make it stop</b-button
+        >
       </div>
       <div id="taskRunning" v-else>
         <b-card
