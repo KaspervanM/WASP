@@ -36,7 +36,7 @@ export default Vue.extend({
       if (this.id === id) {
         return;
       }
-      if ((await taskService.getTask(id)).length === 0) {
+      if (typeof (await taskService.getTask(id)).code === "undefined") {
         return;
       }
       this.$cookies.set("TaskId", id);
