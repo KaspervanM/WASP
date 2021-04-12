@@ -33,7 +33,7 @@ type TaskList = { [id: string]: Task };
 
 export default Vue.extend({
   data(): { tasks: TaskList } {
-    let tasks: TaskList;
+    let tasks: TaskList = {};
     return { tasks };
   },
   async mounted(): Promise<void> {
