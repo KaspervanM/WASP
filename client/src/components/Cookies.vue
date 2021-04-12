@@ -4,7 +4,6 @@
     By using our website, you agree to our cookie policy.
     </p>
     <button class=’close’>&times;</button>
-    
     <p>Some text before<p>
 <div class="target">
 <p>
