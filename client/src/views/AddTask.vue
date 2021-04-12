@@ -136,7 +136,7 @@ export default Vue.extend({
       }).$refs.ta.selectionStart as number;
       this.task.code =
         this.task.code.slice(0, index) + "\t" + this.task.code.slice(index);
-      this.$nextTick(() => {
+      this.$nextTick((): void => {
         ((this as unknown) as {
           $refs: {
             ta: HTMLInputElement;
