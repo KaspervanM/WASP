@@ -37,11 +37,10 @@
 
 <script lang="ts">
 import Vue from "vue";
-import MobileMixin from "@/mixins/MobileMixin";
+import Mobile from "@/services/Mobile";
 
 export default Vue.extend({
   name: "Welcome",
-  mixins: [MobileMixin],
   data(): { visible: boolean } {
     return {
       visible: true
@@ -60,7 +59,8 @@ export default Vue.extend({
   methods: {
     hideSidebar(): void {
       if (this.isMobile()) this.visible = false;
-    }
+    },
+    isMobile: Mobile.isMobile
   }
 });
 </script>
