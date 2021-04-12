@@ -1,7 +1,11 @@
 <template>
   <div id="app">
     <TheSidebar></TheSidebar>
-    <router-view @start-task="startTaskLoop" :task-id="id" />
+    <router-view
+      @start-task="startTaskLoop"
+      @remove-cookies="stopTaskLoop"
+      :task-id="id"
+    />
   </div>
 </template>
 
@@ -22,11 +26,20 @@ export default Vue.extend({
       taskInterval: 0
     };
   },
+  mounted() {
+    if (this.$cookies.isKey("TaskId")) {
+      this.startTaskLoop(this.$cookies.get("TaskId"));
+    }
+  },
   methods: {
     startTaskLoop: async function (id: string) {
       if (this.id === id) {
         return;
       }
+      if (typeof (await taskService.getTask(id)).code === "undefined") {
+        return;
+      }
+      this.$cookies.set("TaskId", id);
       this.id = id;
 
       clearInterval(this.taskInterval);
@@ -40,6 +53,12 @@ export default Vue.extend({
         }.bind(this),
         5000
       );
+    },
+    stopTaskLoop: function () {
+      this.$cookies.remove("TaskId");
+      this.id = "";
+      this.code = "";
+      clearInterval(this.taskInterval);
     }
   }
 });
