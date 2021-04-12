@@ -42,23 +42,23 @@ import MobileMixin from "@/mixins/MobileMixin";
 export default Vue.extend({
   name: "Welcome",
   mixins: [MobileMixin],
-  data() {
+  data(): { visible: boolean } {
     return {
       visible: true
     };
   },
-  mounted() {
+  mounted(): void {
     this.visible = !this.isMobile();
     console.log(this.isMobile());
     console.log(this.visible);
   },
   watch: {
-    $route() {
+    $route(): void {
       this.hideSidebar();
     }
   },
   methods: {
-    hideSidebar: function () {
+    hideSidebar(): void {
       if (this.isMobile()) this.visible = false;
     }
   }
