@@ -63,7 +63,6 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "Dashboard",
-  components: {},
   props: { taskId: String },
   data(): { runTaskId: string } {
     return {
