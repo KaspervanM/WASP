@@ -18,6 +18,9 @@
         <b-nav-item to="/" exact exact-active-class="active"
           >Dashboard</b-nav-item
         >
+        <b-nav-item to="/viewtasks" exact exact-active-class="active"
+          >View Tasks</b-nav-item
+        >
         <b-nav-item to="/addtask" exact exact-active-class="active"
           >Add Task</b-nav-item
         >
