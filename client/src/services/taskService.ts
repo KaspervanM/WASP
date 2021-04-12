@@ -15,11 +15,12 @@ interface Task {
   description: string;
   code: string;
 }
+type TaskList = { [id: string]: Task };
 
 const taskService = {
-  async getTasks(): Promise<{ [id: string]: Task }> {
-    const res = await axios.get<{ [id: string]: Task }>(serverURL + "task");
-    const tasks: { [id: string]: Task } = res.data;
+  async getTasks(): Promise<TaskList> {
+    const res = await axios.get<TaskList>(serverURL + "task");
+    const tasks: TaskList = res.data;
     return tasks;
   },
   async getTask(taskId: string): Promise<Task> {
