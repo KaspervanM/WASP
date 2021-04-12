@@ -40,7 +40,7 @@ import Vue from "vue";
 import Mobile from "@/services/Mobile";
 
 export default Vue.extend({
-  name: "Welcome",
+  name: "TheSidebar",
   data(): { visible: boolean } {
     return {
       visible: true

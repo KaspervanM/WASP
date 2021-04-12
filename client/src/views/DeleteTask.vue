@@ -49,7 +49,7 @@ import Vue from "vue";
 import taskService from "@/services/taskService";
 
 export default Vue.extend({
-  name: "Delete Task",
+  name: "DeleteTask",
   data(): {
     taskId: string;
     showSuccessAlert: boolean;

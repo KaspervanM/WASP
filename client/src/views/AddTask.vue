@@ -97,7 +97,7 @@ let task: Task = {
   code: "" //To be filled by user
 };
 export default Vue.extend({
-  name: "Add Task",
+  name: "AddTask",
   data(): { task: Task; showSuccessAlert: boolean; showErrorAlert: boolean } {
     return {
       task,
