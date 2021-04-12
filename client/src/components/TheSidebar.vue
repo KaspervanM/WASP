@@ -18,6 +18,12 @@
         <b-nav-item to="/" exact exact-active-class="active"
           >Dashboard</b-nav-item
         >
+        <b-nav-item to="/addtask" exact exact-active-class="active"
+          >Add Task</b-nav-item
+        >
+        <b-nav-item to="/deletetask" exact exact-active-class="active"
+          >Delete Task</b-nav-item
+        >
         <b-nav-item to="/about" exact exact-active-class="active"
           >About</b-nav-item
         >
@@ -44,7 +50,7 @@ export default Vue.extend({
     console.log(this.visible);
   },
   watch: {
-    $route(to, from) {
+    $route() {
       this.hideSidebar();
     }
   },
@@ -73,7 +79,8 @@ export default Vue.extend({
   width: 20vw;
   min-width: 200px;
   max-width: 300px;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
   background-color: lightgrey;
   left: 0;
 }
