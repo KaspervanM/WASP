@@ -3,17 +3,11 @@
     <div id="primary-dashboard">
       <p class="header1" id="title">Dashboard</p>
       <div id="taskRunning" v-if="taskId.length > 0">
-        <b-card title="Progress bar" id="progress-container" bg-variant="light">
-          <b-progress id="progress" :max="max">
-            <b-progress-bar
-              :value="value"
-              :label="`${((value / max) * 100).toFixed(0)}%`"
-              show-progress
-              animated
-            ></b-progress-bar>
-          </b-progress>
-          <p>Time estimate</p>
-        </b-card>
+        <TheProgressBar
+          :taskId="taskId"
+          v-if="taskId.length > 0"
+          :key="NaN"
+        ></TheProgressBar>
         <p>Congratulations: {{ taskId }} is now running!</p>
         <b-button
           class="button"
@@ -67,10 +61,11 @@
 
 <script lang="ts">
 import Vue from "vue";
+import TheProgressBar from "@/components/TheProgressBar.vue";
 
 export default Vue.extend({
   name: "Dashboard",
-  components: {},
+  components: { TheProgressBar },
   props: { taskId: String },
   data(): { runTaskId: string; max: number; value: number } {
     return {
@@ -136,14 +131,5 @@ export default Vue.extend({
   display: inline-flex;
   border-left: 2px solid blue;
   border-bottom: 2px solid blue;
-}
-#progress-container {
-  display: block;
-  margin: 5vh;
-  text-align: left;
-  #progress {
-    height: 3vh;
-    margin: 2vh;
-  }
 }
 </style>
