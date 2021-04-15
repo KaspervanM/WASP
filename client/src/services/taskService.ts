@@ -37,10 +37,6 @@ const taskService = {
     );
     return res.data;
   },
-  async idValidator(taskId: string): Promise<boolean> {
-    const res = await axios.get<Task>(serverURL + "task/" + taskId);
-    return typeof res.data.title !== "undefined";
-  },
   async addTask(task: Task): Promise<string> {
     const res = await axios.post<Task>(serverURL + "task", task, {
       headers: {
