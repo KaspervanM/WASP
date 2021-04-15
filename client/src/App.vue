@@ -46,8 +46,8 @@ export default Vue.extend({
       this.code = (await taskService.getTask(this.id)).code;
       console.log(this.code);
       this.taskInterval = setInterval(
-        function () {
-          import("@/services/evaluateCode").then((module) => {
+        function (this: { code: string }) {
+          import("@/services/evaluateCode").then((module): void => {
             console.log(module.evaluate(this.code));
           });
         }.bind(this),
