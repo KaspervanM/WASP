@@ -3,6 +3,11 @@
     <div id="primary-dashboard">
       <p class="header1" id="title">Dashboard</p>
       <div id="taskRunning" v-if="taskId.length > 0">
+        <TheProgressBar
+          :taskId="taskId"
+          v-if="taskId.length > 0"
+          :key="NaN"
+        ></TheProgressBar>
         <p>Congratulations: {{ taskId }} is now running!</p>
         <b-button
           class="button"
@@ -12,11 +17,7 @@
         >
       </div>
       <div id="taskRunning" v-else>
-        <b-card
-          title="Start running a task"
-          id="form-container"
-          bg-variant="light"
-        >
+        <b-card title="Start running a task" bg-variant="light">
           <p>Your browser is not yet running any code!</p>
           <b-form id="form" @submit="onSubmit">
             <b-form-group
@@ -60,13 +61,17 @@
 
 <script lang="ts">
 import Vue from "vue";
+import TheProgressBar from "@/components/TheProgressBar.vue";
 
 export default Vue.extend({
   name: "Dashboard",
+  components: { TheProgressBar },
   props: { taskId: String },
-  data(): { runTaskId: string } {
+  data(): { runTaskId: string; max: number; value: number } {
     return {
-      runTaskId: ""
+      runTaskId: "",
+      max: 100,
+      value: 60.0
     };
   },
   computed: {

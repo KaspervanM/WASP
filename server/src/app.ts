@@ -15,6 +15,11 @@ var corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 
+interface TaskProgress {
+  value: number;
+  max: number;
+}
+
 interface Task {
   id: string;
   title: string;
@@ -42,6 +47,14 @@ app.get("/task/:id", (req, res) => {
   return res.send(tasks[req.params.id]);
 }); //Read one task (URL: request contains id, JSON: response contains id, title, description and code)
 
+app.get("/task/progress/:id", (req, res) => {
+  const taskProgress: TaskProgress = {
+    value: Math.random() * 100,
+    max: 100
+  };
+  return res.send(taskProgress);
+});
+
 app.post("/task", (req, res) => {
   if (req.body.title && req.body.description && req.body.code) {
     const id = uuidv4();
@@ -61,7 +74,7 @@ app.post("/task", (req, res) => {
 }); //Add one task (JSON: request contains title, description and code, response contains id, title, description and code)
 
 app.put("/task", (req, res) => {
-  if (req.body.title && req.body.description && req.body.code) {
+  if (req.body.title && req.body.description && req.body.code && req.body.id in tasks) {
     const upTask: Task = {
       id: req.body.id,
       title: req.body.title,

@@ -9,6 +9,11 @@ import axios, { AxiosResponse } from "axios";
 
 const serverURL = "http://localhost:3000/";
 
+interface TaskProgress {
+  value: number;
+  max: number;
+}
+
 interface Task {
   id: string;
   title: string;
@@ -27,12 +32,12 @@ const taskService = {
       serverURL + "task/" + taskId
     );
     return res.data;
-  },
-  async idValidator(taskId: string): Promise<boolean> {
-    const res: AxiosResponse = await axios.get<Task>(
-      serverURL + "task/" + taskId
+  }
+  async getTaskProgress(taskId: string): Promise<TaskProgress> {
+    const res = await axios.get<TaskProgress>(
+      serverURL + "task/progress/" + taskId
     );
-    return typeof res.data.title !== "undefined";
+    return res.data;
   },
   async addTask(task: Task): Promise<string> {
     const res: AxiosResponse = await axios.post<Task>(
