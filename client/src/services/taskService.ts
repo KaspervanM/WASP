@@ -32,7 +32,7 @@ const taskService = {
       serverURL + "task/" + taskId
     );
     return res.data;
-  }
+  },
   async getTaskProgress(taskId: string): Promise<TaskProgress> {
     const res = await axios.get<TaskProgress>(
       serverURL + "task/progress/" + taskId
