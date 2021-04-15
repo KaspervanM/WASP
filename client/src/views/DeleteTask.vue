@@ -49,7 +49,6 @@ import Vue from "vue";
 import taskService from "@/services/taskService";
 
 export default Vue.extend({
-  name: "DeleteTask",
   data(): {
     taskId: string;
     showSuccessAlert: boolean;
@@ -69,21 +68,22 @@ export default Vue.extend({
     }
   },
   methods: {
-    async onSubmit(event: Event): Promise<void> {
+    onSubmit: async function (event: any): Promise<void> {
       event.preventDefault();
-      if (this.taskIdState) {
-        const id: string = await taskService.deleteTask(this.taskId);
-        if (id == this.taskId) {
-          console.log(`Deleted task with id: ${id}`);
-          this.showErrorAlert = false; //Hide any old error alert
-          this.showSuccessAlert = true; //Show success alert
-        } else {
-          console.error(
-            "An error occurred while deleting the task: id mismatch!"
-          );
-          this.showSuccessAlert = false; //Hide any old success alert
-          this.showErrorAlert = true; //Show error alert
-        }
+      if (!this.taskIdState) {
+        return;
+      }
+      const id: string = await taskService.deleteTask(this.taskId);
+      if (id == this.taskId) {
+        console.log(`Deleted task with id: ${id}`);
+        this.showErrorAlert = false; //Hide any old error alert
+        this.showSuccessAlert = true; //Show success alert
+      } else {
+        console.error(
+          "An error occurred while deleting the task: id mismatch!"
+        );
+        this.showSuccessAlert = false; //Hide any old success alert
+        this.showErrorAlert = true; //Show error alert
       }
     }
   }
