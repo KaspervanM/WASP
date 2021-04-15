@@ -48,7 +48,7 @@ app.get("/task/:id", (req, res) => {
 
 app.get("/task/progress/:id", (req, res) => {
   const taskProgress: TaskProgress = {
-    value: Math.floor(Math.random() * 100),
+    value: Math.random() * 100,
     max: 100
   };
   return res.send(taskProgress);
