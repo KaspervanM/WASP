@@ -26,8 +26,9 @@ interface Task {
   description: string;
   code: string;
 }
+type TaskList = { [id: string]: Task };
 
-let tasks: { [id: string]: Task } = {};
+let tasks: TaskList = {};
 
 tasks["123e4567-e89b-12d3-a456-426614174000"] = {
   //Default task
