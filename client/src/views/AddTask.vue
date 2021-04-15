@@ -97,7 +97,6 @@ let task: Task = {
   code: "" //To be filled by user
 };
 export default Vue.extend({
-  name: "AddTask",
   data(): { task: Task; showSuccessAlert: boolean; showErrorAlert: boolean } {
     return {
       task,
@@ -106,7 +105,7 @@ export default Vue.extend({
     };
   },
   methods: {
-    async onSubmit(event: Event): Promise<void> {
+    async onSubmit(event: any): Promise<void> {
       event.preventDefault();
       const id: string = await taskService.addTask(this.task);
       if (id) {
@@ -120,7 +119,7 @@ export default Vue.extend({
         this.showErrorAlert = true; //Show error alert
       }
     },
-    onReset(event: Event): void {
+    onReset(event: any): void {
       event.preventDefault();
       // Reset our form values
       this.task.title = "";
@@ -129,20 +128,12 @@ export default Vue.extend({
       this.showSuccessAlert = false; //Hide any old success alert
       this.showErrorAlert = false; //Show error alert
     },
-    tab(): void {
-      const index: number = ((this as unknown) as {
-        $refs: {
-          ta: HTMLInputElement;
-        };
-      }).$refs.ta.selectionStart as number;
+    tab() {
+      const index = this.$refs.ta.selectionStart;
       this.task.code =
         this.task.code.slice(0, index) + "\t" + this.task.code.slice(index);
-      this.$nextTick((): void => {
-        ((this as unknown) as {
-          $refs: {
-            ta: HTMLInputElement;
-          };
-        }).$refs.ta.setSelectionRange(index + 1, index + 1);
+      this.$nextTick(() => {
+        this.$refs.ta.setSelectionRange(index + 1, index + 1);
       });
     }
   }

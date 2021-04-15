@@ -37,30 +37,30 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Mobile from "@/services/Mobile";
+import MobileMixin from "@/mixins/MobileMixin";
 
 export default Vue.extend({
-  name: "TheSidebar",
-  data(): { visible: boolean } {
+  name: "Welcome",
+  mixins: [MobileMixin],
+  data() {
     return {
       visible: true
     };
   },
-  mounted(): void {
+  mounted() {
     this.visible = !this.isMobile();
     console.log(this.isMobile());
     console.log(this.visible);
   },
   watch: {
-    $route(): void {
+    $route() {
       this.hideSidebar();
     }
   },
   methods: {
-    hideSidebar(): void {
+    hideSidebar: function () {
       if (this.isMobile()) this.visible = false;
-    },
-    isMobile: Mobile.isMobile
+    }
   }
 });
 </script>

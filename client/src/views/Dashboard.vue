@@ -82,11 +82,12 @@ export default Vue.extend({
     }
   },
   methods: {
-    onSubmit: function (event: Event): void {
+    onSubmit: function (event: any): Promise<void> {
       event.preventDefault();
-      if (this.taskIdState) {
-        this.$router.push("/id/" + this.runTaskId);
+      if (!this.taskIdState) {
+        return;
       }
+      this.$router.push("/id/" + this.runTaskId);
     }
   }
 });
