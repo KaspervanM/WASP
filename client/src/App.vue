@@ -32,7 +32,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    startTaskLoop: async function (id: string) {
+    startTaskLoop: async function (id: string): Promise<void> {
       if (this.id === id) {
         return;
       }
@@ -46,15 +46,15 @@ export default Vue.extend({
       this.code = (await taskService.getTask(this.id)).code;
       console.log(this.code);
       this.taskInterval = setInterval(
-        function () {
-          import("@/services/evaluateCode").then((module) => {
+        function (this: { code: string }): void {
+          import("@/services/evaluateCode").then((module): void => {
             console.log(module.evaluate(this.code));
           });
         }.bind(this),
         5000
       );
     },
-    stopTaskLoop: function () {
+    stopTaskLoop: function (): void {
       this.$cookies.remove("TaskId");
       this.id = "";
       this.code = "";

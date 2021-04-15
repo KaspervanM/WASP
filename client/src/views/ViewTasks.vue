@@ -32,8 +32,9 @@ interface Task {
 type TaskList = { [id: string]: Task };
 
 export default Vue.extend({
+  name: "ViewTasks",
   data(): { tasks: TaskList } {
-    let tasks: TaskList;
+    let tasks: TaskList = {};
     return { tasks };
   },
   async mounted(): Promise<void> {
