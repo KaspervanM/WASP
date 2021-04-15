@@ -15,6 +15,11 @@ var corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 
+interface TaskProgress {
+  value: number;
+  max: number;
+}
+
 interface Task {
   id: string;
   title: string;
@@ -40,6 +45,14 @@ app.get("/task", (req, res) => {
 app.get("/task/:id", (req, res) => {
   return res.send(tasks[req.params.id]);
 }); //Read one task (URL: request contains id, JSON: response contains id, title, description and code)
+
+app.get("/task/progress/:id", (req, res) => {
+  const taskProgress: TaskProgress = {
+    value: Math.random() * 100,
+    max: 100
+  };
+  return res.send(taskProgress);
+});
 
 app.post("/task", (req, res) => {
   if (req.body.title && req.body.description && req.body.code) {
