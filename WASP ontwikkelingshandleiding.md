@@ -62,3 +62,13 @@ Open een browser en ga naar `https://code.visualstudio.com/download`. Klik dan o
 #### Stap 3: Verificatie
 
 Zoek in Windows startmenu naar `VSC`, klik dan op **Visual Studio Code**. Als VSCode zonder problemen opstart dan is de installatie gelukt.
+
+#### VSC: Extensions
+
+De volgende extensies moeten in Visual Studio Code worden geïnstalleerd. Dit kun je doen door te klikken op de extensie logo (of Ctrl+Shift+X) en dan de extensienaam te typen en vervolgens op **INSTALL** te klikken.
+
+- `ESLint`
+- `GitHub Pull Requests and Issues`
+- `npm`
+- `Prettier - Code formatter`
+- `Vetur`
