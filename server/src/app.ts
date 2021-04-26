@@ -20,11 +20,28 @@ interface TaskProgress {
   max: number;
 }
 
+interface SubTask {
+  start: number;
+  end: number;
+  finished: boolean;
+}
+
+interface Config {
+  BEGIN: number;
+  END: number;
+  BATCH_SIZE: number;
+  RESULT: string;
+  ALLOW_ANONYMOUS_USERS?: boolean;
+}
+
 interface Task {
   id: string;
   title: string;
   description: string;
+  config: Config;
   code: string;
+  subtasks?: SubTask[];
+  result?: number | Array<string | number>;
 }
 type TaskList = { [id: string]: Task };
 
@@ -35,8 +52,14 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
   id: "123e4567-e89b-12d3-a456-426614174000",
   title: "Default Task",
   description: "Congratulations! WASP is working correctly.",
+  config: {
+    BEGIN: 0,
+    END: 25,
+    BATCH_SIZE: 3,
+    RESULT: "array"
+  },
   code:
-    'function test() {\n\treturn "Congratulations! WASP is working correctly.";\n}\ntest();\n'
+    'function main(begin, end) {\n\treturn (() => {\n\t\tlet concStr = "Congratulations! WASP is working correctly. Numbers:";\n\t\tfor (let i = begin; i <= end; i++) {\n\t\t\tconcStr += " " + i.toString();\n\t\t}\n\t\treturn concStr;\n\t})();\n}\n'
 };
 
 app.get("/task", (req, res) => {
@@ -74,7 +97,12 @@ app.post("/task", (req, res) => {
 }); //Add one task (JSON: request contains title, description and code, response contains id, title, description and code)
 
 app.put("/task", (req, res) => {
-  if (req.body.title && req.body.description && req.body.code && req.body.id in tasks) {
+  if (
+    req.body.title &&
+    req.body.description &&
+    req.body.code &&
+    req.body.id in tasks
+  ) {
     const upTask: Task = {
       id: req.body.id,
       title: req.body.title,
