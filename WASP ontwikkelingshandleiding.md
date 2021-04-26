@@ -39,7 +39,26 @@ Omdat NPM al geïnstalleerd is, kan deze gebruikt worden om Vue.js/CLI te instal
 
 Een ander programms dat nodig is, is TypeScript. Hiervoor wordt ook weer NPM gebruikt.
 
-#### Typescript
+### Typescript
 
 1. Open een **command prompt** en typ in `npm i -g typescript`.
 2. Om de installatie te verifieren type je `tsc -v`.
+
+Voor het ontwikkelen gebruiken we Visual Studio Code samen met GitHub. Die moeten ook geïnstalleerd worden.
+
+### Visual Studio Code
+
+#### Stap 1: Het installatiebestand
+
+Open een browser en ga naar `https://code.visualstudio.com/download`. Klik dan op de **Windows** knop. Daarbij hoort automatisch het installatiebestand gedownload te worden.
+
+#### Stap 2: De installatie
+
+1. Start het installatiebestand. Deze kun je openen door onderin het scherm van de browser op `VSCodeUserSetup-{versie}.exe` te klikken of naar de **Downloads** folder op de pc te gaan.
+2. Lees de licentieovereenkomst door - klik op **I accept the agreement** en op **Next** als je ermee akkoord gaat.
+3. De volgende scherm zal allerlei vragen stellen, maar tenzij je specifieke wensen hebt, houd ze op de standaard instellingen door te klikken op **Next**.
+4. Ten slotte, klik op de **Install** knop om het programma te installeren, wanneer het klaar is, klik op **Finish**.
+
+#### Stap 3: Verificatie
+
+Zoek in Windows startmenu naar `VSC`, klik dan op **Visual Studio Code**. Als VSCode zonder problemen opstart dan is de installatie gelukt.
