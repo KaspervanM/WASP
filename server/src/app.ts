@@ -23,7 +23,7 @@ interface TaskProgress {
 interface SubTask {
   start: number;
   end: number;
-  finished: boolean;
+  status: number;
 }
 
 interface Config {
@@ -63,7 +63,7 @@ function createSubtasks(
           1,
         end
       ),
-      finished: false
+      status: 0
     });
   }
   console.log(subtasks);
@@ -90,15 +90,17 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
   description: "Congratulations! WASP is working correctly.",
   config: {
     BEGIN: 0,
-    END: 10000,
+    END: 1000,
     BATCH_SIZE: 3,
     RESULT: "array"
   },
   code:
     'function main(begin, end) {\n\treturn (() => {\n\t\tlet concStr = "Congratulations! WASP is working correctly. Numbers:";\n\t\tfor (let i = begin; i <= end; i++) {\n\t\t\tconcStr += " " + i.toString();\n\t\t}\n\t\treturn concStr;\n\t})();\n}\n',
-  subtasks: createSubtasks(0, 10000, 3),
+  subtasks: createSubtasks(0, 1000, 3),
   result: createResults("array")
 };
+
+const TIMEOUT_DURATION: number = 5000;
 
 app.get("/task", (req, res) => {
   return res.send(Object.values(tasks));
@@ -109,24 +111,36 @@ app.get("/task/:id", (req, res) => {
 }); //Read one task (URL: request contains id, JSON: response contains id, title, description and code)
 
 app.get("/task/request-subtask/:id", (req, res) => {
+  const index = tasks[req.params.id].subtasks.findIndex(
+    (obj) => obj.status === 0
+  );
+  if (index === -1) {
+    return res.send([<SubTask>{}, ""]);
+  }
+  tasks[req.params.id].subtasks[index].status = 1;
+  setTimeout(() => {
+    if (tasks[req.params.id].subtasks[index].status != 2)
+      tasks[req.params.id].subtasks[index].status = 0;
+  }, TIMEOUT_DURATION);
+
   return res.send([
-    tasks[req.params.id]["subtasks"].filter((obj) => obj.finished === false)[0],
-    tasks[req.params.id]["code"]
+    tasks[req.params.id].subtasks[index],
+    tasks[req.params.id].code
   ]);
 });
 
 app.post("/task/return-subresult", (req, res) => {
-  const index = tasks[req.body.id]["subtasks"].findIndex(
+  const index = tasks[req.body.id].subtasks.findIndex(
     (obj) => obj.start === req.body.subtask.start
   );
   if (index === -1) {
     return res.send(false);
   }
-  const subtask: SubTask = tasks[req.body.id]["subtasks"][index];
+  const subtask: SubTask = tasks[req.body.id].subtasks[index];
   if (subtask["end"] !== req.body.subtask.end) {
     return res.send(false);
   }
-  subtask["finished"] = true;
+  subtask.status = 2;
   return res.send(true);
 });
 

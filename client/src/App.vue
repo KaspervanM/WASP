@@ -41,8 +41,9 @@ export default Vue.extend({
   methods: {
     taskloop: async function (): Promise<void> {
       const subtask: exSubTask = await taskService.getSubtask(this.id);
-      if (subtask[0] === null) {
+      if (typeof subtask[0].start === "undefined") {
         console.log("STOPPED");
+        this.stopTaskLoop();
         return;
       }
       let result: string | number;
@@ -58,7 +59,10 @@ export default Vue.extend({
         this.$cookies.isKey("TaskId") &&
         (await taskService.returnSubresult(this.id, subtask[0], result))
       ) {
+        console.log("continue");
         this.taskloop();
+      } else {
+        console.log("STOPPED2");
       }
     },
     startTaskLoop: async function (id: string): Promise<void> {
@@ -66,7 +70,7 @@ export default Vue.extend({
         return;
       }
       const subtask: exSubTask = await taskService.getSubtask(id);
-      if (typeof subtask[1] === "undefined") {
+      if (typeof subtask[0].start === "undefined") {
         return;
       }
       this.$cookies.set("TaskId", id);
