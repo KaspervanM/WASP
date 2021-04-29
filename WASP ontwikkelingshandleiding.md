@@ -80,7 +80,7 @@ De volgende extensies moeten in Visual Studio Code worden geïnstalleerd. Dit ku
 Wij ontwikkelen met Visual Studio Code en GitHub. Hiervoor is dus een GitHub account nodig. Die kan op het volgende manier worden aangemaakt:
 
 1. Ga naar `https://github.com/join`.
-2. Typ een gebruikersnaam, jouw email adres, en een wachtwoord.
+2. Typ een gebruikersnaam, jouw e-mailadres, en een wachtwoord.
 3. Kies **Sign up for GitHub**, en volg dan de instructies.
 
 In VS Code moet de koppeling met GitHub worden gemaakt. Als de `Github Pull Requests and Issues` extensie is geïnstalleerd, moet je inloggen met GitHub. Volg de instructies om in de browser met GitHub in te loggen en ga dan terug in VS Code.
