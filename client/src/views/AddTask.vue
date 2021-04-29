@@ -23,28 +23,53 @@
             required
           ></b-form-input>
         </b-form-group>
-
-        <b-form-group
-          id="input-group-2"
-          label="Task Description:"
-          label-for="input-2"
-          label-align-sm="left"
-        >
-          <b-form-textarea
-            id="input-2"
-            v-model="task.description"
-            @input="showSuccessAlert = showErrorAlert = false"
-            placeholder="Enter description"
-            max-rows="4"
-            no-resize
-            required
-          ></b-form-textarea>
-        </b-form-group>
-
-        <div id="input-group-3">
+        <div id="input-block">
+          <b-form-group
+            id="input-group-2"
+            label="Task Description:"
+            label-for="input-2"
+            label-align-sm="left"
+          >
+            <b-form-textarea
+              id="input-2"
+              v-model="task.description"
+              @input="showSuccessAlert = showErrorAlert = false"
+              placeholder="Enter description"
+              rows="7"
+              max-rows="8"
+              no-resize
+              required
+            ></b-form-textarea>
+          </b-form-group>
+          <b-form-group
+            id="input-group-3"
+            label="Task Configuration:"
+            label-for="input-3"
+            label-align-sm="left"
+          >
+            <b-form-textarea
+              id="input-3"
+              v-model="task.config"
+              @input="showSuccessAlert = showErrorAlert = false"
+              placeholder="Enter configuration"
+              rows="7"
+              max-rows="8"
+              no-resize
+              required
+            ></b-form-textarea>
+          </b-form-group>
+          <b-tooltip
+            custom-class="custom-tooltip"
+            target="input-group-3"
+            triggers="focus"
+          >
+            <pre>{{ tooltip }}</pre>
+          </b-tooltip>
+        </div>
+        <div id="input-group-4">
           <label>Your code:</label>
           <b-form-textarea
-            id="input-3"
+            id="input-4"
             v-model="task.code"
             @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter code"
@@ -88,22 +113,45 @@ interface Task {
   id: string;
   title: string;
   description: string;
+  config: string;
   code: string;
 }
 let task: Task = {
   id: "", //To be filled by server
   title: "", //To be filled by user
   description: "", //To be filled by user
+  config: "",
   code: "" //To be filled by user
 };
 export default Vue.extend({
   name: "AddTask",
-  data(): { task: Task; showSuccessAlert: boolean; showErrorAlert: boolean } {
+  data(): {
+    task: Task;
+    tooltip: string;
+    showSuccessAlert: boolean;
+    showErrorAlert: boolean;
+  } {
     return {
       task,
+      tooltip: `interface Config {
+  BEGIN: number;
+  END: number;
+  BATCH_SIZE: number;
+  RESULT: string;
+  ALLOW_ANONYMOUS_USERS?: boolean;
+}`,
       showSuccessAlert: false,
       showErrorAlert: false
     };
+  },
+  mounted() {
+    this.task.config = `{
+  "BEGIN": 0,
+  "END": 10,
+  "BATCH_SIZE": 1,
+  "RESULT": "sum",
+  "ALLOW_ANONYMOUS_USERS": true
+}`;
   },
   methods: {
     async onSubmit(event: Event): Promise<void> {
@@ -125,6 +173,7 @@ export default Vue.extend({
       // Reset our form values
       this.task.title = "";
       this.task.description = "";
+      this.task.config = "";
       this.task.code = "";
       this.showSuccessAlert = false; //Hide any old success alert
       this.showErrorAlert = false; //Show error alert
@@ -169,13 +218,31 @@ export default Vue.extend({
     width: 100%;
   }
 }
+#input-block {
+  display: flex;
+}
+#input-group-2 {
+  flex-grow: 1;
+  margin-right: 5px;
+  height: 100%;
+}
 #input-group-3 {
+  flex-grow: 1;
+  margin-left: 5px;
+  height: 100%;
+}
+.custom-tooltip pre {
+  text-align: left;
+  color: whitesmoke;
+}
+
+#input-group-4 {
   text-align: left;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
-#input-3 {
+#input-4 {
   flex-grow: 1;
   max-height: 95vh;
 }
