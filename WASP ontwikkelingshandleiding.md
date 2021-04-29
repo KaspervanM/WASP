@@ -83,7 +83,7 @@ Wij ontwikkelen met Visual Studio Code en GitHub. Hiervoor is dus een GitHub acc
 2. Typ een gebruikersnaam, jouw email adres, en een wachtwoord.
 3. Kies **Sign up for GitHub**, en volg dan de instructies.
 
-In VS Code moet de koppeling met GitHub worden gedaan. Als de `Github Pull Requests and Issues` extensie is geïnstalleerd, moet je inloggen met GitHub. Volg de instructies om in de browser met GitHub in te loggen en ga dan terug in VS Code.
+In VS Code moet de koppeling met GitHub worden gemaakt. Als de `Github Pull Requests and Issues` extensie is geïnstalleerd, moet je inloggen met GitHub. Volg de instructies om in de browser met GitHub in te loggen en ga dan terug in VS Code.
 
 Nu kun je door in **Source Control** op **Clone Repositry** te klikken het WASP Project kloneren.
 
