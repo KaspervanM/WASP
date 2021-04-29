@@ -90,13 +90,13 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
   description: "Congratulations! WASP is working correctly.",
   config: {
     BEGIN: 0,
-    END: 10,
-    BATCH_SIZE: 3,
+    END: 15000,
+    BATCH_SIZE: 4,
     RESULT: "array"
   },
   code:
     'function main(begin, end) {\n\treturn (() => {\n\t\tlet concStr = "Congratulations! WASP is working correctly. Numbers:";\n\t\tfor (let i = begin; i <= end; i++) {\n\t\t\tconcStr += " " + i.toString();\n\t\t}\n\t\treturn concStr;\n\t})();\n}\n',
-  subtasks: createSubtasks(0, 10, 3),
+  subtasks: createSubtasks(0, 15000, 4),
   result: createResults("array")
 };
 
