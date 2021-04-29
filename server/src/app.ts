@@ -38,7 +38,7 @@ interface Task {
   id: string;
   title: string;
   description: string;
-  config: Config;
+  config?: Config;
   code: string;
   subtasks?: SubTask[];
   result?: number | Array<string | number>;
@@ -79,12 +79,18 @@ app.get("/task/progress/:id", (req, res) => {
 });
 
 app.post("/task", (req, res) => {
-  if (req.body.title && req.body.description && req.body.code) {
+  if (
+    req.body.title &&
+    req.body.description &&
+    //req.body.config &&
+    req.body.code
+  ) {
     const id = uuidv4();
     const newTask: Task = {
       id,
       title: req.body.title,
       description: req.body.description,
+      //config: req.body.config,
       code: req.body.code
     };
     tasks[id] = newTask;
@@ -100,6 +106,7 @@ app.put("/task", (req, res) => {
   if (
     req.body.title &&
     req.body.description &&
+    req.body.config &&
     req.body.code &&
     req.body.id in tasks
   ) {
@@ -107,6 +114,7 @@ app.put("/task", (req, res) => {
       id: req.body.id,
       title: req.body.title,
       description: req.body.description,
+      config: req.body.config,
       code: req.body.code
     };
 
