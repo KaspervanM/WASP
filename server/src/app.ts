@@ -53,7 +53,7 @@ function createSubtasks(
   batch_size: number
 ): SubTask[] {
   let subtasks: SubTask[] = [];
-  for (let i = 0; i < Math.ceil((end - start) / batch_size); i++) {
+  for (let i = 0; i < Math.ceil((end - start + 1) / batch_size); i++) {
     subtasks.push({
       start: start + (((i > 0) as unknown) as number) * i * batch_size,
       end: Math.min(
@@ -90,13 +90,13 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
   description: "Congratulations! WASP is working correctly.",
   config: {
     BEGIN: 0,
-    END: 1000,
+    END: 10,
     BATCH_SIZE: 3,
     RESULT: "array"
   },
   code:
     'function main(begin, end) {\n\treturn (() => {\n\t\tlet concStr = "Congratulations! WASP is working correctly. Numbers:";\n\t\tfor (let i = begin; i <= end; i++) {\n\t\t\tconcStr += " " + i.toString();\n\t\t}\n\t\treturn concStr;\n\t})();\n}\n',
-  subtasks: createSubtasks(0, 1000, 3),
+  subtasks: createSubtasks(0, 10, 3),
   result: createResults("array")
 };
 
@@ -159,19 +159,20 @@ app.post("/task", (req, res) => {
     req.body.config &&
     req.body.code
   ) {
+    const config = JSON.parse(req.body.config);
     const id = uuidv4();
     const newTask: Task = {
       id,
       title: req.body.title,
       description: req.body.description,
-      config: req.body.config,
+      config: config,
       code: req.body.code,
       subtasks: createSubtasks(
-        req.body.config["BEGIN"],
-        req.body.config["END"],
-        req.body.config["BATCH_SIZE"]
+        config["BEGIN"],
+        config["END"],
+        config["BATCH_SIZE"]
       ),
-      result: createResults(req.body.config["RESULT"])
+      result: createResults(config["RESULT"])
     };
     tasks[id] = newTask;
 
