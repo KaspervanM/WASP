@@ -58,7 +58,7 @@ Open een browser en ga naar `https://code.visualstudio.com/download`. Klik dan o
 
 1. Start het installatiebestand. Deze kun je openen door onder in het scherm van de browser op `VSCodeUserSetup-{versie}.exe` te klikken of naar de **Downloads** folder op de pc te gaan.
 2. Lees de licentieovereenkomst door - klik op **I accept the agreement** en op **Next** als je ermee akkoord gaat.
-3. Het volgende scherm zal allerlei vragen stellen, maar tenzij je specifieke wensen hebt, houd ze op de standaard instellingen door te klikken op **Next**.
+3. Het volgende scherm zal allerlei vragen stellen, maar tenzij je specifieke wensen hebt, behoud de standaard instellingen door te klikken op **Next**.
 4. Ten slotte, klik op de **Install** knop om het programma te installeren, wanneer het klaar is, klik op **Finish**.
 
 #### Stap 3: Verificatie
