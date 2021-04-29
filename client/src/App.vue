@@ -59,7 +59,6 @@ export default Vue.extend({
         this.$cookies.isKey("TaskId") &&
         (await taskService.returnSubresult(this.id, subtask[0], result))
       ) {
-        console.log("continue");
         this.taskloop();
       } else {
         console.log("STOPPED2");
