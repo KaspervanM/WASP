@@ -1,6 +1,6 @@
 # WASP ontwikkelingshandleiding
 
-## Node.js, NPM en Vue.js/CLI installatiehandleiding
+## Installatiehandleiding
 
 ### Vereisten
 
@@ -11,7 +11,7 @@
 
 #### Stap 1: Het installatiebestand
 
-Open een browser en ga naar `https://nodejs.org/en/download/`. Klik dan op de **Windows Installer** knop. Daarbij hoort automatisch het installatiebestand gedownload te worden.
+Open een browser en ga naar [deze website](https://nodejs.org/en/download/). Klik dan op de **Windows Installer** knop. Daarbij hoort automatisch het installatiebestand gedownload te worden.
 
 #### Stap 2: De installatie
 
@@ -24,35 +24,46 @@ Open een browser en ga naar `https://nodejs.org/en/download/`. Klik dan op de **
 
 #### Stap 3: Verificatie
 
-Start een **command prompt** (of powershell) en typ `node -v` en `npm -v`. Als er geen errors komen en de huidige versie van Node.js en npm laat zien, dan is de installatie succesvol verlopen.
+Start een **command prompt** (of powershell) en voer uit: `$ node -v` en `$ npm -v`. Als er geen errors komen en de huidige versie van Node.js en npm laat zien, dan is de installatie succesvol verlopen.
 
 Een **command prompt** open je door op de **windows** knop te drukken en te typen `cmd`. Druk dan op **Enter** of klik op de app die verschijnt.
 
 ### Installatie Vue.js Command-Line Interface
 
-Omdat NPM al geïnstalleerd is, kan deze gebruikt worden om Vue.js/CLI te installeren.
+Omdat NPM al geïnstalleerd is, kan deze gebruikt worden om Vue.js/CLI te installeren. Voer hiervoor de volgende commando's uit:
 
-1. Open een **command prompt** en typ in `npm i -y -g @vue/cli`.
-2. Om de installatie te verifiëren type je `vue --version`.
+1. Installatie: `$ npm i -y -g @vue/cli`.
+2. Verificatie: `$ vue --version`.
 
-## Installatie andere programma's
+### Installatie TypeScript
 
-Een ander programma dat nodig is, is TypeScript. Hiervoor wordt ook weer NPM gebruikt.
-
-### TypeScript
-
-1. Open een **command prompt** en typ in `npm i -g typescript`.
-2. Om de installatie te verifiëren type je `tsc -v`.
+1. Installatie: `$ npm i -g typescript`.
+2. Verificatie: `$ tsc -v`.
 
 Voor het ontwikkelen gebruiken we Visual Studio Code samen met GitHub. Die moeten ook geïnstalleerd worden.
 
-## Visual Studio Code
-
-### Installatie
+### Installatie Git for Windows
 
 #### Stap 1: Het installatiebestand
 
-Open een browser en ga naar `https://code.visualstudio.com/download`. Klik dan op de **Windows** knop. Daarbij hoort automatisch het installatiebestand gedownload te worden.
+Open een browser en ga naar [deze website](https://git-scm.com/download/win). Klik dan op de **Click here to download manually** knop. Daarbij hoort automatisch het installatiebestand gedownload te worden.
+
+#### Stap 2: De installatie
+
+1. Start het installatiebestand. Deze kun je openen door onder in het scherm van de browser op `Git-versie.exe` te klikken of naar de **Downloads** folder op de pc te gaan.
+2. Het systeem zal vragen om toestemming voor het Git installatieprogramma om wijzigingen te maken op de pc. - klik op **ja**.
+3. Lees de licentieovereenkomst door - klik op **Install** als je ermee akkoord gaat.
+4. Ten slotte, wanneer het klaar is, klik op **Finish**.
+
+#### Stap 3: Verificatie
+
+Start een **command prompt** (of powershell) en voer uit: `$ git --version`. Als er geen errors komen en de huidige versie van Git laat zien, dan is de installatie succesvol verlopen.
+
+### Installatie Visual Studio Code
+
+#### Stap 1: Het installatiebestand
+
+Open een browser en ga naar [deze website](https://code.visualstudio.com/download). Klik dan op de **Windows** knop. Daarbij hoort automatisch het installatiebestand gedownload te worden.
 
 #### Stap 2: De installatie
 
@@ -65,7 +76,7 @@ Open een browser en ga naar `https://code.visualstudio.com/download`. Klik dan o
 
 Zoek in Windows startmenu naar `VSC`, klik dan op **Visual Studio Code**. Als VS Code zonder problemen opstart dan is de installatie gelukt.
 
-### Extensies
+#### Extensies
 
 De volgende extensies moeten in Visual Studio Code worden geïnstalleerd. Dit kun je doen door te klikken op de extensie logo (of Ctrl+Shift+X) en dan de extensienaam te typen en vervolgens op **INSTALL** te klikken.
 
@@ -77,14 +88,45 @@ De volgende extensies moeten in Visual Studio Code worden geïnstalleerd. Dit ku
 
 ## Ontwikkelen
 
-Wij ontwikkelen met Visual Studio Code en GitHub. Hiervoor is dus een GitHub account nodig. Die kan op het volgende manier worden aangemaakt:
+### Voorbereiding
 
-1. Ga naar `https://github.com/join`.
+#### GitHub-account
+
+Wij ontwikkelen met Visual Studio Code en GitHub. Hiervoor is dus een GitHub-account nodig. Heb je die nog niet? Dan kan die op het volgende manier worden aangemaakt:
+
+1. Ga naar [deze website](https://github.com/join).
 2. Typ een gebruikersnaam, jouw e-mailadres, en een wachtwoord.
 3. Kies **Sign up for GitHub**, en volg dan de instructies.
 
+#### GitHub koppelen met VS Code
+
 In VS Code moet de koppeling met GitHub worden gemaakt. Als de `Github Pull Requests and Issues` extensie is geïnstalleerd, moet je inloggen met GitHub. Volg de instructies om in de browser met GitHub in te loggen en ga dan terug in VS Code.
 
-Nu kun je door in **Source Control** op **Clone Repositry** te klikken het WASP Project kloneren.
+#### Git-account instellen
+
+Voordat je aanpassingen in kunt voeren op de git repo moet er eerst aangegeven worden wie jij bent. Dit doe je door de volgende commando's uit te voeren:
+
+1. `$ git config --global user.name "Your Name"`
+2. `$ git config --global user.email "youremail@yourdomain.com"`
+
+Gebruik nu de gebruikersnaam en het e-mailadres van jouw GitHub-account.
+Het gebruik van een GPG sleutel is een mogelijkheid en is aanbevolen. De instructies voor het aanmaken van een GPG sleutel en het gebruiken hiervan is te vinden op [deze website](https://medium.com/@ryanmillerc/use-gpg-signing-keys-with-git-on-windows-10-github-4acbced49f68).
+
+## Bijdragen aan WASP
+
+### Kloneren van WASP
+
+Je kunt door in **Source Control** op **Clone Repositry** te klikken het WASP Project kloneren.
+
+### Aanmaken van branches
+
+### Source Control gebruiken
+
+### Synchronizeren van wijzigingen
+
+### De Server en Client opstarten
+
+1. Server opstarten: `$ npm start`
+2. Client opstarten: `$ npm run serve`
 
 Vanaf dit punt is het mogelijk om lokale aanpassingen op de client en server te maken. Bovendien kunnen er nu pull requests worden ingediend om die veranderingen met master te samenvoegen. Hierbij verwachten we wel dat de _Issue_ en _Pull Request Templates_ worden gevolgd.
