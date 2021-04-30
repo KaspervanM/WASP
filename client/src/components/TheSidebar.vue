@@ -48,8 +48,6 @@ export default Vue.extend({
   },
   mounted(): void {
     this.visible = !this.isMobile();
-    console.log(this.isMobile());
-    console.log(this.visible);
   },
   watch: {
     $route(): void {

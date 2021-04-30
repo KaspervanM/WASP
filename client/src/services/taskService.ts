@@ -9,6 +9,12 @@ import axios, { AxiosResponse } from "axios";
 
 const serverURL = "http://localhost:3000/";
 
+interface SubTask {
+  start: number;
+  end: number;
+  finished: boolean;
+}
+
 interface TaskProgress {
   value: number;
   max: number;
@@ -30,6 +36,28 @@ const taskService = {
   async getTask(taskId: string): Promise<Task> {
     const res: AxiosResponse = await axios.get<Task>(
       serverURL + "task/" + taskId
+    );
+    return res.data;
+  },
+  async getSubtask(taskId: string): Promise<[SubTask, string]> {
+    const res: AxiosResponse = await axios.get<[SubTask, string]>(
+      serverURL + "task/request-subtask/" + taskId
+    );
+    return res.data;
+  },
+  async returnSubresult(
+    taskId: string,
+    subtask: SubTask,
+    result: string | number | Array<string | number>
+  ): Promise<boolean> {
+    const res: AxiosResponse = await axios.post<boolean>(
+      serverURL + "task/return-subresult/",
+      { id: taskId, subtask: subtask, result: result },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
     );
     return res.data;
   },

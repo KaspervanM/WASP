@@ -10,20 +10,27 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable no-console */
 import Vue from "vue";
 import TheSidebar from "@/components/TheSidebar.vue";
 import taskService from "@/services/taskService";
+
+interface SubTask {
+  start: number;
+  end: number;
+  finished: boolean;
+}
+
+type exSubTask = [SubTask, string];
 
 export default Vue.extend({
   name: "Home",
   components: {
     TheSidebar
   },
-  data(): { id: string; code: string; taskInterval: number } {
+  data(): { id: string } {
     return {
-      id: "",
-      code: "",
-      taskInterval: 0
+      id: ""
     };
   },
   mounted() {
@@ -32,33 +39,49 @@ export default Vue.extend({
     }
   },
   methods: {
+    taskloop: async function (): Promise<void> {
+      const subtask: exSubTask = await taskService.getSubtask(this.id);
+      if (typeof subtask[0].start === "undefined") {
+        console.log("STOPPED");
+        this.stopTaskLoop();
+        return;
+      }
+      let result: string | number | Array<string | number>;
+      import("@/services/evaluateCode").then(
+        async (module): Promise<void> => {
+          result = module.evaluate(
+            subtask[1],
+            subtask[0]["start"],
+            subtask[0]["end"]
+          );
+          //console.log(result);
+          if (
+            this.$cookies.isKey("TaskId") &&
+            (await taskService.returnSubresult(this.id, subtask[0], result))
+          ) {
+            this.taskloop();
+          } else {
+            console.log("STOPPED2");
+          }
+        }
+      );
+    },
     startTaskLoop: async function (id: string): Promise<void> {
       if (this.id === id) {
         return;
       }
-      if (typeof (await taskService.getTask(id)).code === "undefined") {
+      const subtask: exSubTask = await taskService.getSubtask(id);
+      if (typeof subtask[0].start === "undefined") {
         return;
       }
       this.$cookies.set("TaskId", id);
       this.id = id;
 
-      clearInterval(this.taskInterval);
-      this.code = (await taskService.getTask(this.id)).code;
-      console.log(this.code);
-      this.taskInterval = setInterval(
-        function (this: { code: string }): void {
-          import("@/services/evaluateCode").then((module): void => {
-            console.log(module.evaluate(this.code));
-          });
-        }.bind(this),
-        5000
-      );
+      this.taskloop();
     },
     stopTaskLoop: function (): void {
       this.$cookies.remove("TaskId");
       this.id = "";
-      this.code = "";
-      clearInterval(this.taskInterval);
     }
   }
 });
