@@ -61,8 +61,8 @@ const taskService = {
     );
     return res.data;
   },
-  async getTaskProgress(taskId: string): Promise<TaskProgress> {
-    const res = await axios.get<TaskProgress>(
+  async getTaskProgress(taskId: string): Promise<[TaskProgress, number]> {
+    const res = await axios.get<[TaskProgress, number]>(
       serverURL + "task/progress/" + taskId
     );
     return res.data;

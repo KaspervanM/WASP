@@ -42,6 +42,7 @@ interface Task {
   code: string;
   subtasks: SubTask[];
   result: number | Array<string | number>;
+  speed: number;
 }
 type TaskList = { [id: string]: Task };
 
@@ -79,7 +80,6 @@ function createResults(
       break;
     case "string":
     case "array":
-      console.log(end - start + 1);
       return new Array(end - start + 1).fill(0);
       break;
     default:
@@ -118,14 +118,15 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
   description: "Congratulations! WASP is working correctly.",
   config: {
     START: 0,
-    END: 15000,
+    END: 30000,
     BATCH_SIZE: 4,
     RESULT: "array"
   },
   code:
     'function main(start, end) {\n\treturn (() => {\n\t\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\t\tlet arr = []\n\t\tfor (let i = start; i <= end; i++) {\n\t\t\tarr.push(str + " " + i.toString());\n\t\t}\n\t\treturn arr;\n\t})();\n}\n',
-  subtasks: createSubtasks(0, 15000, 4),
-  result: createResults("array", 0, 15000)
+  subtasks: createSubtasks(0, 30000, 4),
+  result: createResults("array", 0, 30000),
+  speed: 0
 };
 
 const TIMEOUT_DURATION: number = 5000;
@@ -139,22 +140,26 @@ app.get("/task/:id", (req, res) => {
 }); //Read one task (URL: request contains id, JSON: response contains id, title, description and code)
 
 app.get("/task/request-subtask/:id", (req, res) => {
-  const index = tasks[req.params.id].subtasks.findIndex(
-    (obj) => obj.status === 0
-  );
+  const id = req.params.id;
+  const index = tasks[id].subtasks.findIndex((obj) => obj.status === 0);
   if (index === -1) {
     return res.send([<SubTask>{}, ""]);
   }
-  tasks[req.params.id].subtasks[index].status = 1;
+  tasks[id].subtasks[index].status = 1;
+  const before = getProgress(id).value;
+  const speedRefreshDuration = 1000;
   setTimeout(() => {
-    if (tasks[req.params.id].subtasks[index].status != 2)
-      tasks[req.params.id].subtasks[index].status = 0;
+    const after = getProgress(id).value;
+    const speed = ((after - before) / speedRefreshDuration) * 1000; // Calculate the speed at wich iterations are being handed in
+    tasks[id].speed = speed;
+  }, speedRefreshDuration);
+  setTimeout(() => {
+    // Reset status if task is not handed in in time
+    if (tasks[id].subtasks[index].status != 2)
+      tasks[id].subtasks[index].status = 0;
   }, TIMEOUT_DURATION);
 
-  return res.send([
-    tasks[req.params.id].subtasks[index],
-    tasks[req.params.id].code
-  ]);
+  return res.send([tasks[id].subtasks[index], tasks[id].code]);
 });
 
 app.post("/task/return-subresult", (req, res) => {
@@ -176,12 +181,24 @@ app.post("/task/return-subresult", (req, res) => {
   return res.send(true);
 });
 
-app.get("/task/progress/:id", (req, res) => {
+function getProgress(id: string) {
+  const subTasksWithStatus2: number = tasks[id].subtasks.filter(
+    (obj) => obj.status === 2
+  ).length;
+  const totalSubTasks: number = tasks[id].subtasks.length;
   const taskProgress: TaskProgress = {
-    value: Math.random() * 100,
-    max: 100
+    value: subTasksWithStatus2,
+    max: totalSubTasks
   };
-  return res.send(taskProgress);
+  return taskProgress;
+}
+
+app.get("/task/progress/:id", (req, res) => {
+  const id = req.params.id;
+  const timeLeft =
+    tasks[id].subtasks.filter((obj) => obj.status !== 2).length /
+    tasks[id].speed;
+  return res.send([getProgress(id), timeLeft]);
 });
 
 app.post("/task", (req, res) => {
@@ -204,7 +221,8 @@ app.post("/task", (req, res) => {
         config["END"],
         config["BATCH_SIZE"]
       ),
-      result: createResults(config["RESULT"], config["START"], config["END"])
+      result: createResults(config["RESULT"], config["START"], config["END"]),
+      speed: 0
     };
     tasks[id] = newTask;
     return res.send(newTask);
@@ -234,7 +252,8 @@ app.put("/task", (req, res) => {
         : tasks[req.body.task.id]["subtasks"],
       result: req.body.reset
         ? createResults(config["RESULT"], config["START"], config["END"])
-        : tasks[req.body.task.id]["result"]
+        : tasks[req.body.task.id]["result"],
+      speed: 0
     };
 
     tasks[req.body.task.id] = upTask;
