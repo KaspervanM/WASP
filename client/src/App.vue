@@ -46,23 +46,25 @@ export default Vue.extend({
         this.stopTaskLoop();
         return;
       }
-      let result: string | number;
-      import("@/services/evaluateCode").then((module): void => {
-        result = module.evaluate(
-          subtask[1],
-          subtask[0]["start"],
-          subtask[0]["end"]
-        );
-        console.log(result);
-      });
-      if (
-        this.$cookies.isKey("TaskId") &&
-        (await taskService.returnSubresult(this.id, subtask[0], result))
-      ) {
-        this.taskloop();
-      } else {
-        console.log("STOPPED2");
-      }
+      let result: string | number | Array<string | number>;
+      import("@/services/evaluateCode").then(
+        async (module): Promise<void> => {
+          result = module.evaluate(
+            subtask[1],
+            subtask[0]["start"],
+            subtask[0]["end"]
+          );
+          //console.log(result);
+          if (
+            this.$cookies.isKey("TaskId") &&
+            (await taskService.returnSubresult(this.id, subtask[0], result))
+          ) {
+            this.taskloop();
+          } else {
+            console.log("STOPPED2");
+          }
+        }
+      );
     },
     startTaskLoop: async function (id: string): Promise<void> {
       if (this.id === id) {

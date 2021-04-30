@@ -48,7 +48,7 @@ const taskService = {
   async returnSubresult(
     taskId: string,
     subtask: SubTask,
-    result: string | number
+    result: string | number | Array<string | number>
   ): Promise<boolean> {
     const res: AxiosResponse = await axios.post<boolean>(
       serverURL + "task/return-subresult/",

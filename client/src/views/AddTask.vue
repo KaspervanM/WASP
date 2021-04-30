@@ -134,7 +134,7 @@ export default Vue.extend({
     return {
       task,
       tooltip: `interface Config {
-  BEGIN: number;
+  START: number;
   END: number;
   BATCH_SIZE: number;
   RESULT: string;
@@ -146,7 +146,7 @@ export default Vue.extend({
   },
   mounted() {
     this.task.config = `{
-  "BEGIN": 0,
+  "START": 0,
   "END": 10,
   "BATCH_SIZE": 1,
   "RESULT": "sum",

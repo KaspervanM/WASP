@@ -27,7 +27,7 @@ interface SubTask {
 }
 
 interface Config {
-  BEGIN: number;
+  START: number;
   END: number;
   BATCH_SIZE: number;
   RESULT: string;
@@ -66,21 +66,49 @@ function createSubtasks(
       status: 0
     });
   }
-  console.log(subtasks);
   return subtasks;
 }
-function createResults(res: string): number | Array<number | string> {
+function createResults(
+  res: string,
+  start?: number,
+  end?: number
+): number | Array<number | string> {
   switch (res) {
     case "sum":
       return 0;
       break;
     case "string":
     case "array":
-      return [];
+      console.log(end - start + 1);
+      return new Array(end - start + 1).fill(0);
       break;
     default:
       return undefined;
   }
+}
+
+function resultHandler(
+  taskId: string,
+  subResult: string | number | Array<string | number>,
+  index: number
+): boolean {
+  const config = tasks[taskId].config;
+  switch (config["RESULT"]) {
+    case "sum":
+      (tasks[taskId].result as number) += subResult as number;
+      return true;
+    case "string":
+    case "array":
+      const batch_size = config["BATCH_SIZE"];
+      const iterationIndex = index * batch_size;
+      for (let i = iterationIndex; i < iterationIndex + batch_size; i++) {
+        if (i <= config["END"] - config["START"])
+          (tasks[taskId].result as Array<string | number>)[i] =
+            subResult[i - iterationIndex];
+      }
+      return true;
+  }
+  return false;
 }
 
 tasks["123e4567-e89b-12d3-a456-426614174000"] = {
@@ -89,15 +117,15 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
   title: "Default Task",
   description: "Congratulations! WASP is working correctly.",
   config: {
-    BEGIN: 0,
+    START: 0,
     END: 15000,
     BATCH_SIZE: 4,
     RESULT: "array"
   },
   code:
-    'function main(begin, end) {\n\treturn (() => {\n\t\tlet concStr = "Congratulations! WASP is working correctly. Numbers:";\n\t\tfor (let i = begin; i <= end; i++) {\n\t\t\tconcStr += " " + i.toString();\n\t\t}\n\t\treturn concStr;\n\t})();\n}\n',
+    'function main(start, end) {\n\treturn (() => {\n\t\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\t\tlet arr = []\n\t\tfor (let i = start; i <= end; i++) {\n\t\t\tarr.push(str + " " + i.toString());\n\t\t}\n\t\treturn arr;\n\t})();\n}\n',
   subtasks: createSubtasks(0, 15000, 4),
-  result: createResults("array")
+  result: createResults("array", 0, 15000)
 };
 
 const TIMEOUT_DURATION: number = 5000;
@@ -137,7 +165,11 @@ app.post("/task/return-subresult", (req, res) => {
     return res.send(false);
   }
   const subtask: SubTask = tasks[req.body.id].subtasks[index];
-  if (subtask["end"] !== req.body.subtask.end) {
+  if (
+    subtask["end"] !== req.body.subtask.end ||
+    subtask.status !== 1 ||
+    !resultHandler(req.body.id, req.body.result, index)
+  ) {
     return res.send(false);
   }
   subtask.status = 2;
@@ -168,14 +200,13 @@ app.post("/task", (req, res) => {
       config: config,
       code: req.body.code,
       subtasks: createSubtasks(
-        config["BEGIN"],
+        config["START"],
         config["END"],
         config["BATCH_SIZE"]
       ),
-      result: createResults(config["RESULT"])
+      result: createResults(config["RESULT"], config["START"], config["END"])
     };
     tasks[id] = newTask;
-
     return res.send(newTask);
   }
   const errmsg: string = "Bad request";
@@ -191,21 +222,18 @@ app.put("/task", (req, res) => {
     req.body.task.code &&
     req.body.task.id in tasks
   ) {
+    const config = JSON.parse(req.body.task.config);
     const upTask: Task = {
       id: req.body.task.id,
       title: req.body.task.title,
       description: req.body.task.description,
-      config: req.body.task.config,
+      config: config,
       code: req.body.code,
       subtasks: req.body.reset
-        ? createSubtasks(
-            req.body.task.config["BEGIN"],
-            req.body.task.config["END"],
-            req.body.task.config["BATCH_SIZE"]
-          )
+        ? createSubtasks(config["START"], config["END"], config["BATCH_SIZE"])
         : tasks[req.body.task.id]["subtasks"],
       result: req.body.reset
-        ? createResults(req.body.task.config["RESULT"])
+        ? createResults(config["RESULT"], config["START"], config["END"])
         : tasks[req.body.task.id]["result"]
     };
 
