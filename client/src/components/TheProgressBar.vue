@@ -10,7 +10,9 @@
         animated
       ></b-progress-bar>
     </b-progress>
-    <p>Time estimate</p>
+    <p>
+      Time estimate: {{ new Date(timeLeft * 1000).toISOString().substr(11, 8) }}
+    </p>
   </b-card>
 </template>
 
@@ -26,12 +28,17 @@ interface TaskProgress {
 export default Vue.extend({
   name: "TheProgressBar",
   props: { taskId: String },
-  data(): { taskProgress: TaskProgress; progressInterval: number } {
+  data(): {
+    taskProgress: TaskProgress;
+    timeLeft: number;
+    progressInterval: number;
+  } {
     return {
       taskProgress: {
         value: 60,
         max: 100
       },
+      timeLeft: 0,
       progressInterval: 0
     };
   },
@@ -45,11 +52,14 @@ export default Vue.extend({
       this.progressInterval = setInterval(
         async function (this: {
           taskProgress: TaskProgress;
+          timeLeft: number;
           taskId: string;
         }): Promise<void> {
-          this.taskProgress = await taskService.getTaskProgress(this.taskId);
+          const progress = await taskService.getTaskProgress(this.taskId);
+          this.taskProgress = progress[0];
+          this.timeLeft = progress[1];
         }.bind(this),
-        200
+        1000
       );
     },
     stopProgressLoop(): void {
