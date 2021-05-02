@@ -122,7 +122,11 @@ Je kunt door in **Source Control** op **Clone Repositry** te klikken het WASP Pr
 
 ### Source Control gebruiken
 
-### Synchronizeren van wijzigingen
+### Synchroniseren van wijzigingen
+
+Alle wijzigingen die nu ingevoerd worden, worden lokaal ingevoerd. Dit houd in dat deze wijzigingen niet zichtbaar zijn op GitHub en dus ook voor andere ontwikkelaars. Om er voor te zorgen dat de wijzigingen die lokaal ingevoerd zijn ook ingevoerd worden op GitHub moeten de wijzigingen gesynchroniseerd worden. Dit doe je door op **Synchronize Changes** te klikken op de balk onderaan het scherm naast de **Checkout Branch** knop.
+
+**_Nota bene!_** Wijzigingen van andere ontwikkelaars die hun wijzigingen met GitHub gesynchroniseerd hebben, synchroniseren niet automatich met jouw apparaat. Ook hiervoor gebruik je de **Synchronize Changes** knop. Als VSCode wijzigingen gevonden heeft wordt dat aangegeven met pijlen in de knop. Controleer dus bij het opstarten of wijzigen van branch of er niet al wijzigingen zijn waardoor je achter loopt.
 
 ### De Server en Client opstarten
 
