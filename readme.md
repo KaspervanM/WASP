@@ -1,5 +1,7 @@
 # WASP
 
+WASP is a web application that can split processes that have to be repeated often and distribute them among users of the application to reduce the workload. The idea is for it to be used with processes that must be performed by people who do not have access to a device with sufficient computing power and/or memory capacity.
+
 ## Requirements
 
 - Nodejs
