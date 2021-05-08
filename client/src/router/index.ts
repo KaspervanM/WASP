@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Dashboard from "../views/Dashboard.vue";
+import Results from "../views/Results.vue";
 import ViewTasks from "../views/ViewTasks.vue";
 import AddTask from "../views/AddTask.vue";
 import DeleteTask from "../views/DeleteTask.vue";
@@ -13,6 +14,11 @@ const routes: Array<RouteConfig> = [
     path: "/",
     name: "Dashboard",
     component: Dashboard
+  },
+  {
+    path: "/results",
+    name: "Results",
+    component: Results
   },
   {
     path: "/viewtasks",
