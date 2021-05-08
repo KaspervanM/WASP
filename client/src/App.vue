@@ -43,7 +43,7 @@ export default Vue.extend({
       const subtask: exSubTask = await taskService.getSubtask(this.id);
       if (typeof subtask[0].start === "undefined") {
         console.log("STOPPED");
-        this.stopTaskLoop();
+        //this.stopTaskLoop();
         return;
       }
       let result: string | number | Array<string | number>;
@@ -70,10 +70,10 @@ export default Vue.extend({
       if (this.id === id) {
         return;
       }
-      const subtask: exSubTask = await taskService.getSubtask(id);
+      /*const subtask: exSubTask = await taskService.getSubtask(id);
       if (typeof subtask[0].start === "undefined") {
         return;
-      }
+      }*/
       this.$cookies.set("TaskId", id);
       this.id = id;
 
