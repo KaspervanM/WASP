@@ -33,26 +33,24 @@ const taskService = {
     const res: AxiosResponse = await axios.get<TaskList>(serverURL + "task");
     return res.data;
   },
-  async getTask(taskId: string): Promise<Task> {
-    const res: AxiosResponse = await axios.get<Task>(
-      serverURL + "task/" + taskId
-    );
+  async getTask(id: string): Promise<Task> {
+    const res: AxiosResponse = await axios.get<Task>(serverURL + "task/" + id);
     return res.data;
   },
-  async getSubtask(taskId: string): Promise<[SubTask, string]> {
+  async getSubtask(id: string): Promise<[SubTask, string]> {
     const res: AxiosResponse = await axios.get<[SubTask, string]>(
-      serverURL + "task/request-subtask/" + taskId
+      serverURL + "task/request-subtask/" + id
     );
     return res.data;
   },
   async returnSubresult(
-    taskId: string,
+    id: string,
     subtask: SubTask,
     result: string | number | Array<string | number>
   ): Promise<boolean> {
     const res: AxiosResponse = await axios.post<boolean>(
       serverURL + "task/return-subresult/",
-      { id: taskId, subtask: subtask, result: result },
+      { id, subtask, result },
       {
         headers: {
           "Content-Type": "application/json"
@@ -61,9 +59,9 @@ const taskService = {
     );
     return res.data;
   },
-  async getTaskProgress(taskId: string): Promise<[TaskProgress, number]> {
+  async getTaskProgress(id: string): Promise<[TaskProgress, number]> {
     const res = await axios.get<[TaskProgress, number]>(
-      serverURL + "task/progress/" + taskId
+      serverURL + "task/progress/" + id
     );
     return res.data;
   },
@@ -77,19 +75,23 @@ const taskService = {
         }
       }
     );
-    return res.data.id;
+    return res.data;
   },
-  async updateTask(task: Task): Promise<string> {
-    const res: AxiosResponse = await axios.put<Task>(serverURL + "task", task, {
-      headers: {
-        "Content-Type": "application/json"
+  async updateTask(task: Task, reset: boolean): Promise<string> {
+    const res: AxiosResponse = await axios.put<Task>(
+      serverURL + "task",
+      { task, reset },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
       }
-    });
+    );
     return res.data.id;
   },
-  async deleteTask(taskId: string): Promise<string> {
+  async deleteTask(id: string): Promise<string> {
     const res: AxiosResponse = await axios.delete<Task>(
-      serverURL + "task/" + taskId
+      serverURL + "task/" + id
     );
     return res.data.id;
   }
