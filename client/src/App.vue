@@ -6,6 +6,9 @@
       @remove-cookies="stopTaskLoop"
       :task-id="id"
     />
+    <b-alert v-model="showErrorAlert" variant="danger" dismissible>
+      {{ errMsg }}
+    </b-alert>
   </div>
 </template>
 
@@ -28,9 +31,11 @@ export default Vue.extend({
   components: {
     TheSidebar
   },
-  data(): { id: string } {
+  data(): { id: string; showErrorAlert: boolean; errMsg: string } {
     return {
-      id: ""
+      id: "",
+      showErrorAlert: false,
+      errMsg: ""
     };
   },
   mounted() {
@@ -40,43 +45,52 @@ export default Vue.extend({
   },
   methods: {
     taskloop: async function (): Promise<void> {
-      const subtask: exSubTask = await taskService.getSubtask(this.id);
-      if (typeof subtask[0].start === "undefined") {
-        console.log("STOPPED");
-        this.stopTaskLoop();
+      if (!this.$cookies.isKey("TaskId")) {
+        this.id = "";
         return;
       }
-      let result: string | number | Array<string | number>;
-      import("@/services/evaluateCode").then(
-        async (module): Promise<void> => {
-          result = module.evaluate(
-            subtask[1],
-            subtask[0]["start"],
-            subtask[0]["end"]
-          );
-          //console.log(result);
-          if (
-            this.$cookies.isKey("TaskId") &&
-            (await taskService.returnSubresult(this.id, subtask[0], result))
-          ) {
-            this.taskloop();
+      taskService
+        .getSubtask(this.id)
+        .then((subTask: exSubTask): void => {
+          this.showErrorAlert = false; //Hide any old error alert
+          let result: string | number | Array<string | number>; // Initialise result
+          import("@/services/evaluateCode").then((module): void => {
+            result = module.evaluate(
+              subTask[1],
+              subTask[0].start,
+              subTask[0].end
+            );
+            taskService
+              .returnSubresult(this.id, subTask[0], result)
+              .catch((err: string): void => {
+                console.error(err); // Log the error
+                this.errMsg = err; // Set the error message
+                this.showErrorAlert = true; //Show error alert
+              })
+              .then((): void => {
+                this.taskloop(); // Continue with taskloop
+              });
+          });
+        })
+        .catch((err: string): void => {
+          if (err.includes("finished")) {
+            //(Go to results)
+            this.stopTaskLoop(); // End the taskloop
           } else {
-            console.log("STOPPED2");
+            console.error(err); // Log the error
+            this.errMsg = err; // Set the error message
+            this.showErrorAlert = true; //Show error alert
+            this.taskloop(); // Continue with taskloop
           }
-        }
-      );
+        });
     },
     startTaskLoop: async function (id: string): Promise<void> {
       if (this.id === id) {
-        return;
-      }
-      const subtask: exSubTask = await taskService.getSubtask(id);
-      if (typeof subtask[0].start === "undefined") {
+        // Already helping this task
         return;
       }
       this.$cookies.set("TaskId", id);
       this.id = id;
-
       this.taskloop();
     },
     stopTaskLoop: function (): void {

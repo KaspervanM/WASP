@@ -97,9 +97,9 @@
             >Click here to view your task</router-link
           >
         </b-alert>
-        <b-alert v-model="showErrorAlert" variant="danger" dismissible
-          >An error occurred!</b-alert
-        >
+        <b-alert v-model="showErrorAlert" variant="danger" dismissible>
+          {{ errMsg }}
+        </b-alert>
       </b-form>
     </b-container>
   </div>
@@ -130,6 +130,7 @@ export default Vue.extend({
     tooltip: string;
     showSuccessAlert: boolean;
     showErrorAlert: boolean;
+    errMsg: string;
   } {
     return {
       task,
@@ -141,7 +142,8 @@ export default Vue.extend({
   ALLOW_ANONYMOUS_USERS?: boolean;
 }`,
       showSuccessAlert: false,
-      showErrorAlert: false
+      showErrorAlert: false,
+      errMsg: ""
     };
   },
   mounted() {
@@ -154,19 +156,22 @@ export default Vue.extend({
 }`;
   },
   methods: {
-    async onSubmit(event: Event): Promise<void> {
+    onSubmit(event: Event): void {
       event.preventDefault();
-      const id: string = await taskService.addTask(this.task);
-      if (id) {
-        this.task.id = id;
-        console.log(`Created task with id: ${id}`);
-        this.showErrorAlert = false; //Hide any old error alert
-        this.showSuccessAlert = true; //Show success alert
-      } else {
-        console.error("An error occurred while creating the task!");
-        this.showSuccessAlert = false; //Hide any old success alert
-        this.showErrorAlert = true; //Show error alert
-      }
+      taskService
+        .addTask(this.task)
+        .then((id: string): void => {
+          this.task.id = id;
+          console.log(`Created task with id: ${id}`);
+          this.showErrorAlert = false; //Hide any old error alert
+          this.showSuccessAlert = true; //Show success alert
+        })
+        .catch((err: string): void => {
+          console.error(err);
+          this.errMsg = err; // Set the error message
+          this.showSuccessAlert = false; //Hide any old success alert
+          this.showErrorAlert = true; //Show error alert
+        });
     },
     onReset(event: Event): void {
       event.preventDefault();

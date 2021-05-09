@@ -139,14 +139,14 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
 
 const TIMEOUT_DURATION: number = 5000;
 
-/* Read all tasks */
+/* Get an array of tasks */
 app.get("/task", (req, res) => {
   if (Object.values(tasks).length)
     return res.status(200).send(Object.values(tasks)); // OK
   return res.sendStatus(404); // Not Found
 });
 
-/* Read specific task */
+/* Get information about specific task */
 app.get("/task/:id", (req, res) => {
   if (!tasks[req.params.id]) return res.sendStatus(404); // Not Found
   return res.status(200).send(tasks[req.params.id]); // OK
@@ -180,7 +180,7 @@ app.post("/task/return-subresult", (req, res) => {
   if (
     !(
       req.body.id &&
-      req.body.subtask.start &&
+      typeof req.body.subtask.start === "number" &&
       req.body.subtask.end &&
       req.body.result
     )
@@ -191,10 +191,10 @@ app.post("/task/return-subresult", (req, res) => {
   const index: number = tasks[id].subtasks.findIndex(
     (obj) => obj.start === req.body.subtask.start
   );
-  if (index === -1) return res.sendStatus(406); // Not Acceptable
+  if (index === -1) return res.sendStatus(409); // Conflict
   const subtask: SubTask = tasks[id].subtasks[index];
   if (subtask["end"] !== req.body.subtask.end || subtask.status !== 1)
-    return res.sendStatus(406); // Not acceptable
+    return res.sendStatus(409); // Conflict
   if (!resultHandler(id, req.body.result, index)) return res.sendStatus(500); // Internal Server Error
   subtask.status = 2;
   return res.sendStatus(200); // OK
@@ -265,16 +265,15 @@ app.put("/task", (req, res) => {
     speed: 0
   };
   tasks[task.id] = upTask;
-  return res.sendStatus(201); // OK
+  return res.sendStatus(201); // Created
 });
 
 /* Delete task */
 app.delete("/task/:id", (req, res) => {
   const id: string = req.params.id;
   if (!tasks[id]) return res.sendStatus(404); // Not Found
-  const delTask: Task = tasks[id];
   delete tasks[id];
-  return res.status(200).send(delTask); // OK
+  return res.sendStatus(204); // No Content
 });
 
 /* Start the server */

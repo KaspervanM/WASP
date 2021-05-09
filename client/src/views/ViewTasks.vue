@@ -15,6 +15,9 @@
           >Help this task</b-button
         >
       </b-card>
+      <b-alert v-model="showErrorAlert" variant="danger" dismissible>
+        {{ errMsg }}
+      </b-alert>
     </b-container>
   </div>
 </template>
@@ -33,12 +36,21 @@ type TaskList = { [id: string]: Task };
 
 export default Vue.extend({
   name: "ViewTasks",
-  data(): { tasks: TaskList } {
+  data(): { tasks: TaskList; showErrorAlert: boolean; errMsg: string } {
     let tasks: TaskList = {};
-    return { tasks };
+    return { tasks, showErrorAlert: false, errMsg: "" };
   },
-  async mounted(): Promise<void> {
-    this.tasks = await taskService.getTasks();
+  mounted(): void {
+    taskService.getTasks
+      .then((tasks): void => {
+        this.tasks = tasks as TaskList;
+        this.showErrorAlert = false; //Hide any old error alert
+      })
+      .catch((err: string): void => {
+        console.error(err);
+        this.errMsg = err; // Set the error message
+        this.showErrorAlert = true; //Show error alert
+      });
   }
 });
 </script>

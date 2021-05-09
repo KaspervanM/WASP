@@ -36,9 +36,9 @@
             >Click here to create a new task</router-link
           >
         </b-alert>
-        <b-alert v-model="showErrorAlert" variant="danger" dismissible
-          >An error occurred!</b-alert
-        >
+        <b-alert v-model="showErrorAlert" variant="danger" dismissible>
+          {{ errMsg }}
+        </b-alert>
       </b-form>
     </b-container>
   </div>
@@ -54,11 +54,13 @@ export default Vue.extend({
     taskId: string;
     showSuccessAlert: boolean;
     showErrorAlert: boolean;
+    errMsg: string;
   } {
     return {
       taskId: "",
       showSuccessAlert: false,
-      showErrorAlert: false
+      showErrorAlert: false,
+      errMsg: ""
     };
   },
   computed: {
@@ -72,18 +74,19 @@ export default Vue.extend({
     async onSubmit(event: Event): Promise<void> {
       event.preventDefault();
       if (this.taskIdState) {
-        const id: string = await taskService.deleteTask(this.taskId);
-        if (id == this.taskId) {
-          console.log(`Deleted task with id: ${id}`);
-          this.showErrorAlert = false; //Hide any old error alert
-          this.showSuccessAlert = true; //Show success alert
-        } else {
-          console.error(
-            "An error occurred while deleting the task: id mismatch!"
-          );
-          this.showSuccessAlert = false; //Hide any old success alert
-          this.showErrorAlert = true; //Show error alert
-        }
+        taskService
+          .deleteTask(this.taskId)
+          .then((): void => {
+            console.log(`Deleted task with id: ${this.taskId}`);
+            this.showErrorAlert = false; //Hide any old error alert
+            this.showSuccessAlert = true; //Show success alert
+          })
+          .catch((err: string): void => {
+            console.error(err);
+            this.errMsg = err; // Set the error message
+            this.showSuccessAlert = false; //Hide any old success alert
+            this.showErrorAlert = true; //Show error alert
+          });
       }
     }
   }

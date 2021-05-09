@@ -5,7 +5,7 @@
 // Access functions:
 //   taskService.getTask();
 
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 const serverURL = "http://localhost:3000/";
 
@@ -14,6 +14,7 @@ interface SubTask {
   end: number;
   finished: boolean;
 }
+type exSubTask = [SubTask, string];
 
 interface TaskProgress {
   value: number;
@@ -28,122 +29,184 @@ interface Task {
 }
 type TaskList = { [id: string]: Task };
 
-/* Handle Axios errors */
-function errorHandler(error: any) {
-  if (error.response) {
-    console.error(error.response.data);
-    console.error(error.response.status);
-    console.error(error.response.headers);
-    return error.response;
-  } else if (error.request) {
-    console.error(error.request);
-    return error.request;
+/* Convert errors into a developer-friendly string*/
+function errToString(err: Error | AxiosError): string {
+  if (axios.isAxiosError(err)) {
+    if (err.response) {
+      // Server sent error
+      switch (err.response.status) {
+        case 400:
+          return "The request was invalid!";
+        case 404:
+          return "The selected task was not found!";
+        case 406:
+          return "The selected task is finished!";
+        case 409:
+          return "The returned result was invalid!";
+        case 500:
+          return "The server had an internal error, please try again later.";
+        default:
+          return (
+            "An error has occurred! (ResponseError): " +
+            err.response.status.toString() +
+            " (" +
+            err.response.data.toString() +
+            ")"
+          );
+      }
+    } else if (err.request) {
+      // Got no response
+      return (
+        "An error has occurred! (RequestError): " + JSON.stringify(err.request)
+      );
+    } else {
+      // Unknown
+      return "An error has occurred! (Unknown Axios Error)";
+    }
   } else {
-    console.error("Error", error.message);
-    return error.message;
+    // Stock (non-Axios) error
+    return (
+      "An error has occurred! (" +
+      err.name.toString() +
+      "): " +
+      err.message.toString()
+    );
   }
 }
 
 const taskService = {
-  async getTasks(): Promise<TaskList> {
-    try {
-      const res: AxiosResponse = await axios.get<TaskList>(serverURL + "task");
-      return res.data;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
-  },
+  /* Get an array of tasks */
+  getTasks: new Promise(function (resolve, reject) {
+    axios
+      .get<TaskList>(serverURL + "task")
+      .then((res: AxiosResponse<TaskList>): void => {
+        resolve(res.data);
+      })
+      .catch((err: Error | AxiosError): void => {
+        reject(errToString(err));
+      });
+  }),
+
+  /* Get information about specific task */
   async getTask(id: string): Promise<Task> {
-    try {
-      const res: AxiosResponse = await axios.get<Task>(
-        serverURL + "task/" + id
-      );
-      return res.data;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
+    return new Promise<Task>(function (resolve, reject) {
+      axios
+        .get<Task>(serverURL + "task/" + id)
+        .then((res: AxiosResponse<Task>) => {
+          resolve(res.data);
+        })
+        .catch((err: Error | AxiosError) => {
+          reject(errToString(err));
+        });
+    });
   },
-  async getSubtask(id: string): Promise<[SubTask, string]> {
-    try {
-      const res: AxiosResponse = await axios.get<[SubTask, string]>(
-        serverURL + "task/request-subtask/" + id
-      );
-      return res.data;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
+
+  /* Request a subtask */
+  async getSubtask(id: string): Promise<exSubTask> {
+    return new Promise<exSubTask>(function (resolve, reject) {
+      axios
+        .get<exSubTask>(serverURL + "task/request-subtask/" + id)
+        .then((res: AxiosResponse<exSubTask>) => {
+          resolve(res.data);
+        })
+        .catch((err: Error | AxiosError) => {
+          reject(errToString(err));
+        });
+    });
   },
+
+  /* Hand in result of subtask */
   async returnSubresult(
     id: string,
     subtask: SubTask,
     result: string | number | Array<string | number>
-  ): Promise<boolean> {
-    try {
-      const res: AxiosResponse = await axios.post<boolean>(
-        serverURL + "task/return-subresult/",
-        { id, subtask, result },
-        {
+  ): Promise<void> {
+    return new Promise<void>(function (resolve, reject) {
+      axios
+        .post<void>(
+          serverURL + "task/return-subresult",
+          { id, subtask, result },
+          {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
+        )
+        .then(() => {
+          resolve();
+        })
+        .catch((err: Error | AxiosError) => {
+          reject(errToString(err));
+        });
+    });
+  },
+
+  /* Get task progress */
+  getTaskProgress(id: string): Promise<[TaskProgress, number]> {
+    return new Promise<[TaskProgress, number]>(function (resolve, reject) {
+      axios
+        .get<[TaskProgress, number]>(serverURL + "task/progress/" + id)
+        .then((res: AxiosResponse<[TaskProgress, number]>) => {
+          resolve(res.data);
+        })
+        .catch((err: Error | AxiosError) => {
+          reject(errToString(err));
+        });
+    });
+  },
+
+  /* Add task */
+  addTask(task: Task): Promise<string> {
+    return new Promise<string>(function (resolve, reject) {
+      axios
+        .post<string>(serverURL + "task", task, {
           headers: {
             "Content-Type": "application/json"
           }
-        }
-      );
-      return res.data;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
+        })
+        .then((res: AxiosResponse<string>) => {
+          resolve(res.data);
+        })
+        .catch((err: Error | AxiosError) => {
+          reject(errToString(err));
+        });
+    });
   },
-  async getTaskProgress(id: string): Promise<[TaskProgress, number]> {
-    try {
-      const res = await axios.get<[TaskProgress, number]>(
-        serverURL + "task/progress/" + id
-      );
-      return res.data;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
-  },
-  async addTask(task: Task): Promise<string> {
-    try {
-      const res: AxiosResponse = await axios.post<Task>(
-        serverURL + "task",
-        task,
-        {
-          headers: {
-            "Content-Type": "application/json"
+
+  /* Update task */
+  updateTask(task: Task, reset: boolean): Promise<boolean> {
+    return new Promise<boolean>(function (resolve, reject) {
+      axios
+        .put<string>(
+          serverURL + "task",
+          { task, reset },
+          {
+            headers: {
+              "Content-Type": "application/json"
+            }
           }
-        }
-      );
-      return res.data;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
+        )
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err: Error | AxiosError) => {
+          reject(errToString(err));
+        });
+    });
   },
-  async updateTask(task: Task, reset: boolean): Promise<string> {
-    try {
-      const res: AxiosResponse = await axios.put<Task>(
-        serverURL + "task",
-        { task, reset },
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
-      return res.data.id;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
-  },
-  async deleteTask(id: string): Promise<string> {
-    try {
-      const res: AxiosResponse = await axios.delete<Task>(
-        serverURL + "task/" + id
-      );
-      return res.data.id;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
+
+  /* Delete task */
+  deleteTask(id: string): Promise<void> {
+    return new Promise<void>(function (resolve, reject) {
+      axios
+        .delete<void>(serverURL + "task/" + id)
+        .then(() => {
+          resolve();
+        })
+        .catch((err: Error | AxiosError) => {
+          reject(errToString(err));
+        });
+    });
   }
 };
 export default taskService;
