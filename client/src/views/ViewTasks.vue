@@ -37,8 +37,14 @@ export default Vue.extend({
     let tasks: TaskList = {};
     return { tasks };
   },
-  async mounted(): Promise<void> {
-    this.tasks = await taskService.getTasks();
+  mounted(): void {
+    taskService.getTasks
+      .then((res) => {
+        this.tasks = res.data;
+      })
+      .catch((rej) => {
+        console.error("An error occurred while creating the task:\n", rej);
+      });
   }
 });
 </script>

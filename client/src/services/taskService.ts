@@ -45,14 +45,7 @@ function errorHandler(error: any) {
 }
 
 const taskService = {
-  async getTasks(): Promise<TaskList> {
-    try {
-      const res: AxiosResponse = await axios.get<TaskList>(serverURL + "task");
-      return res.data;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
-  },
+  getTasks: axios.get<TaskList>(serverURL + "task"),
   async getTask(id: string): Promise<Task> {
     try {
       const res: AxiosResponse = await axios.get<Task>(
@@ -93,15 +86,10 @@ const taskService = {
       return Promise.reject(errorHandler(error));
     }
   },
-  async getTaskProgress(id: string): Promise<[TaskProgress, number]> {
-    try {
-      const res = await axios.get<[TaskProgress, number]>(
-        serverURL + "task/progress/" + id
-      );
-      return res.data;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
+  getTaskProgress: function (
+    id: string
+  ): Promise<AxiosResponse<[TaskProgress, number]>> {
+    return axios.get<[TaskProgress, number]>(serverURL + "task/progress/" + id);
   },
   addTask: function (task: Task): Promise<AxiosResponse<string>> {
     return axios.post<string>(serverURL + "task", task, {

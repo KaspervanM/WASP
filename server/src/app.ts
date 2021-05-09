@@ -180,8 +180,8 @@ app.post("/task/return-subresult", (req, res) => {
   if (
     !(
       req.body.id &&
-      req.body.subtask.start &&
-      req.body.subtask.end &&
+      typeof req.body.subtask.start === "number" &&
+      typeof req.body.subtask.end === "number" &&
       req.body.result
     )
   )
