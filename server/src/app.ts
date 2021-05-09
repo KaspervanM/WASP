@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import cors from "cors";
 
 const app = express();
-const port = 3000;
+const port: number = 3000;
 
 var corsOptions = {
   origin: "*",
@@ -80,9 +80,8 @@ function createResults(
     case "string":
     case "array":
       return new Array(end - start + 1).fill(0);
-    default:
-      return undefined;
   }
+  return undefined;
 }
 
 function resultHandler(
@@ -97,8 +96,8 @@ function resultHandler(
       return true;
     case "string":
     case "array":
-      const batch_size = config["BATCH_SIZE"];
-      const iterationIndex = index * batch_size;
+      const batch_size: number = config["BATCH_SIZE"];
+      const iterationIndex: number = index * batch_size;
       for (let i = iterationIndex; i < iterationIndex + batch_size; i++) {
         if (i <= config["END"] - config["START"])
           (tasks[id].result as Array<string | number>)[i] =
@@ -157,14 +156,14 @@ app.get("/task/:id", (req, res) => {
 app.get("/task/request-subtask/:id", (req, res) => {
   const id: string = req.params.id;
   if (!tasks[id]) return res.sendStatus(404); // Not Found
-  const index = tasks[id].subtasks.findIndex((obj) => obj.status === 0);
+  const index: number = tasks[id].subtasks.findIndex((obj) => obj.status === 0);
   if (index === -1) return res.sendStatus(406); // Not Acceptable
   tasks[id].subtasks[index].status = 1;
-  const before = getProgress(id).value;
-  const speedRefreshDuration = 1000;
+  const before: number = getProgress(id).value;
+  const speedRefreshDuration: number = 1000;
   setTimeout(() => {
-    const after = getProgress(id).value;
-    const speed = ((after - before) / speedRefreshDuration) * 1000; // Calculate the speed at wich iterations are being handed in
+    const after: number = getProgress(id).value;
+    const speed: number = ((after - before) / speedRefreshDuration) * 1000; // Calculate the speed at wich iterations are being handed in
     tasks[id].speed = speed;
   }, speedRefreshDuration);
   setTimeout(() => {
@@ -189,7 +188,7 @@ app.post("/task/return-subresult", (req, res) => {
     return res.sendStatus(400); // Bad Request
   const id: string = req.body.id;
   if (!tasks[id]) return res.sendStatus(404); // Not Found
-  const index = tasks[id].subtasks.findIndex(
+  const index: number = tasks[id].subtasks.findIndex(
     (obj) => obj.start === req.body.subtask.start
   );
   if (index === -1) return res.sendStatus(406); // Not Acceptable
@@ -203,7 +202,7 @@ app.post("/task/return-subresult", (req, res) => {
 
 /* Get task progress */
 app.get("/task/progress/:id", (req, res) => {
-  const id = req.params.id;
+  const id: string = req.params.id;
   if (!tasks[id]) return res.sendStatus(404); // Not Found
   const timeLeft =
     tasks[id].subtasks.filter((obj) => obj.status !== 2).length /
