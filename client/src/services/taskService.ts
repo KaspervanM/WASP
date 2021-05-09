@@ -92,6 +92,13 @@ const taskService = {
       serverURL + "task/" + taskId
     );
     return res.data.id;
+  },
+  downloadResult(
+    taskId: string
+  ): Promise<AxiosResponse<number | Array<number | string>>> {
+    return axios.get<number | Array<number | string>>(
+      serverURL + "task/results/" + taskId
+    );
   }
 };
 export default taskService;
