@@ -103,21 +103,22 @@ const taskService = {
       return Promise.reject(errorHandler(error));
     }
   },
-  async addTask(task: Task): Promise<string> {
-    try {
-      const res: AxiosResponse = await axios.post<Task>(
-        serverURL + "task",
-        task,
-        {
+  addTask(task: Task): Promise<string> {
+    return new Promise(function (resolve, reject) {
+      axios
+        .post<string>(serverURL + "task", task, {
           headers: {
             "Content-Type": "application/json"
           }
-        }
-      );
-      return res.data;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
+        })
+        .then((res: AxiosResponse<string>) => {
+          resolve(res.data);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+    //return Promise.reject(errorHandler(error));
   },
   async updateTask(task: Task, reset: boolean): Promise<string> {
     try {

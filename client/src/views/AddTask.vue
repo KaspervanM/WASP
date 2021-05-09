@@ -154,19 +154,21 @@ export default Vue.extend({
 }`;
   },
   methods: {
-    async onSubmit(event: Event): Promise<void> {
+    onSubmit(event: Event): void {
       event.preventDefault();
-      const id: string = await taskService.addTask(this.task);
-      if (id) {
-        this.task.id = id;
-        console.log(`Created task with id: ${id}`);
-        this.showErrorAlert = false; //Hide any old error alert
-        this.showSuccessAlert = true; //Show success alert
-      } else {
-        console.error("An error occurred while creating the task!");
-        this.showSuccessAlert = false; //Hide any old success alert
-        this.showErrorAlert = true; //Show error alert
-      }
+      taskService
+        .addTask(this.task)
+        .then((id) => {
+          this.task.id = id;
+          console.log(`Created task with id: ${id}`);
+          this.showErrorAlert = false; //Hide any old error alert
+          this.showSuccessAlert = true; //Show success alert
+        })
+        .catch((rej) => {
+          console.error("An error occurred while creating the task: ", rej);
+          this.showSuccessAlert = false; //Hide any old success alert
+          this.showErrorAlert = true; //Show error alert
+        });
     },
     onReset(event: Event): void {
       event.preventDefault();
