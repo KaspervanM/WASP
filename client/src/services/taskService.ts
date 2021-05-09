@@ -103,21 +103,12 @@ const taskService = {
       return Promise.reject(errorHandler(error));
     }
   },
-  async addTask(task: Task): Promise<string> {
-    try {
-      const res: AxiosResponse = await axios.post<Task>(
-        serverURL + "task",
-        task,
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
-      return res.data;
-    } catch (error) {
-      return Promise.reject(errorHandler(error));
-    }
+  addTask: function (task: Task): Promise<AxiosResponse<string>> {
+    return axios.post<string>(serverURL + "task", task, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
   },
   async updateTask(task: Task, reset: boolean): Promise<string> {
     try {
