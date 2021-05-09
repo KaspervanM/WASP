@@ -232,6 +232,11 @@ app.post("/task", (req, res) => {
   return res.status(400).send(errmsg).end();
 }); //Add one task (JSON: request contains title, description and code, response contains id, title, description and code)
 
+app.get("/task/results/:id", (req, res) => {
+  const id = req.params.id;
+  return res.send([tasks[id].result]);
+});
+
 app.put("/task", (req, res) => {
   if (
     req.body.task.title &&
