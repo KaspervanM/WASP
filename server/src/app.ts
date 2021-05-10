@@ -181,11 +181,12 @@ app.post("/task/return-subresult", (req, res) => {
     !(
       req.body.id &&
       typeof req.body.subtask.start === "number" &&
-      req.body.subtask.end &&
+      typeof req.body.subtask.end === "number" &&
       req.body.result
     )
-  )
+  ) {
     return res.sendStatus(400); // Bad Request
+  }
   const id: string = req.body.id;
   if (!tasks[id]) return res.sendStatus(404); // Not Found
   const index: number = tasks[id].subtasks.findIndex(
