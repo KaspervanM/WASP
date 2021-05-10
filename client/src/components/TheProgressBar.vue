@@ -55,9 +55,15 @@ export default Vue.extend({
           timeLeft: number;
           taskId: string;
         }): Promise<void> {
-          const progress = await taskService.getTaskProgress(this.taskId);
-          this.taskProgress = progress[0];
-          this.timeLeft = progress[1];
+          taskService
+            .getTaskProgress(this.taskId)
+            .then((res) => {
+              this.taskProgress = res[0];
+              this.timeLeft = res[1];
+            })
+            .catch((rej) => {
+              console.error("An error has occurred: ", rej);
+            });
         }.bind(this),
         1000
       );
