@@ -119,6 +119,7 @@ Het gebruik van een GPG sleutel is een mogelijkheid en is aanbevolen. De instruc
 Je kunt door in **Source Control** op **Clone Repositry** te klikken het WASP Project kloneren.
 
 ### Aanmaken van branches
+Als WASP is gekloneerd, dan kun je door op de GitHub Branch Icoon (![GitHub Branch Icon](https://cdn0.iconfinder.com/data/icons/octicons/1024/git-branch-16.png)) met de branch naam erachter te klikken, de lijst van alle branches zien. Als je dan op **+ Create new branch...** klikt, dan wordt er een nieuwe branch aangemaakt met de lokale bestanden. Klik je op **+ Create new branch from...** , dan kun je een nieuwe branch met de bestanden van een branch dat al online is maken.
 
 ### Source Control gebruiken
 
