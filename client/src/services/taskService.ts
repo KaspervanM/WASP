@@ -88,7 +88,7 @@ const taskService = {
   }),
 
   /* Get information about specific task */
-  async getTask(id: string): Promise<Task> {
+  getTask: function (id: string): Promise<Task> {
     return new Promise<Task>(function (resolve, reject) {
       axios
         .get<Task>(serverURL + "task/" + id)
@@ -102,7 +102,7 @@ const taskService = {
   },
 
   /* Request a subtask */
-  async getSubtask(id: string): Promise<exSubTask> {
+  getSubtask: function (id: string): Promise<exSubTask> {
     return new Promise<exSubTask>(function (resolve, reject) {
       axios
         .get<exSubTask>(serverURL + "task/request-subtask/" + id)
@@ -116,7 +116,7 @@ const taskService = {
   },
 
   /* Hand in result of subtask */
-  async returnSubresult(
+  returnSubresult: function (
     id: string,
     subtask: SubTask,
     result: string | number | Array<string | number>
@@ -142,7 +142,7 @@ const taskService = {
   },
 
   /* Get task progress */
-  getTaskProgress(id: string): Promise<[TaskProgress, number]> {
+  getTaskProgress: function (id: string): Promise<[TaskProgress, number]> {
     return new Promise<[TaskProgress, number]>(function (resolve, reject) {
       axios
         .get<[TaskProgress, number]>(serverURL + "task/progress/" + id)
@@ -156,7 +156,7 @@ const taskService = {
   },
 
   /* Add task */
-  addTask(task: Task): Promise<string> {
+  addTask: function (task: Task): Promise<string> {
     return new Promise<string>(function (resolve, reject) {
       axios
         .post<string>(serverURL + "task", task, {
@@ -174,7 +174,7 @@ const taskService = {
   },
 
   /* Update task */
-  updateTask(task: Task, reset: boolean): Promise<boolean> {
+  updateTask: function (task: Task, reset: boolean): Promise<boolean> {
     return new Promise<boolean>(function (resolve, reject) {
       axios
         .put<string>(
@@ -196,7 +196,7 @@ const taskService = {
   },
 
   /* Delete task */
-  deleteTask(id: string): Promise<void> {
+  deleteTask: function (id: string): Promise<void> {
     return new Promise<void>(function (resolve, reject) {
       axios
         .delete<void>(serverURL + "task/" + id)

@@ -44,9 +44,10 @@ export default Vue.extend({
     }
   },
   methods: {
-    taskloop: async function (): Promise<void> {
+    taskloop: function (): void {
       if (!this.$cookies.isKey("TaskId")) {
         this.id = "";
+        console.log("stopped");
         return;
       }
       taskService
@@ -75,6 +76,7 @@ export default Vue.extend({
         .catch((err: string): void => {
           if (err.includes("finished")) {
             //(Go to results)
+            console.log("finished");
             this.stopTaskLoop(); // End the taskloop
           } else {
             console.error(err); // Log the error
@@ -84,7 +86,7 @@ export default Vue.extend({
           }
         });
     },
-    startTaskLoop: async function (id: string): Promise<void> {
+    startTaskLoop: function (id: string): void {
       if (this.id === id) {
         // Already helping this task
         return;
