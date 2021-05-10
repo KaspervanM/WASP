@@ -119,9 +119,14 @@ Het gebruik van een GPG sleutel is een mogelijkheid en is aanbevolen. De instruc
 Je kunt door in **Source Control** op **Clone Repositry** te klikken het WASP Project kloneren.
 
 ### Aanmaken van branches
-Als WASP is gekloneerd, dan kun je door links onderaan op de GitHub Branch Icoon (![GitHub Branch Icon](https://cdn0.iconfinder.com/data/icons/octicons/1024/git-branch-16.png)) met de branch naam erachter te klikken, de lijst van alle branches zien. Als je dan op **+ Create new branch...** klikt, dan wordt er een nieuwe branch aangemaakt met de lokale bestanden. Klik je op **+ Create new branch from...** , dan kun je een nieuwe branch met de bestanden van een branch dat al online is maken.
+
+Als WASP is gekloneerd, dan kun je door links onderaan op de **Checkout Branch** knop (GitHub Branch Icoon (![GitHub Branch Icon](https://cdn0.iconfinder.com/data/icons/octicons/1024/git-branch-16.png)) met de _branch_ naam erachter) te klikken, de lijst van alle _branches_ zien. Als je dan op **+ Create new branch...** klikt, dan wordt er een nieuwe _branch_ aangemaakt met de lokale bestanden. Klik je op **+ Create new branch from...** , dan kun je een nieuwe _branch_ met de bestanden van een _branch_ dat al online is maken.
 
 ### Source Control gebruiken
+
+Als je veranderingen in een branch maakt, dan verschijnen deze in de **Source Control**. De Source Control kun je zien door in de zijbalk te klikken op de grote GitHub branch icoon (![GitHub Branch Icon](https://cdn0.iconfinder.com/data/icons/octicons/1024/git-branch-16.png)) te klikken en dan te kijken in **Changes**.
+
+Om van die veranderingen een _commit_ te maken, moet je eerst op de **Stage changes** knop (een grote **+**) klikken. Dit zorgt ervoor dat de veranderingen mee worden genomen in de volgende _commit_. Om de _commit_ te maken typ je eerst een kort omschrijving van de veranderingen die je aanbrengt en klik je op het vinkje bovenaan bij **Source Control** of doe je **Ctrl+Enter**.
 
 ### Synchroniseren van wijzigingen
 
