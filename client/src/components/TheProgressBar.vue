@@ -57,12 +57,15 @@ export default Vue.extend({
         }): void {
           taskService
             .getTaskProgress(this.taskId)
-            .then((res) => {
+            .then((res: [TaskProgress, number]): void => {
+
               this.taskProgress = res[0];
               this.timeLeft = res[1];
             })
-            .catch((rej) => {
-              console.error("An error has occurred: ", rej);
+            .catch((err: string): void => {
+
+              console.error(err);
+
             });
         }.bind(this),
         1000
