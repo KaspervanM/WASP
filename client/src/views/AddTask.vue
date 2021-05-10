@@ -18,7 +18,6 @@
             id="input-1"
             v-model="task.title"
             type="text"
-            @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter title"
             required
           ></b-form-input>
@@ -33,7 +32,6 @@
             <b-form-textarea
               id="input-2"
               v-model="task.description"
-              @input="showSuccessAlert = showErrorAlert = false"
               placeholder="Enter description"
               rows="7"
               max-rows="8"
@@ -50,7 +48,6 @@
             <b-form-textarea
               id="input-3"
               v-model="task.config"
-              @input="showSuccessAlert = showErrorAlert = false"
               placeholder="Enter configuration"
               rows="7"
               max-rows="8"
@@ -71,7 +68,6 @@
           <b-form-textarea
             id="input-4"
             v-model="task.code"
-            @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter code"
             ref="ta"
             @keydown.native.tab.exact.prevent="tab"
@@ -89,17 +85,6 @@
             >Reset</b-button
           >
         </div>
-        <br />
-        <b-alert v-model="showSuccessAlert" variant="success" dismissible>
-          Task with ID: {{ task.id }} created succesfully!
-          <br />
-          <router-link :to="'/id/' + task.id" class="alert-link"
-            >Click here to view your task</router-link
-          >
-        </b-alert>
-        <b-alert v-model="showErrorAlert" variant="danger" dismissible>
-          {{ errMsg }}
-        </b-alert>
       </b-form>
     </b-container>
   </div>
@@ -125,13 +110,7 @@ let task: Task = {
 };
 export default Vue.extend({
   name: "AddTask",
-  data(): {
-    task: Task;
-    tooltip: string;
-    showSuccessAlert: boolean;
-    showErrorAlert: boolean;
-    errMsg: string;
-  } {
+  data(): { task: Task; tooltip: string } {
     return {
       task,
       tooltip: `interface Config {
@@ -140,10 +119,7 @@ export default Vue.extend({
   BATCH_SIZE: number;
   RESULT: string;
   ALLOW_ANONYMOUS_USERS?: boolean;
-}`,
-      showSuccessAlert: false,
-      showErrorAlert: false,
-      errMsg: ""
+}`
     };
   },
   mounted() {
@@ -163,14 +139,23 @@ export default Vue.extend({
         .then((id: string): void => {
           this.task.id = id;
           console.log(`Created task with id: ${id}`);
-          this.showErrorAlert = false; //Hide any old error alert
-          this.showSuccessAlert = true; //Show success alert
+          this.$bvToast.toast(
+            `Task with ID: ${id} created succesfully! Click here to view your task`,
+            {
+              to: "/id/" + id,
+              title: "Success!",
+              variant: "success",
+              autoHideDelay: 5000
+            }
+          ); // Toast the success
         })
         .catch((err: string): void => {
           console.error(err);
-          this.errMsg = err; // Set the error message
-          this.showSuccessAlert = false; //Hide any old success alert
-          this.showErrorAlert = true; //Show error alert
+          this.$bvToast.toast(err, {
+            title: "Error!",
+            variant: "danger",
+            autoHideDelay: 5000
+          }); // Toast the error
         });
     },
     onReset(event: Event): void {
@@ -180,8 +165,6 @@ export default Vue.extend({
       this.task.description = "";
       this.task.config = "";
       this.task.code = "";
-      this.showSuccessAlert = false; //Hide any old success alert
-      this.showErrorAlert = false; //Show error alert
     },
     tab(): void {
       const index: number = ((this as unknown) as {

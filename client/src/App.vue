@@ -6,9 +6,6 @@
       @remove-cookies="stopTaskLoop"
       :task-id="id"
     />
-    <b-alert v-model="showErrorAlert" variant="danger" dismissible>
-      {{ errMsg }}
-    </b-alert>
   </div>
 </template>
 
@@ -31,12 +28,8 @@ export default Vue.extend({
   components: {
     TheSidebar
   },
-  data(): { id: string; showErrorAlert: boolean; errMsg: string } {
-    return {
-      id: "",
-      showErrorAlert: false,
-      errMsg: ""
-    };
+  data(): { id: string } {
+    return { id: "" };
   },
   mounted() {
     if (this.$cookies.isKey("TaskId")) {
@@ -53,7 +46,6 @@ export default Vue.extend({
       taskService
         .getSubtask(this.id)
         .then((subTask: exSubTask): void => {
-          this.showErrorAlert = false; //Hide any old error alert
           let result: string | number | Array<string | number>; // Initialise result
           import("@/services/evaluateCode").then((module): void => {
             result = module.evaluate(
@@ -63,13 +55,19 @@ export default Vue.extend({
             );
             taskService
               .returnSubresult(this.id, subTask[0], result)
-              .catch((err: string): void => {
-                console.error(err); // Log the error
-                this.errMsg = err; // Set the error message
-                this.showErrorAlert = true; //Show error alert
-              })
               .then((): void => {
                 this.taskloop(); // Continue with taskloop
+              })
+              .catch((err: string): void => {
+                console.error(err); // Log the error
+                this.$bvToast.toast(err, {
+                  title: "Error!",
+                  variant: "danger",
+                  autoHideDelay: 5000
+                }); // Toast the error
+                if (err.includes("available")) {
+                  this.stopTaskLoop(); // End the taskloop
+                } else this.taskloop(); // Continue with taskloop
               });
           });
         })
@@ -80,9 +78,14 @@ export default Vue.extend({
             this.stopTaskLoop(); // End the taskloop
           } else {
             console.error(err); // Log the error
-            this.errMsg = err; // Set the error message
-            this.showErrorAlert = true; //Show error alert
-            this.taskloop(); // Continue with taskloop
+            this.$bvToast.toast(err, {
+              title: "Error!",
+              variant: "danger",
+              autoHideDelay: 5000
+            }); // Toast the error
+            if (err.includes("available")) {
+              this.stopTaskLoop(); // End the taskloop
+            } else this.taskloop(); // Continue with taskloop
           }
         });
     },

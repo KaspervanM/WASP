@@ -31,7 +31,6 @@
                 id="input-1"
                 v-model="runTaskId"
                 type="text"
-                @input="showSuccessAlert = showErrorAlert = false"
                 :state="taskIdState"
                 placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                 aria-describedby="input-live-help input-live-feedback"

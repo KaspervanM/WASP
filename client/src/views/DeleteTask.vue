@@ -14,7 +14,6 @@
             id="input-1"
             v-model="taskId"
             type="text"
-            @input="showSuccessAlert = showErrorAlert = false"
             :state="taskIdState"
             placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             aria-describedby="input-live-help input-live-feedback"
@@ -28,17 +27,6 @@
         <div>
           <b-button type="submit" variant="primary">Submit</b-button>
         </div>
-        <br />
-        <b-alert v-model="showSuccessAlert" variant="success" dismissible>
-          Task with ID: {{ taskId }} deleted succesfully!
-          <br />
-          <router-link to="/addtask" class="alert-link"
-            >Click here to create a new task</router-link
-          >
-        </b-alert>
-        <b-alert v-model="showErrorAlert" variant="danger" dismissible>
-          {{ errMsg }}
-        </b-alert>
       </b-form>
     </b-container>
   </div>
@@ -50,18 +38,8 @@ import taskService from "@/services/taskService";
 
 export default Vue.extend({
   name: "DeleteTask",
-  data(): {
-    taskId: string;
-    showSuccessAlert: boolean;
-    showErrorAlert: boolean;
-    errMsg: string;
-  } {
-    return {
-      taskId: "",
-      showSuccessAlert: false,
-      showErrorAlert: false,
-      errMsg: ""
-    };
+  data(): { taskId: string } {
+    return { taskId: "" };
   },
   computed: {
     taskIdState: function (): boolean {
@@ -78,14 +56,23 @@ export default Vue.extend({
           .deleteTask(this.taskId)
           .then((): void => {
             console.log(`Deleted task with id: ${this.taskId}`);
-            this.showErrorAlert = false; //Hide any old error alert
-            this.showSuccessAlert = true; //Show success alert
+            this.$bvToast.toast(
+              `Task with ID: ${this.taskId} deleted succesfully! Click here to create a new task`,
+              {
+                to: "/addtask",
+                title: "Success!",
+                variant: "success",
+                autoHideDelay: 5000
+              }
+            ); // Toast the success
           })
           .catch((err: string): void => {
             console.error(err);
-            this.errMsg = err; // Set the error message
-            this.showSuccessAlert = false; //Hide any old success alert
-            this.showErrorAlert = true; //Show error alert
+            this.$bvToast.toast(err, {
+              title: "Error!",
+              variant: "danger",
+              autoHideDelay: 5000
+            }); // Toast the error
           });
       }
     }
