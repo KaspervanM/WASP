@@ -71,7 +71,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    async onSubmit(event: Event): Promise<void> {
+    onSubmit(event: Event): void {
       event.preventDefault();
       if (this.taskIdState) {
         taskService
