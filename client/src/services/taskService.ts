@@ -56,9 +56,7 @@ function errToString(err: Error | AxiosError): string {
       }
     } else if (err.request) {
       // Got no response
-      return (
-        "An error has occurred! (RequestError): " + JSON.stringify(err.request)
-      );
+      return "The server is not available at the moment, please try again later.";
     } else {
       // Unknown
       return "An error has occurred! (Unknown Axios Error)";
