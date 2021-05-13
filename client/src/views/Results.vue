@@ -27,40 +27,39 @@ export default Vue.extend({
     },
     initiateDownload: function (): Promise<string> {
       const id = this.taskId;
-      const confirmDownload = this.confirmDownload;
+      const promptPassword = this.promptPassword;
       return new Promise(function (resolve, reject) {
-        confirmDownload()
-          .then(() => {
-            taskService
-              .downloadResult(id)
-              .then((response) => {
-                const blob = new Blob([JSON.stringify(response.data)], {
-                  type: "application/plain"
-                });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = id.toString() + ".json";
-                link.click();
-                URL.revokeObjectURL(link.href);
-                resolve("success");
-              })
-              .catch(() => {
-                console.error;
-                reject("error getting results");
+        promptPassword().then((pass) => {
+          taskService
+            .downloadResult(id, pass)
+            .then((response) => {
+              const blob = new Blob([JSON.stringify(response.data)], {
+                type: "application/plain"
               });
-          })
-          .catch(() => {
-            reject("'no' was selected");
-          });
+              const link = document.createElement("a");
+              link.href = URL.createObjectURL(blob);
+              link.download = id.toString() + ".json";
+              link.click();
+              URL.revokeObjectURL(link.href);
+              resolve("success");
+            })
+            .catch(() => {
+              console.error;
+              reject("error getting results");
+            });
+        });
       });
     },
-    confirmDownload: function (): Promise<number> {
-      return new Promise(function (resolve, reject) {
-        if (confirm("Are you sure you want to download?")) {
-          resolve(1);
+    promptPassword: async function (): Promise<string> {
+      const privateTask: boolean = (await taskService.getTask(this.taskId))
+        .config["PRIVATE"];
+      console.log(await taskService.getTask(this.taskId));
+      return new Promise(function (resolve) {
+        if (privateTask) {
+          resolve(prompt("Enter the password"));
           return;
         }
-        reject(0);
+        resolve("");
         return;
       });
     }

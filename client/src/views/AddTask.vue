@@ -7,52 +7,74 @@
       bg-variant="light"
     >
       <b-form id="form" @submit="onSubmit" @reset="onReset">
-        <b-form-group
-          id="input-group-1"
-          label="Task title:"
-          label-for="input-1"
-          label-align-sm="left"
-          description="A good title for your task may help attract more users."
-        >
-          <b-form-input
-            id="input-1"
-            v-model="task.title"
-            type="text"
-            @input="showSuccessAlert = showErrorAlert = false"
-            placeholder="Enter title"
-            required
-          ></b-form-input>
-        </b-form-group>
-        <div id="input-block">
+        <div class="input-block">
+          <b-form-group
+            id="input-group-1"
+            class="block-elem"
+            label="Task title:"
+            label-for="input-1"
+            label-align-sm="left"
+            description="A good title for your task may help attract more users."
+          >
+            <b-form-input
+              id="input-1"
+              v-model="task.title"
+              type="text"
+              @input="showSuccessAlert = showErrorAlert = false"
+              placeholder="Enter title"
+              required
+            ></b-form-input>
+          </b-form-group>
           <b-form-group
             id="input-group-2"
-            label="Task Description:"
+            class="block-elem"
+            label="Task password:"
             label-for="input-2"
+            label-align-sm="left"
+            description="Use this password if you want to see the results if private is set to true."
+          >
+            <b-form-input
+              id="input-2"
+              v-model="task.password"
+              type="password"
+              @input="showSuccessAlert = showErrorAlert = false"
+              placeholder="Enter password"
+              required
+            ></b-form-input>
+          </b-form-group>
+        </div>
+        <div class="input-block">
+          <b-form-group
+            id="input-group-3"
+            class="block-elem"
+            label="Task Description:"
+            label-for="input-3"
             label-align-sm="left"
           >
             <b-form-textarea
-              id="input-2"
+              id="input-3"
               v-model="task.description"
               @input="showSuccessAlert = showErrorAlert = false"
               placeholder="Enter description"
-              rows="7"
+              rows="8"
               max-rows="8"
               no-resize
               required
             ></b-form-textarea>
           </b-form-group>
           <b-form-group
-            id="input-group-3"
+            id="input-group-4"
+            class="block-elem"
             label="Task Configuration:"
-            label-for="input-3"
+            label-for="input-4"
             label-align-sm="left"
           >
             <b-form-textarea
-              id="input-3"
+              id="input-4"
               v-model="task.config"
               @input="showSuccessAlert = showErrorAlert = false"
               placeholder="Enter configuration"
-              rows="7"
+              rows="8"
               max-rows="8"
               no-resize
               required
@@ -60,16 +82,16 @@
           </b-form-group>
           <b-tooltip
             custom-class="custom-tooltip"
-            target="input-group-3"
+            target="input-group-4"
             triggers="focus"
           >
             <pre>{{ tooltip }}</pre>
           </b-tooltip>
         </div>
-        <div id="input-group-4">
+        <div id="input-group-5">
           <label>Your code:</label>
           <b-form-textarea
-            id="input-4"
+            id="input-5"
             v-model="task.code"
             @input="showSuccessAlert = showErrorAlert = false"
             placeholder="Enter code"
@@ -111,6 +133,7 @@ import taskService from "@/services/taskService";
 
 interface Task {
   id: string;
+  password: string;
   title: string;
   description: string;
   config: string;
@@ -118,6 +141,7 @@ interface Task {
 }
 let task: Task = {
   id: "", //To be filled by server
+  password: "", //To be filled by server
   title: "", //To be filled by user
   description: "", //To be filled by user
   config: "",
@@ -138,6 +162,7 @@ export default Vue.extend({
   END: number;
   BATCH_SIZE: number;
   RESULT: string;
+  PRIVATE: boolean;
   ALLOW_ANONYMOUS_USERS?: boolean;
 }`,
       showSuccessAlert: false,
@@ -150,6 +175,7 @@ export default Vue.extend({
   "END": 10,
   "BATCH_SIZE": 1,
   "RESULT": "sum",
+  "PRIVATE": true,
   "ALLOW_ANONYMOUS_USERS": true
 }`;
   },
@@ -171,6 +197,7 @@ export default Vue.extend({
     onReset(event: Event): void {
       event.preventDefault();
       // Reset our form values
+      this.task.password = "";
       this.task.title = "";
       this.task.description = "";
       this.task.config = "";
@@ -218,15 +245,10 @@ export default Vue.extend({
     width: 100%;
   }
 }
-#input-block {
+.input-block {
   display: flex;
 }
-#input-group-2 {
-  flex-grow: 1;
-  margin-right: 5px;
-  height: 100%;
-}
-#input-group-3 {
+.block-elem {
   flex-grow: 1;
   margin-left: 5px;
   height: 100%;
@@ -236,13 +258,13 @@ export default Vue.extend({
   color: whitesmoke;
 }
 
-#input-group-4 {
+#input-group-5 {
   text-align: left;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
-#input-4 {
+#input-5 {
   flex-grow: 1;
   max-height: 95vh;
 }

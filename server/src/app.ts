@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 const app = express();
 const port = 3000;
 const cors = require("cors");
+const md5 = require("md5");
 
 var corsOptions = {
   origin: "*",
@@ -31,11 +32,13 @@ interface Config {
   END: number;
   BATCH_SIZE: number;
   RESULT: string;
+  PRIVATE: boolean;
   ALLOW_ANONYMOUS_USERS?: boolean;
 }
 
 interface Task {
   id: string;
+  password: string;
   title: string;
   description: string;
   config: Config | string;
@@ -56,10 +59,10 @@ function createSubtasks(
   let subtasks: SubTask[] = [];
   for (let i = 0; i < Math.ceil((end - start + 1) / batch_size); i++) {
     subtasks.push({
-      start: start + (((i > 0) as unknown) as number) * i * batch_size,
+      start: start + ((i > 0) as unknown as number) * i * batch_size,
       end: Math.min(
         start +
-          (((i > 0) as unknown) as number) * i * batch_size +
+          ((i > 0) as unknown as number) * i * batch_size +
           batch_size -
           1,
         end
@@ -114,16 +117,17 @@ function resultHandler(
 tasks["123e4567-e89b-12d3-a456-426614174000"] = {
   //Default task
   id: "123e4567-e89b-12d3-a456-426614174000",
+  password: md5("password"),
   title: "Default Task",
   description: "Congratulations! WASP is working correctly.",
   config: {
     START: 0,
     END: 30000,
     BATCH_SIZE: 4,
-    RESULT: "array"
+    RESULT: "array",
+    PRIVATE: true
   },
-  code:
-    'function main(start, end) {\n\treturn (() => {\n\t\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\t\tlet arr = []\n\t\tfor (let i = start; i <= end; i++) {\n\t\t\tarr.push(str + " " + i.toString());\n\t\t}\n\t\treturn arr;\n\t})();\n}\n',
+  code: 'function main(start, end) {\n\treturn (() => {\n\t\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\t\tlet arr = []\n\t\tfor (let i = start; i <= end; i++) {\n\t\t\tarr.push(str + " " + i.toString());\n\t\t}\n\t\treturn arr;\n\t})();\n}\n',
   subtasks: createSubtasks(0, 30000, 4),
   result: createResults("array", 0, 30000),
   speed: 0
@@ -203,6 +207,7 @@ app.get("/task/progress/:id", (req, res) => {
 
 app.post("/task", (req, res) => {
   if (
+    req.body.password &&
     req.body.title &&
     req.body.description &&
     req.body.config &&
@@ -212,6 +217,7 @@ app.post("/task", (req, res) => {
     const id = uuidv4();
     const newTask: Task = {
       id,
+      password: md5(req.body.password),
       title: req.body.title,
       description: req.body.description,
       config: config,
@@ -232,22 +238,35 @@ app.post("/task", (req, res) => {
   return res.status(400).send(errmsg).end();
 }); //Add one task (JSON: request contains title, description and code, response contains id, title, description and code)
 
-app.get("/task/results/:id", (req, res) => {
-  const id = req.params.id;
+app.post("/task/results", (req, res) => {
+  if (tasks[req.body.id].config["PRIVATE"]) {
+    console.log("pass: ", req.body.password);
+    console.log("md51: ", tasks[req.body.id].password);
+    console.log("md52: ", md5(req.body.password));
+    if (tasks[req.body.id].password != md5(req.body.password))
+      return res.send([0]);
+  }
+  const id = req.body.id;
   return res.send([tasks[id].result]);
 });
 
 app.put("/task", (req, res) => {
   if (
+    req.body.task.password &&
     req.body.task.title &&
     req.body.task.description &&
     req.body.task.config &&
     req.body.task.code &&
     req.body.task.id in tasks
   ) {
+    if (tasks[req.body.id].config["PRIVATE"]) {
+      if (tasks[req.body.id].password != md5(req.body.password))
+        return res.send(<Task>{});
+    }
     const config = JSON.parse(req.body.task.config);
     const upTask: Task = {
       id: req.body.task.id,
+      password: md5(req.body.task.password),
       title: req.body.task.title,
       description: req.body.task.description,
       config: config,
@@ -271,6 +290,10 @@ app.put("/task", (req, res) => {
 }); //Update one task (JSON: request contains id, title, description and code, response contains id, title, description and code)
 
 app.delete("/task/:id", (req, res) => {
+  if (tasks[req.body.id].config["PRIVATE"]) {
+    if (tasks[req.body.id].password != md5(req.body.password))
+      return res.send(<Task>{});
+  }
   const delTask: Task = tasks[req.params.id];
   delete tasks[req.params.id];
   return res.send(delTask);
