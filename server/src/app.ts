@@ -20,7 +20,7 @@ interface TaskProgress {
   max: number;
 }
 
-interface SubTask {
+interface Subtask {
   start: number;
   end: number;
   status: number;
@@ -40,7 +40,7 @@ interface Task {
   description: string;
   config: Config | string;
   code: string;
-  subtasks: SubTask[];
+  subtasks: Subtask[];
   result: number | Array<string | number>;
   speed: number;
 }
@@ -52,14 +52,14 @@ function createSubtasks(
   start: number,
   end: number,
   batch_size: number
-): SubTask[] {
-  let subtasks: SubTask[] = [];
+): Subtask[] {
+  let subtasks: Subtask[] = [];
   for (let i = 0; i < Math.ceil((end - start + 1) / batch_size); i++) {
     subtasks.push({
-      start: start + (((i > 0) as unknown) as number) * i * batch_size,
+      start: start + ((i > 0) as unknown as number) * i * batch_size,
       end: Math.min(
         start +
-          (((i > 0) as unknown) as number) * i * batch_size +
+          ((i > 0) as unknown as number) * i * batch_size +
           batch_size -
           1,
         end
@@ -112,10 +112,10 @@ function getProgress(id: string): TaskProgress {
   const subTasksWithStatus2: number = tasks[id].subtasks.filter(
     (obj) => obj.status === 2
   ).length;
-  const totalSubTasks: number = tasks[id].subtasks.length;
+  const totalSubtasks: number = tasks[id].subtasks.length;
   return {
     value: subTasksWithStatus2,
-    max: totalSubTasks
+    max: totalSubtasks
   };
 }
 
@@ -130,8 +130,7 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
     BATCH_SIZE: 4,
     RESULT: "array"
   },
-  code:
-    'function main(start, end) {\n\treturn (() => {\n\t\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\t\tlet arr = []\n\t\tfor (let i = start; i <= end; i++) {\n\t\t\tarr.push(str + " " + i.toString());\n\t\t}\n\t\treturn arr;\n\t})();\n}\n',
+  code: 'function main(start, end) {\n\treturn (() => {\n\t\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\t\tlet arr = []\n\t\tfor (let i = start; i <= end; i++) {\n\t\t\tarr.push(str + " " + i.toString());\n\t\t}\n\t\treturn arr;\n\t})();\n}\n',
   subtasks: createSubtasks(0, 30000, 4),
   result: createResults("array", 0, 30000),
   speed: 0
@@ -193,7 +192,7 @@ app.post("/task/return-subresult", (req, res) => {
     (obj) => obj.start === req.body.subtask.start
   );
   if (index === -1) return res.sendStatus(409); // Conflict
-  const subtask: SubTask = tasks[id].subtasks[index];
+  const subtask: Subtask = tasks[id].subtasks[index];
   if (subtask["end"] !== req.body.subtask.end || subtask.status !== 1)
     return res.sendStatus(409); // Conflict
   if (!resultHandler(id, req.body.result, index)) return res.sendStatus(500); // Internal Server Error
@@ -220,8 +219,9 @@ app.post("/task", (req, res) => {
       req.body.config &&
       req.body.code
     )
-  )
+  ) {
     return res.sendStatus(400); // Bad Request
+  }
   const config = JSON.parse(req.body.config);
   const id: string = uuidv4();
   tasks[id] = {

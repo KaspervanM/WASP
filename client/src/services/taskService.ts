@@ -9,12 +9,12 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 
 const serverURL = "http://localhost:3000/";
 
-interface SubTask {
+interface Subtask {
   start: number;
   end: number;
   finished: boolean;
 }
-type exSubTask = [SubTask, string];
+type ExSubtask = [Subtask, string];
 
 interface TaskProgress {
   value: number;
@@ -100,11 +100,11 @@ const taskService = {
   },
 
   /* Request a subtask */
-  getSubtask: function (id: string): Promise<exSubTask> {
-    return new Promise<exSubTask>(function (resolve, reject) {
+  getSubtask: function (id: string): Promise<ExSubtask> {
+    return new Promise<ExSubtask>(function (resolve, reject) {
       axios
-        .get<exSubTask>(serverURL + "task/request-subtask/" + id)
-        .then((res: AxiosResponse<exSubTask>) => {
+        .get<ExSubtask>(serverURL + "task/request-subtask/" + id)
+        .then((res: AxiosResponse<ExSubtask>) => {
           resolve(res.data);
         })
         .catch((err: Error | AxiosError) => {
@@ -116,7 +116,7 @@ const taskService = {
   /* Hand in result of subtask */
   returnSubresult: function (
     id: string,
-    subtask: SubTask,
+    subtask: Subtask,
     result: string | number | Array<string | number>
   ): Promise<void> {
     return new Promise<void>(function (resolve, reject) {
