@@ -36,9 +36,6 @@ interface Task {
   description: string;
   config: Config | string;
   code: string;
-  subtasks: SubTask[];
-  result: number | Array<string | number>;
-  speed: number;
 }
 type TaskList = { [id: string]: Task };
 
