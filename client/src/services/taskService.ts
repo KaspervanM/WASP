@@ -15,6 +15,15 @@ interface SubTask {
   finished: boolean;
 }
 
+interface Config {
+  START: number;
+  END: number;
+  BATCH_SIZE: number;
+  RESULT: string;
+  PRIVATE: boolean;
+  ALLOW_ANONYMOUS_USERS?: boolean;
+}
+
 interface TaskProgress {
   value: number;
   max: number;
@@ -22,9 +31,14 @@ interface TaskProgress {
 
 interface Task {
   id: string;
+  password: string;
   title: string;
   description: string;
+  config: Config | string;
   code: string;
+  subtasks: SubTask[];
+  result: number | Array<string | number>;
+  speed: number;
 }
 type TaskList = { [id: string]: Task };
 
@@ -94,10 +108,17 @@ const taskService = {
     return res.data.id;
   },
   downloadResult(
-    taskId: string
+    taskId: string,
+    password: string
   ): Promise<AxiosResponse<number | Array<number | string>>> {
-    return axios.get<number | Array<number | string>>(
-      serverURL + "task/results/" + taskId
+    return axios.post<number | Array<number | string>>(
+      serverURL + "task/results/",
+      { id: taskId, password: password },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
     );
   }
 };
