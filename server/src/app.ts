@@ -240,9 +240,6 @@ app.post("/task", (req, res) => {
 
 app.post("/task/results", (req, res) => {
   if (tasks[req.body.id].config["PRIVATE"]) {
-    console.log("pass: ", req.body.password);
-    console.log("md51: ", tasks[req.body.id].password);
-    console.log("md52: ", md5(req.body.password));
     if (tasks[req.body.id].password != md5(req.body.password))
       return res.send([0]);
   }
