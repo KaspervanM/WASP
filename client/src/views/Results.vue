@@ -83,6 +83,10 @@ export default Vue.extend({
         .catch(() => {
           console.error;
         });
+      // Hide the modal manually
+      this.$nextTick(() => {
+        this.$bvModal.hide("password-prompt");
+      });
     },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
