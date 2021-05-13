@@ -120,13 +120,15 @@ Je kunt door in **Source Control** op **Clone Repositry** te klikken het WASP Pr
 
 ### Aanmaken van branches
 
-Als WASP is gekloneerd, dan kun je door links onderaan op de **Checkout Branch** knop (GitHub Branch Icoon (![GitHub Branch Icon](https://cdn0.iconfinder.com/data/icons/octicons/1024/git-branch-16.png)) met de _branch_ naam erachter) te klikken, de lijst van alle _branches_ zien. Als je dan op **+ Create new branch...** klikt, dan wordt er een nieuwe _branch_ aangemaakt met de lokale bestanden. Klik je op **+ Create new branch from...** , dan kun je een nieuwe _branch_ met de bestanden van een _branch_ dat al online is maken.
+Als WASP is gekloneerd, dan kun je door links onderaan op de **Checkout Branch** knop (GitHub Branch Icoon (![GitHub Branch Icon](https://cdn0.iconfinder.com/data/icons/octicons/1024/git-branch-16.png)) met de _branch_ naam erachter) te klikken, de lijst van alle _branches_ zien. Als je dan op **+ Create new branch...** klikt, dan wordt er een nieuwe _branch_ aangemaakt met de lokale bestanden. Klik je op **+ Create new branch from...** , dan kun je een nieuwe _branch_ maken met de bestanden van een _branch_ die al online is .
 
 ### Source Control gebruiken
 
-Als je veranderingen in een branch maakt, dan verschijnen deze in de **Source Control**. De Source Control kun je zien door in de zijbalk te klikken op de grote GitHub branch icoon (![GitHub Branch Icon](https://cdn0.iconfinder.com/data/icons/octicons/1024/git-branch-16.png)) te klikken en dan te kijken in **Changes**.
+Als je veranderingen in een branch maakt, dan verschijnen deze in de **Source Control**. De Source Control kun je zien door in de zijbalk te klikken op de grote GitHub branch icoon (![GitHub Branch Icon](https://cdn0.iconfinder.com/data/icons/octicons/1024/git-branch-16.png)). Er verschijnt dan een tablad met de naam **Changes**.
 
-Om van die veranderingen een _commit_ te maken, moet je eerst op de **Stage changes** knop (een grote **+**) klikken. Dit zorgt ervoor dat de veranderingen mee worden genomen in de volgende _commit_. Om de _commit_ te maken typ je eerst een kort omschrijving van de veranderingen die je aanbrengt en klik je op het vinkje bovenaan bij **Source Control** of doe je **Ctrl+Enter**.
+Om van de veranderingen een _commit_ te maken, moet je eerst op de **Stage changes** knop klikken (een grote **+**). Dit zorgt ervoor dat de veranderingen mee worden genomen in de volgende _commit_. Om de _commit_ te maken typ je eerst een kort omschrijving van de veranderingen die je aanbrengt en klik je op het vinkje bovenaan bij **Source Control** of doe je **Ctrl+Enter**.
+
+Je kunt van meerdere veranderingen tegelijk een _commit_ maken, maar zorg er wel voor dat iedere groep bij elkaar horende verandering hun eigen omschrijving krijgt.
 
 ### Synchroniseren van wijzigingen
 
