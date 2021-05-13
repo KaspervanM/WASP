@@ -2,9 +2,14 @@
   <div class="results">
     <p class="header1">Thank you for helping this task!</p>
     <p>This task is now complete: {{ taskId }}</p>
-    <b-button variant="outline-success" @click="returnResults"
-      >Give me the results!</b-button
-    >
+    <div class="button-container">
+      <b-button variant="outline-success" @click="returnResults"
+        >Give me the results!</b-button
+      >
+      <b-button variant="outline-danger" @click="leaveResults"
+        >Leave this task</b-button
+      >
+    </div>
   </div>
 </template>
 
@@ -62,9 +67,20 @@ export default Vue.extend({
         resolve("");
         return;
       });
+    },
+    leaveResults: function () {
+      this.$emit("remove-cookies");
+      this.$router.push("/");
     }
   }
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.button-container {
+  display: block;
+}
+.button-container > * {
+  margin: 5px;
+}
+</style>
