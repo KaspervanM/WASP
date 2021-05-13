@@ -20,6 +20,11 @@ import taskService from "@/services/taskService";
 export default Vue.extend({
   name: "Results",
   props: { taskId: String },
+  created() {
+    if (!this.$cookies.isKey("TaskId")) {
+      this.$router.push("/");
+    }
+  },
   methods: {
     returnResults: function (): void {
       this.initiateDownload()
