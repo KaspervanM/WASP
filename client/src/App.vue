@@ -15,13 +15,13 @@ import Vue from "vue";
 import TheSidebar from "@/components/TheSidebar.vue";
 import taskService from "@/services/taskService";
 
-interface SubTask {
+interface Subtask {
   start: number;
   end: number;
   finished: boolean;
 }
 
-type exSubTask = [SubTask, string];
+type ExSubtask = [Subtask, string];
 
 export default Vue.extend({
   name: "Home",
@@ -37,6 +37,58 @@ export default Vue.extend({
     }
   },
   methods: {
+    returnSubresult: function (
+      subtask: Subtask,
+      result: string | number | Array<string | number>
+    ): void {
+      taskService
+        .returnSubresult(this.id, subtask, result)
+        .then((): void => {
+          this.taskloop(); // Continue with taskloop
+        })
+        .catch((err: string): void => {
+          console.error(err); // Log the error
+          this.$bvToast.toast(err, {
+            title: "Error!",
+            variant: "danger",
+            autoHideDelay: 5000
+          }); // Toast the error
+          if (err.includes("available")) {
+            this.stopTaskLoop(); // End the taskloop
+          } else this.taskloop(); // Continue with taskloop
+        });
+    },
+    evaluateCode: function (subtask: ExSubtask): void {
+      import("@/services/evaluateCode")
+        .then((module): void => {
+          module
+            .evaluate(subtask[1], subtask[0].start, subtask[0].end)
+            .then((res: string | number | Array<string | number>): void => {
+              this.returnSubresult(subtask[0], res);
+            })
+            .catch((err: string): void => {
+              console.error(err); // Log the error
+              this.$bvToast.toast(err, {
+                title: "Error!",
+                variant: "danger",
+                autoHideDelay: 5000
+              }); // Toast the error
+              this.stopTaskLoop(); // End the taskloop
+            });
+        })
+        .catch((err: Error): void => {
+          console.error(err); // Log the real error
+          this.$bvToast.toast(
+            "An error occurred while importing the evaluateCode module!",
+            {
+              title: "Error!",
+              variant: "danger",
+              autoHideDelay: 5000
+            }
+          ); // Toast the error
+          this.stopTaskLoop(); // End the taskloop
+        });
+    },
     taskloop: function (): void {
       if (!this.$cookies.isKey("TaskId")) {
         this.id = "";
@@ -45,51 +97,8 @@ export default Vue.extend({
       }
       taskService
         .getSubtask(this.id)
-        .then((subTask: exSubTask): void => {
-          import("@/services/evaluateCode")
-            .then((module): void => {
-              module
-                .evaluate(subTask[1], subTask[0].start, subTask[0].end)
-                .then((res: string | number | Array<string | number>): void => {
-                  taskService
-                    .returnSubresult(this.id, subTask[0], res)
-                    .then((): void => {
-                      this.taskloop(); // Continue with taskloop
-                    })
-                    .catch((err: string): void => {
-                      console.error(err); // Log the error
-                      this.$bvToast.toast(err, {
-                        title: "Error!",
-                        variant: "danger",
-                        autoHideDelay: 5000
-                      }); // Toast the error
-                      if (err.includes("available")) {
-                        this.stopTaskLoop(); // End the taskloop
-                      } else this.taskloop(); // Continue with taskloop
-                    });
-                })
-                .catch((err: string): void => {
-                  console.error(err); // Log the error
-                  this.$bvToast.toast(err, {
-                    title: "Error!",
-                    variant: "danger",
-                    autoHideDelay: 5000
-                  }); // Toast the error
-                  this.stopTaskLoop(); // End the taskloop
-                });
-            })
-            .catch((err: Error): void => {
-              console.error(err); // Log the real error
-              this.$bvToast.toast(
-                "An error occurred while importing the evaluateCode module!",
-                {
-                  title: "Error!",
-                  variant: "danger",
-                  autoHideDelay: 5000
-                }
-              ); // Toast the error
-              this.stopTaskLoop(); // End the taskloop
-            });
+        .then((subtask: ExSubtask): void => {
+          this.evaluateCode(subtask);
         })
         .catch((err: string): void => {
           if (err.includes("finished")) {
