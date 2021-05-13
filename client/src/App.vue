@@ -15,13 +15,13 @@ import Vue from "vue";
 import TheSidebar from "@/components/TheSidebar.vue";
 import taskService from "@/services/taskService";
 
-interface SubTask {
+interface Subtask {
   start: number;
   end: number;
   finished: boolean;
 }
 
-type exSubTask = [SubTask, string];
+type ExSubtask = [Subtask, string];
 
 export default Vue.extend({
   name: "Home",
@@ -29,9 +29,7 @@ export default Vue.extend({
     TheSidebar
   },
   data(): { id: string } {
-    return {
-      id: ""
-    };
+    return { id: "" };
   },
   mounted() {
     if (this.$cookies.isKey("TaskId")) {
@@ -39,44 +37,94 @@ export default Vue.extend({
     }
   },
   methods: {
-    taskloop: async function (): Promise<void> {
-      const subtask: exSubTask = await taskService.getSubtask(this.id);
-      if (typeof subtask[0].start === "undefined") {
-        console.log("STOPPED");
-        this.stopTaskLoop();
-        return;
-      }
-      let result: string | number | Array<string | number>;
-      import("@/services/evaluateCode").then(
-        async (module): Promise<void> => {
-          result = module.evaluate(
-            subtask[1],
-            subtask[0]["start"],
-            subtask[0]["end"]
-          );
-          //console.log(result);
-          if (
-            this.$cookies.isKey("TaskId") &&
-            (await taskService.returnSubresult(this.id, subtask[0], result))
-          ) {
-            this.taskloop();
-          } else {
-            console.log("STOPPED2");
-          }
-        }
-      );
+    returnSubresult: function (
+      subtask: Subtask,
+      result: string | number | Array<string | number>
+    ): void {
+      taskService
+        .returnSubresult(this.id, subtask, result)
+        .then((): void => {
+          this.taskloop(); // Continue with taskloop
+        })
+        .catch((err: string): void => {
+          console.error(err); // Log the error
+          this.$bvToast.toast(err, {
+            title: "Error!",
+            variant: "danger",
+            autoHideDelay: 5000
+          }); // Toast the error
+          if (err.includes("available")) {
+            this.stopTaskLoop(); // End the taskloop
+          } else this.taskloop(); // Continue with taskloop
+        });
     },
-    startTaskLoop: async function (id: string): Promise<void> {
-      if (this.id === id) {
+    evaluateCode: function (subtask: ExSubtask): void {
+      import("@/services/evaluateCode")
+        .then((module): void => {
+          module
+            .evaluate(subtask[1], subtask[0].start, subtask[0].end)
+            .then((res: string | number | Array<string | number>): void => {
+              this.returnSubresult(subtask[0], res);
+            })
+            .catch((err: string): void => {
+              console.error(err); // Log the error
+              this.$bvToast.toast(err, {
+                title: "Error!",
+                variant: "danger",
+                autoHideDelay: 5000
+              }); // Toast the error
+              this.stopTaskLoop(); // End the taskloop
+            });
+        })
+        .catch((err: Error): void => {
+          console.error(err); // Log the real error
+          this.$bvToast.toast(
+            "An error occurred while importing the evaluateCode module!",
+            {
+              title: "Error!",
+              variant: "danger",
+              autoHideDelay: 5000
+            }
+          ); // Toast the error
+          this.stopTaskLoop(); // End the taskloop
+        });
+    },
+    taskloop: function (): void {
+      if (!this.$cookies.isKey("TaskId")) {
+        this.id = "";
+        console.log("stopped");
         return;
       }
-      const subtask: exSubTask = await taskService.getSubtask(id);
-      if (typeof subtask[0].start === "undefined") {
+      taskService
+        .getSubtask(this.id)
+        .then((subtask: ExSubtask): void => {
+          this.evaluateCode(subtask);
+        })
+        .catch((err: string): void => {
+          if (err.includes("finished")) {
+            //(Go to results)
+            console.log("finished");
+            this.stopTaskLoop(); // End the taskloop
+          } else {
+            console.error(err); // Log the error
+            this.$bvToast.toast(err, {
+              title: "Error!",
+              variant: "danger",
+              autoHideDelay: 5000
+            }); // Toast the error
+            if (err.includes("available")) {
+              this.stopTaskLoop(); // End the taskloop
+            } else this.taskloop(); // Continue with taskloop
+          }
+        });
+    },
+    startTaskLoop: function (id: string): void {
+      if (this.id === id) {
+        // Already helping this task
         return;
       }
       this.$cookies.set("TaskId", id);
       this.id = id;
-
       this.taskloop();
     },
     stopTaskLoop: function (): void {

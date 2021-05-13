@@ -14,7 +14,6 @@
             id="input-1"
             v-model="taskId"
             type="text"
-            @input="showSuccessAlert = showErrorAlert = false"
             :state="taskIdState"
             placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             aria-describedby="input-live-help input-live-feedback"
@@ -28,17 +27,6 @@
         <div>
           <b-button type="submit" variant="primary">Submit</b-button>
         </div>
-        <br />
-        <b-alert v-model="showSuccessAlert" variant="success" dismissible>
-          Task with ID: {{ taskId }} deleted succesfully!
-          <br />
-          <router-link to="/addtask" class="alert-link"
-            >Click here to create a new task</router-link
-          >
-        </b-alert>
-        <b-alert v-model="showErrorAlert" variant="danger" dismissible
-          >An error occurred!</b-alert
-        >
       </b-form>
     </b-container>
   </div>
@@ -50,16 +38,8 @@ import taskService from "@/services/taskService";
 
 export default Vue.extend({
   name: "DeleteTask",
-  data(): {
-    taskId: string;
-    showSuccessAlert: boolean;
-    showErrorAlert: boolean;
-  } {
-    return {
-      taskId: "",
-      showSuccessAlert: false,
-      showErrorAlert: false
-    };
+  data(): { taskId: string } {
+    return { taskId: "" };
   },
   computed: {
     taskIdState: function (): boolean {
@@ -69,21 +49,31 @@ export default Vue.extend({
     }
   },
   methods: {
-    async onSubmit(event: Event): Promise<void> {
+    onSubmit(event: Event): void {
       event.preventDefault();
       if (this.taskIdState) {
-        const id: string = await taskService.deleteTask(this.taskId);
-        if (id == this.taskId) {
-          console.log(`Deleted task with id: ${id}`);
-          this.showErrorAlert = false; //Hide any old error alert
-          this.showSuccessAlert = true; //Show success alert
-        } else {
-          console.error(
-            "An error occurred while deleting the task: id mismatch!"
-          );
-          this.showSuccessAlert = false; //Hide any old success alert
-          this.showErrorAlert = true; //Show error alert
-        }
+        taskService
+          .deleteTask(this.taskId)
+          .then((): void => {
+            console.log(`Deleted task with id: ${this.taskId}`);
+            this.$bvToast.toast(
+              `Task with ID: ${this.taskId} deleted succesfully! Click here to create a new task`,
+              {
+                to: "/addtask",
+                title: "Success!",
+                variant: "success",
+                autoHideDelay: 5000
+              }
+            ); // Toast the success
+          })
+          .catch((err: string): void => {
+            console.error(err);
+            this.$bvToast.toast(err, {
+              title: "Error!",
+              variant: "danger",
+              autoHideDelay: 5000
+            }); // Toast the error
+          });
       }
     }
   }

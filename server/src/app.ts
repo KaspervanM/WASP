@@ -1,9 +1,9 @@
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
+import cors from "cors";
 
 const app = express();
-const port = 3000;
-const cors = require("cors");
+const port: number = 3000;
 
 var corsOptions = {
   origin: "*",
@@ -20,7 +20,7 @@ interface TaskProgress {
   max: number;
 }
 
-interface SubTask {
+interface Subtask {
   start: number;
   end: number;
   status: number;
@@ -40,7 +40,7 @@ interface Task {
   description: string;
   config: Config | string;
   code: string;
-  subtasks: SubTask[];
+  subtasks: Subtask[];
   result: number | Array<string | number>;
   speed: number;
 }
@@ -52,14 +52,14 @@ function createSubtasks(
   start: number,
   end: number,
   batch_size: number
-): SubTask[] {
-  let subtasks: SubTask[] = [];
+): Subtask[] {
+  let subtasks: Subtask[] = [];
   for (let i = 0; i < Math.ceil((end - start + 1) / batch_size); i++) {
     subtasks.push({
-      start: start + (((i > 0) as unknown) as number) * i * batch_size,
+      start: start + ((i > 0) as unknown as number) * i * batch_size,
       end: Math.min(
         start +
-          (((i > 0) as unknown) as number) * i * batch_size +
+          ((i > 0) as unknown as number) * i * batch_size +
           batch_size -
           1,
         end
@@ -77,38 +77,46 @@ function createResults(
   switch (res) {
     case "sum":
       return 0;
-      break;
     case "string":
     case "array":
       return new Array(end - start + 1).fill(0);
-      break;
-    default:
-      return undefined;
   }
+  return undefined;
 }
 
 function resultHandler(
-  taskId: string,
+  id: string,
   subResult: string | number | Array<string | number>,
   index: number
 ): boolean {
-  const config = tasks[taskId].config;
+  const config = tasks[id].config;
   switch (config["RESULT"]) {
     case "sum":
-      (tasks[taskId].result as number) += subResult as number;
+      (tasks[id].result as number) += subResult as number;
       return true;
     case "string":
     case "array":
-      const batch_size = config["BATCH_SIZE"];
-      const iterationIndex = index * batch_size;
+      const batch_size: number = config["BATCH_SIZE"];
+      const iterationIndex: number = index * batch_size;
       for (let i = iterationIndex; i < iterationIndex + batch_size; i++) {
         if (i <= config["END"] - config["START"])
-          (tasks[taskId].result as Array<string | number>)[i] =
+          (tasks[id].result as Array<string | number>)[i] =
             subResult[i - iterationIndex];
       }
       return true;
   }
   return false;
+}
+
+function getProgress(id: string): TaskProgress {
+  const subTasksWithStatus2: number = tasks[id].subtasks.filter(
+    (obj) => obj.status === 2
+  ).length;
+  const totalSubtasks: number = tasks[id].subtasks.length;
+  return {
+    value: subTasksWithStatus2,
+    max: totalSubtasks
+  };
 }
 
 tasks["123e4567-e89b-12d3-a456-426614174000"] = {
@@ -122,8 +130,7 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
     BATCH_SIZE: 4,
     RESULT: "array"
   },
-  code:
-    'function main(start, end) {\n\treturn (() => {\n\t\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\t\tlet arr = []\n\t\tfor (let i = start; i <= end; i++) {\n\t\t\tarr.push(str + " " + i.toString());\n\t\t}\n\t\treturn arr;\n\t})();\n}\n',
+  code: 'function main(start, end) {\n\treturn (() => {\n\t\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\t\tlet arr = []\n\t\tfor (let i = start; i <= end; i++) {\n\t\t\tarr.push(str + " " + i.toString());\n\t\t}\n\t\treturn arr;\n\t})();\n}\n',
   subtasks: createSubtasks(0, 30000, 4),
   result: createResults("array", 0, 30000),
   speed: 0
@@ -131,26 +138,31 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
 
 const TIMEOUT_DURATION: number = 5000;
 
+/* Get an array of tasks */
 app.get("/task", (req, res) => {
-  return res.send(Object.values(tasks));
-}); //Read all tasks (JSON: response contains id, title, description and code)
+  if (Object.values(tasks).length)
+    return res.status(200).send(Object.values(tasks)); // OK
+  return res.sendStatus(404); // Not Found
+});
 
+/* Get information about specific task */
 app.get("/task/:id", (req, res) => {
-  return res.send(tasks[req.params.id]);
-}); //Read one task (URL: request contains id, JSON: response contains id, title, description and code)
+  if (!tasks[req.params.id]) return res.sendStatus(404); // Not Found
+  return res.status(200).send(tasks[req.params.id]); // OK
+});
 
+/* Request a subtask */
 app.get("/task/request-subtask/:id", (req, res) => {
-  const id = req.params.id;
-  const index = tasks[id].subtasks.findIndex((obj) => obj.status === 0);
-  if (index === -1) {
-    return res.send([<SubTask>{}, ""]);
-  }
+  const id: string = req.params.id;
+  if (!tasks[id]) return res.sendStatus(404); // Not Found
+  const index: number = tasks[id].subtasks.findIndex((obj) => obj.status === 0);
+  if (index === -1) return res.sendStatus(406); // Not Acceptable
   tasks[id].subtasks[index].status = 1;
-  const before = getProgress(id).value;
-  const speedRefreshDuration = 1000;
+  const before: number = getProgress(id).value;
+  const speedRefreshDuration: number = 1000;
   setTimeout(() => {
-    const after = getProgress(id).value;
-    const speed = ((after - before) / speedRefreshDuration) * 1000; // Calculate the speed at wich iterations are being handed in
+    const after: number = getProgress(id).value;
+    const speed: number = ((after - before) / speedRefreshDuration) * 1000; // Calculate the speed at wich iterations are being handed in
     tasks[id].speed = speed;
   }, speedRefreshDuration);
   setTimeout(() => {
@@ -159,118 +171,113 @@ app.get("/task/request-subtask/:id", (req, res) => {
       tasks[id].subtasks[index].status = 0;
   }, TIMEOUT_DURATION);
 
-  return res.send([tasks[id].subtasks[index], tasks[id].code]);
+  return res.status(200).send([tasks[id].subtasks[index], tasks[id].code]); // OK
 });
 
+/* Hand in result of subtask */
 app.post("/task/return-subresult", (req, res) => {
-  const index = tasks[req.body.id].subtasks.findIndex(
+  if (
+    !(
+      req.body.id &&
+      typeof req.body.subtask.start === "number" &&
+      typeof req.body.subtask.end === "number" &&
+      req.body.result
+    )
+  ) {
+    return res.sendStatus(400); // Bad Request
+  }
+  const id: string = req.body.id;
+  if (!tasks[id]) return res.sendStatus(404); // Not Found
+  const index: number = tasks[id].subtasks.findIndex(
     (obj) => obj.start === req.body.subtask.start
   );
-  if (index === -1) {
-    return res.send(false);
-  }
-  const subtask: SubTask = tasks[req.body.id].subtasks[index];
-  if (
-    subtask["end"] !== req.body.subtask.end ||
-    subtask.status !== 1 ||
-    !resultHandler(req.body.id, req.body.result, index)
-  ) {
-    return res.send(false);
-  }
+  if (index === -1) return res.sendStatus(409); // Conflict
+  const subtask: Subtask = tasks[id].subtasks[index];
+  if (subtask["end"] !== req.body.subtask.end || subtask.status !== 1)
+    return res.sendStatus(409); // Conflict
+  if (!resultHandler(id, req.body.result, index)) return res.sendStatus(500); // Internal Server Error
   subtask.status = 2;
-  return res.send(true);
+  return res.sendStatus(200); // OK
 });
 
-function getProgress(id: string) {
-  const subTasksWithStatus2: number = tasks[id].subtasks.filter(
-    (obj) => obj.status === 2
-  ).length;
-  const totalSubTasks: number = tasks[id].subtasks.length;
-  const taskProgress: TaskProgress = {
-    value: subTasksWithStatus2,
-    max: totalSubTasks
-  };
-  return taskProgress;
-}
-
+/* Get task progress */
 app.get("/task/progress/:id", (req, res) => {
-  const id = req.params.id;
+  const id: string = req.params.id;
+  if (!tasks[id]) return res.sendStatus(404); // Not Found
   const timeLeft =
     tasks[id].subtasks.filter((obj) => obj.status !== 2).length /
     tasks[id].speed;
-  return res.send([getProgress(id), timeLeft]);
+  return res.status(200).send([getProgress(id), timeLeft]); // OK
 });
 
+/* Add task */
 app.post("/task", (req, res) => {
   if (
-    req.body.title &&
-    req.body.description &&
-    req.body.config &&
-    req.body.code
+    !(
+      req.body.title &&
+      req.body.description &&
+      req.body.config &&
+      req.body.code
+    )
   ) {
-    const config = JSON.parse(req.body.config);
-    const id = uuidv4();
-    const newTask: Task = {
-      id,
-      title: req.body.title,
-      description: req.body.description,
-      config: config,
-      code: req.body.code,
-      subtasks: createSubtasks(
-        config["START"],
-        config["END"],
-        config["BATCH_SIZE"]
-      ),
-      result: createResults(config["RESULT"], config["START"], config["END"]),
-      speed: 0
-    };
-    tasks[id] = newTask;
-    return res.send(newTask);
+    return res.sendStatus(400); // Bad Request
   }
-  const errmsg: string = "Bad request";
-  console.error(errmsg);
-  return res.status(400).send(errmsg).end();
-}); //Add one task (JSON: request contains title, description and code, response contains id, title, description and code)
+  const config = JSON.parse(req.body.config);
+  const id: string = uuidv4();
+  tasks[id] = {
+    id,
+    title: req.body.title,
+    description: req.body.description,
+    config: config,
+    code: req.body.code,
+    subtasks: createSubtasks(
+      config["START"],
+      config["END"],
+      config["BATCH_SIZE"]
+    ),
+    result: createResults(config["RESULT"], config["START"], config["END"]),
+    speed: 0
+  };
+  return res.status(200).send(id); // OK
+});
 
+/* Update task */
 app.put("/task", (req, res) => {
-  if (
-    req.body.task.title &&
-    req.body.task.description &&
-    req.body.task.config &&
-    req.body.task.code &&
-    req.body.task.id in tasks
-  ) {
-    const config = JSON.parse(req.body.task.config);
-    const upTask: Task = {
-      id: req.body.task.id,
-      title: req.body.task.title,
-      description: req.body.task.description,
-      config: config,
-      code: req.body.code,
-      subtasks: req.body.reset
-        ? createSubtasks(config["START"], config["END"], config["BATCH_SIZE"])
-        : tasks[req.body.task.id]["subtasks"],
-      result: req.body.reset
-        ? createResults(config["RESULT"], config["START"], config["END"])
-        : tasks[req.body.task.id]["result"],
-      speed: 0
-    };
+  const task: Task = req.body.task;
+  if (!(task.id && task.title && task.description && task.config && task.code))
+    return res.sendStatus(400); // Bad Request
+  if (!tasks[task.id]) return res.sendStatus(404); // Not Found
+  console.log(task);
+  console.log(task.config);
+  console.log(task.config.toString());
+  const config = JSON.parse(task.config.toString());
+  const upTask: Task = {
+    id: task.id,
+    title: task.title,
+    description: task.description,
+    config: config,
+    code: req.body.code,
+    subtasks: req.body.reset
+      ? createSubtasks(config["START"], config["END"], config["BATCH_SIZE"])
+      : tasks[task.id]["subtasks"],
+    result: req.body.reset
+      ? createResults(config["RESULT"], config["START"], config["END"])
+      : tasks[task.id]["result"],
+    speed: 0
+  };
+  tasks[task.id] = upTask;
+  return res.sendStatus(201); // Created
+});
 
-    tasks[req.body.task.id] = upTask;
-
-    return res.send(upTask);
-  }
-  const errmsg: string = "Bad request";
-  console.error(errmsg);
-  return res.status(400).send(errmsg).end();
-}); //Update one task (JSON: request contains id, title, description and code, response contains id, title, description and code)
-
+/* Delete task */
 app.delete("/task/:id", (req, res) => {
-  const delTask: Task = tasks[req.params.id];
-  delete tasks[req.params.id];
-  return res.send(delTask);
-}); //Delete one task (URL: request contains id, JSON: response contains id, title, description and code)
+  const id: string = req.params.id;
+  if (!tasks[id]) return res.sendStatus(404); // Not Found
+  delete tasks[id];
+  return res.sendStatus(204); // No Content
+});
 
+/* Start the server */
 app.listen(port, () => {
   return console.log(`Server is listening on ${port}`);
 });

@@ -48,16 +48,22 @@ export default Vue.extend({
     }
   },
   methods: {
-    async startProgressLoop(): Promise<void> {
+    startProgressLoop(): void {
       this.progressInterval = setInterval(
-        async function (this: {
+        function (this: {
           taskProgress: TaskProgress;
           timeLeft: number;
           taskId: string;
-        }): Promise<void> {
-          const progress = await taskService.getTaskProgress(this.taskId);
-          this.taskProgress = progress[0];
-          this.timeLeft = progress[1];
+        }): void {
+          taskService
+            .getTaskProgress(this.taskId)
+            .then((res: [TaskProgress, number]): void => {
+              this.taskProgress = res[0];
+              this.timeLeft = res[1];
+            })
+            .catch((err: string): void => {
+              console.error(err);
+            });
         }.bind(this),
         1000
       );
