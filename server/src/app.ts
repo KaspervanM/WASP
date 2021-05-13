@@ -20,7 +20,7 @@ interface TaskProgress {
   max: number;
 }
 
-interface SubTask {
+interface Subtask {
   start: number;
   end: number;
   status: number;
@@ -40,7 +40,7 @@ interface Task {
   description: string;
   config: Config | string;
   code: string;
-  subtasks: SubTask[];
+  subtasks: Subtask[];
   result: number | Array<string | number>;
   speed: number;
 }
@@ -52,8 +52,8 @@ function createSubtasks(
   start: number,
   end: number,
   batch_size: number
-): SubTask[] {
-  let subtasks: SubTask[] = [];
+): Subtask[] {
+  let subtasks: Subtask[] = [];
   for (let i = 0; i < Math.ceil((end - start + 1) / batch_size); i++) {
     subtasks.push({
       start: start + ((i > 0) as unknown as number) * i * batch_size,
@@ -112,10 +112,10 @@ function getProgress(id: string): TaskProgress {
   const subTasksWithStatus2: number = tasks[id].subtasks.filter(
     (obj) => obj.status === 2
   ).length;
-  const totalSubTasks: number = tasks[id].subtasks.length;
+  const totalSubtasks: number = tasks[id].subtasks.length;
   return {
     value: subTasksWithStatus2,
-    max: totalSubTasks
+    max: totalSubtasks
   };
 }
 
@@ -192,7 +192,7 @@ app.post("/task/return-subresult", (req, res) => {
     (obj) => obj.start === req.body.subtask.start
   );
   if (index === -1) return res.sendStatus(409); // Conflict
-  const subtask: SubTask = tasks[id].subtasks[index];
+  const subtask: Subtask = tasks[id].subtasks[index];
   if (subtask["end"] !== req.body.subtask.end || subtask.status !== 1)
     return res.sendStatus(409); // Conflict
   if (!resultHandler(id, req.body.result, index)) return res.sendStatus(500); // Internal Server Error
