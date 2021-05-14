@@ -248,6 +248,7 @@ app.post("/task", (req, res) => {
   return res.status(200).send(id); // OK
 });
 
+/* Get the results of a task */
 app.post("/task/results", (req, res) => {
   if (!req.body.id) {
     return res.sendStatus(400); // Bad Request
