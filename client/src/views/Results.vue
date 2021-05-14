@@ -149,7 +149,7 @@ export default Vue.extend({
       this.password = "";
       this.nameState = (null as unknown) as boolean;
     },
-    handleOk(bvModalEvt) {
+    handleOk(bvModalEvt: Event): void {
       // Prevent modal from closing
       bvModalEvt.preventDefault();
       // Trigger submit handler
