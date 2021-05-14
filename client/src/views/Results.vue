@@ -123,8 +123,8 @@ export default Vue.extend({
         this.invalidFeedback = "Password is required";
         return;
       }
-      const id = this.taskId;
-      const pass = this.password;
+      const id: string = this.taskId;
+      const pass: string = this.password;
       taskService
         .downloadResult(id, pass)
         .then((data) => {
