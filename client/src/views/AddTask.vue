@@ -56,7 +56,6 @@
               v-model="task.description"
               placeholder="Enter description"
               rows="8"
-              max-rows="8"
               no-resize
               required
             ></b-form-textarea>
