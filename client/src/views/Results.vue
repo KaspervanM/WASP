@@ -145,7 +145,7 @@ export default Vue.extend({
         };
       }).$refs.form.checkValidity();
     },
-    resetModal() {
+    resetModal(): void {
       this.password = "";
       this.nameState = null;
     },
