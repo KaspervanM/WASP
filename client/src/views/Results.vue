@@ -98,7 +98,7 @@ export default Vue.extend({
             .then((data: number | Array<number | string>): void => {
               this.downloadResults(id, data);
             })
-            .catch((err: string) => {
+            .catch((err: string): void => {
               this.createToast(err);
             });
         } else this.showPrompt = true;
