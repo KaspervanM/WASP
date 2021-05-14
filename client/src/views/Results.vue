@@ -107,7 +107,7 @@ export default Vue.extend({
       taskService
         .downloadResult(id, pass)
         .then((data) => {
-          this.downloadResults(data, id);
+          this.downloadResults(id, data);
           this.$bvModal.hide("password-prompt");
         })
         .catch((err: string) => {
