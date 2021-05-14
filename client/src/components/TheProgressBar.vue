@@ -35,7 +35,7 @@ export default Vue.extend({
   } {
     return {
       taskProgress: {
-        value: 60,
+        value: 0.0,
         max: 100
       },
       timeLeft: 0,
@@ -45,6 +45,15 @@ export default Vue.extend({
   mounted(): void {
     if (this.taskId.length > 0) {
       this.startProgressLoop();
+    }
+  },
+  watch: {
+    taskProgress: function () {
+      console.log(this.taskProgress.value);
+      if (this.taskProgress.value === this.taskProgress.max) {
+        console.log("done");
+        this.$emit("task-done");
+      }
     }
   },
   methods: {

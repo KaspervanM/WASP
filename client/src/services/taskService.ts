@@ -21,10 +21,21 @@ interface TaskProgress {
   max: number;
 }
 
+interface Config {
+  START: number;
+  END: number;
+  BATCH_SIZE: number;
+  RESULT: string;
+  PUBLIC_RESULT?: boolean;
+  ALLOW_ANONYMOUS_USERS?: boolean;
+}
+
 interface Task {
   id: string;
+  password: string;
   title: string;
   description: string;
+  config: Config | string;
   code: string;
 }
 type TaskList = { [id: string]: Task };
@@ -37,6 +48,10 @@ function errToString(err: Error | AxiosError): string {
       switch (err.response.status) {
         case 400:
           return "The request was invalid!";
+        case 401:
+          return "No password was sent!";
+        case 403:
+          return "The entered password was incorrect!";
         case 404:
           return "The selected task was not found!";
         case 406:
@@ -200,6 +215,31 @@ const taskService = {
         .delete<void>(serverURL + "task/" + id)
         .then(() => {
           resolve();
+        })
+        .catch((err: Error | AxiosError) => {
+          reject(errToString(err));
+        });
+    });
+  },
+
+  /* Get the results of a task */
+  downloadResult: function (
+    taskId: string,
+    password?: string
+  ): Promise<number | Array<number | string>> {
+    return new Promise(function (resolve, reject) {
+      axios
+        .post<number | Array<number | string>>(
+          serverURL + "task/results/",
+          { id: taskId, password: password ? password : "filler" },
+          {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
+        )
+        .then((res: AxiosResponse<number | Array<number | string>>) => {
+          resolve(res.data);
         })
         .catch((err: Error | AxiosError) => {
           reject(errToString(err));

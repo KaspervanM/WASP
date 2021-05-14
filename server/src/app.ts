@@ -1,6 +1,7 @@
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
 import cors from "cors";
+import { sha512 } from "js-sha512";
 
 const app = express();
 const port: number = 3000;
@@ -31,11 +32,13 @@ interface Config {
   END: number;
   BATCH_SIZE: number;
   RESULT: string;
+  PUBLIC_RESULT: boolean;
   ALLOW_ANONYMOUS_USERS?: boolean;
 }
 
 interface Task {
   id: string;
+  password: string;
   title: string;
   description: string;
   config: Config | string;
@@ -122,13 +125,15 @@ function getProgress(id: string): TaskProgress {
 tasks["123e4567-e89b-12d3-a456-426614174000"] = {
   //Default task
   id: "123e4567-e89b-12d3-a456-426614174000",
+  password: sha512("password"),
   title: "Default Task",
   description: "Congratulations! WASP is working correctly.",
   config: {
     START: 0,
     END: 30000,
     BATCH_SIZE: 4,
-    RESULT: "array"
+    RESULT: "array",
+    PUBLIC_RESULT: false
   },
   code: 'function main(start, end) {\n\treturn (() => {\n\t\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\t\tlet arr = []\n\t\tfor (let i = start; i <= end; i++) {\n\t\t\tarr.push(str + " " + i.toString());\n\t\t}\n\t\treturn arr;\n\t})();\n}\n',
   subtasks: createSubtasks(0, 30000, 4),
@@ -214,6 +219,7 @@ app.get("/task/progress/:id", (req, res) => {
 app.post("/task", (req, res) => {
   if (
     !(
+      req.body.password &&
       req.body.title &&
       req.body.description &&
       req.body.config &&
@@ -226,6 +232,7 @@ app.post("/task", (req, res) => {
   const id: string = uuidv4();
   tasks[id] = {
     id,
+    password: sha512(req.body.password),
     title: req.body.title,
     description: req.body.description,
     config: config,
@@ -241,18 +248,48 @@ app.post("/task", (req, res) => {
   return res.status(200).send(id); // OK
 });
 
+/* Get the results of a task */
+app.post("/task/results", (req, res) => {
+  if (!req.body.id) {
+    return res.sendStatus(400); // Bad Request
+  }
+  const id: string = req.body.id;
+  if (!tasks[id]) {
+    return res.sendStatus(404); // Not Found
+  }
+  const password: string = req.body.password;
+  if (!password) {
+    return res.sendStatus(401); // Unauthorized
+  }
+  if (!tasks[id].config["PUBLIC_RESULT"])
+    if (tasks[id].password != sha512(password)) {
+      return res.sendStatus(403); //Forbidden
+    }
+  return res.send([tasks[id].result]);
+});
+
 /* Update task */
 app.put("/task", (req, res) => {
   const task: Task = req.body.task;
   if (!(task.id && task.title && task.description && task.config && task.code))
     return res.sendStatus(400); // Bad Request
-  if (!tasks[task.id]) return res.sendStatus(404); // Not Found
+  if (!tasks[task.id]) {
+    return res.sendStatus(404); // Not Found
+  }
+  if (!task.password) {
+    return res.sendStatus(401); // Unauthorized
+  }
+  if (!tasks[task.id].config["PUBLIC_RESULT"])
+    if (tasks[task.id].password != sha512(task.password)) {
+      return res.sendStatus(403); //Forbidden
+    }
   console.log(task);
   console.log(task.config);
   console.log(task.config.toString());
   const config = JSON.parse(task.config.toString());
   const upTask: Task = {
     id: task.id,
+    password: sha512(req.body.password),
     title: task.title,
     description: task.description,
     config: config,
@@ -271,8 +308,21 @@ app.put("/task", (req, res) => {
 
 /* Delete task */
 app.delete("/task/:id", (req, res) => {
-  const id: string = req.params.id;
-  if (!tasks[id]) return res.sendStatus(404); // Not Found
+  if (!(req.body.id && req.body.password)) {
+    return res.sendStatus(400); // Bad Request
+  }
+  const id: string = req.body.id;
+  if (!tasks[id]) {
+    return res.sendStatus(404); // Not Found
+  }
+  const password: string = req.body.password;
+  if (!password) {
+    return res.sendStatus(401); // Unauthorized
+  }
+  if (!tasks[id].config["PUBLIC_RESULT"])
+    if (tasks[id].password != sha512(password)) {
+      return res.sendStatus(403); //Forbidden
+    }
   delete tasks[id];
   return res.sendStatus(204); // No Content
 });
