@@ -58,7 +58,7 @@ export default Vue.extend({
     };
   },
   props: { taskId: String },
-  created() {
+  created(): void {
     if (!this.$cookies.isKey("TaskId")) {
       this.$router.push("/");
     }
