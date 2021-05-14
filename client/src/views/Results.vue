@@ -90,9 +90,9 @@ export default Vue.extend({
       }); // Toast the error
     },
     returnResults: function (): void {
-      const id = this.taskId;
-      taskService.getTask(id).then((task) => {
-        if (task.config["PUBLIC_RESULT"]) {
+      const id: string = this.taskId;
+      taskService.getTask(id).then((task: Task): void => {
+        if ((task.config as Config).PUBLIC_RESULT) {
           taskService
             .downloadResult(id)
             .then((data) => {
