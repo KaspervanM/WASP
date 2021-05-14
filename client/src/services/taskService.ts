@@ -26,7 +26,7 @@ interface Config {
   END: number;
   BATCH_SIZE: number;
   RESULT: string;
-  PRIVATE: boolean;
+  PUBLIC_RESULT?: boolean;
   ALLOW_ANONYMOUS_USERS?: boolean;
 }
 
