@@ -53,9 +53,9 @@ export default Vue.extend({
             variant: "danger",
             autoHideDelay: 5000
           }); // Toast the error
-          if (err.includes("available")) {
-            this.stopTaskLoop(); // End the taskloop
-          } else this.taskloop(); // Continue with taskloop
+          if (!err.includes("available") && !err.includes("found")) {
+            this.taskloop(); // Continue with taskloop
+          }
         });
     },
     evaluateCode: function (subtask: ExSubtask): void {
@@ -104,7 +104,6 @@ export default Vue.extend({
           if (err.includes("finished")) {
             //(Go to results)
             console.log("finished");
-            this.stopTaskLoop(); // End the taskloop
           } else {
             console.error(err); // Log the error
             this.$bvToast.toast(err, {
@@ -112,9 +111,9 @@ export default Vue.extend({
               variant: "danger",
               autoHideDelay: 5000
             }); // Toast the error
-            if (err.includes("available")) {
-              this.stopTaskLoop(); // End the taskloop
-            } else this.taskloop(); // Continue with taskloop
+            if (!err.includes("available") && !err.includes("found")) {
+              this.taskloop(); // Continue with taskloop
+            }
           }
         });
     },
