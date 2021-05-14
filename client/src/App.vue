@@ -53,7 +53,11 @@ export default Vue.extend({
             variant: "danger",
             autoHideDelay: 5000
           }); // Toast the error
-          if (!err.includes("available") && !err.includes("found")) {
+          if (err.includes("found")) {
+            this.stopTaskLoop();
+            return;
+          }
+          if (!err.includes("available")) {
             this.taskloop(); // Continue with taskloop
           }
         });
@@ -111,7 +115,11 @@ export default Vue.extend({
               variant: "danger",
               autoHideDelay: 5000
             }); // Toast the error
-            if (!err.includes("available") && !err.includes("found")) {
+            if (err.includes("found")) {
+              this.stopTaskLoop();
+              return;
+            }
+            if (!err.includes("available")) {
               this.taskloop(); // Continue with taskloop
             }
           }
