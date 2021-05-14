@@ -249,7 +249,7 @@ app.post("/task", (req, res) => {
 });
 
 app.post("/task/results", (req, res) => {
-  if (!(req.body.id && req.body.password)) {
+  if (!req.body.id) {
     return res.sendStatus(400); // Bad Request
   }
   const id: string = req.body.id;
