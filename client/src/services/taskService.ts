@@ -221,6 +221,8 @@ const taskService = {
         });
     });
   },
+
+/* Get the results of a task */
   downloadResult: function (
     taskId: string,
     password?: string
