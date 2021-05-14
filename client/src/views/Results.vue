@@ -104,11 +104,14 @@ export default Vue.extend({
         } else this.showPrompt = true;
       });
     },
-    downloadResults: function (id: string, data): void {
-      const blob = new Blob([JSON.stringify(data)], {
+    downloadResults: function (
+      id: string,
+      data: number | Array<number | string>
+    ): void {
+      const blob: Blob = new Blob([JSON.stringify(data)], {
         type: "application/plain"
       });
-      const link = document.createElement("a");
+      const link: HTMLAnchorElement = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = id.toString() + ".json";
       link.click();
