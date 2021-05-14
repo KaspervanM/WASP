@@ -131,7 +131,7 @@ export default Vue.extend({
           this.downloadResults(id, data);
           this.$bvModal.hide("password-prompt");
         })
-        .catch((err: string) => {
+        .catch((err: string): void => {
           this.nameState = false;
           if (err.includes("password"))
             this.invalidFeedback = "Incorrect password";
