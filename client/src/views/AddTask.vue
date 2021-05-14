@@ -142,7 +142,7 @@ export default Vue.extend({
   END: number;
   BATCH_SIZE: number;
   RESULT: string;
-  PUBLIC_RESULT : boolean;
+  PUBLIC_RESULT?: boolean;
   ALLOW_ANONYMOUS_USERS?: boolean;
 }`
     };
