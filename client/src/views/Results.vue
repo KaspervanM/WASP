@@ -155,7 +155,7 @@ export default Vue.extend({
       // Trigger submit handler
       this.onSubmit();
     },
-    leaveResultsPage: function () {
+    leaveResultsPage: function (): void {
       this.$emit("remove-cookies");
       this.$router.push("/");
     }
