@@ -128,7 +128,7 @@ interface Task {
 
 let task: Task = {
   id: "", //To be filled by server
-  password: "", //To be filled by server
+  password: "", //To be filled by user/server
   title: "", //To be filled by user
   description: "", //To be filled by user
   config: "",
