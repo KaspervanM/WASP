@@ -139,7 +139,11 @@ export default Vue.extend({
         });
     },
     checkFormValidity(): boolean {
-      return this.$refs.form.checkValidity();
+      return ((this as unknown) as {
+        $refs: {
+          form: HTMLInputElement;
+        };
+      }).$refs.form.checkValidity();
     },
     resetModal() {
       this.password = "";
