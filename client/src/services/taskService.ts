@@ -48,6 +48,8 @@ function errToString(err: Error | AxiosError): string {
       switch (err.response.status) {
         case 400:
           return "The request was invalid!";
+        case 401:
+          return "No password was sent!"
         case 403:
           return "The entered password was incorrect!";
         case 404:
