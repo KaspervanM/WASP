@@ -42,6 +42,24 @@
 <script lang="ts">
 import Vue from "vue";
 import taskService from "@/services/taskService";
+
+interface Config {
+  START: number;
+  END: number;
+  BATCH_SIZE: number;
+  RESULT: string;
+  PUBLIC_RESULT?: boolean;
+  ALLOW_ANONYMOUS_USERS?: boolean;
+}
+
+interface Task {
+  id: string;
+  password: string;
+  title: string;
+  description: string;
+  config: Config | string;
+  code: string;
+}
 export default Vue.extend({
   name: "Results",
   data(): {
