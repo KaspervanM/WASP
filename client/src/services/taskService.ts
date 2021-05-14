@@ -49,7 +49,7 @@ function errToString(err: Error | AxiosError): string {
         case 400:
           return "The request was invalid!";
         case 401:
-          return "No password was sent!"
+          return "No password was sent!";
         case 403:
           return "The entered password was incorrect!";
         case 404:
@@ -222,7 +222,7 @@ const taskService = {
     });
   },
 
-/* Get the results of a task */
+  /* Get the results of a task */
   downloadResult: function (
     taskId: string,
     password?: string
