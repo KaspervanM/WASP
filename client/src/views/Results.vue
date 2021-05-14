@@ -74,7 +74,6 @@ export default Vue.extend({
     returnResults: function (): void {
       const id = this.taskId;
       taskService.getTask(id).then((task) => {
-        console.log(task);
         if (task.config["PUBLIC_RESULT"]) {
           taskService
             .downloadResult(id)
