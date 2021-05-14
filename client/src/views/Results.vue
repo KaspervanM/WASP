@@ -117,7 +117,7 @@ export default Vue.extend({
       link.click();
       URL.revokeObjectURL(link.href);
     },
-    onSubmit: function () {
+    onSubmit: function (): void {
       if (!this.checkFormValidity()) {
         this.nameState = false;
         this.invalidFeedback = "Password is required";
