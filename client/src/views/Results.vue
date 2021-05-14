@@ -95,7 +95,7 @@ export default Vue.extend({
         if ((task.config as Config).PUBLIC_RESULT) {
           taskService
             .downloadResult(id)
-            .then((data) => {
+            .then((data: number | Array<number | string>): void => {
               this.downloadResults(id, data);
             })
             .catch((err: string) => {
