@@ -72,7 +72,6 @@
               v-model="task.config"
               placeholder="Enter configuration"
               rows="8"
-              max-rows="8"
               no-resize
               required
             ></b-form-textarea>
