@@ -71,7 +71,7 @@ export default Vue.extend({
     return {
       showPrompt: false,
       password: "",
-      nameState: null,
+      nameState: (null as unknown) as boolean,
       invalidFeedback: "Password is required"
     };
   },
