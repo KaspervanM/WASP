@@ -147,7 +147,7 @@ export default Vue.extend({
     },
     resetModal(): void {
       this.password = "";
-      this.nameState = null;
+      this.nameState = (null as unknown) as boolean;
     },
     handleOk(bvModalEvt) {
       // Prevent modal from closing
