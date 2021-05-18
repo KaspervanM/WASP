@@ -2,6 +2,7 @@ import express from "express";
 import { v4 as uuidv4 } from "uuid";
 import cors from "cors";
 import { sha512 } from "js-sha512";
+import fs from "fs";
 
 const app = express();
 const port: number = 3000;
@@ -50,6 +51,41 @@ interface Task {
 type TaskList = { [id: string]: Task };
 
 let tasks: TaskList = {};
+
+const help: string = `
+HELP              Shows this help screen.
+EXPORT <FILEPATH> Exports the tasklist to the specified file.
+`;
+const typeHelp: string = " Type 'help' to get more information.";
+
+function cmdLoop(): void {
+  const readline = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  readline.question("WASP> ", (cmd: string): void => {
+    const cmdArgs: Array<string> = cmd.split(" ");
+    switch (cmdArgs[0].toLowerCase()) {
+      case "export":
+        if (!cmdArgs[1]) {
+          console.error("Please specify the output file path." + typeHelp);
+          break;
+        }
+        const data: string = JSON.stringify(tasks);
+        fs.writeFile(cmdArgs[1], data, (err: NodeJS.ErrnoException): void => {
+          if (err) console.error("\nError!\n" + err);
+          else console.log("Tasks exported successfully!");
+        });
+        break;
+      case "help":
+        console.log(help);
+      default:
+        console.log("Unknown command '" + cmd + "'." + typeHelp);
+    }
+    readline.close();
+    cmdLoop();
+  });
+}
 
 function createSubtasks(
   start: number,
@@ -328,6 +364,7 @@ app.delete("/task/:id", (req, res) => {
 });
 
 /* Start the server */
-app.listen(port, () => {
-  return console.log(`Server is listening on ${port}`);
+app.listen(port, (): void => {
+  console.log(`Server is listening on ${port}`);
+  cmdLoop();
 });
