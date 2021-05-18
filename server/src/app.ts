@@ -66,7 +66,7 @@ function cmdLoop(): void {
     prompt: "WASP> "
   });
   r.prompt();
-  r.on("line", (cmd: string): void => {
+  r.on("line", async (cmd: string): Promise<void> => {
     const cmdArgs: Array<string> = cmd.trim().split(" ");
     switch (cmdArgs[0].toLowerCase()) {
       case "export":
@@ -81,13 +81,19 @@ function cmdLoop(): void {
           break;
         }
         const data: string = JSON.stringify(tasks);
-        fs.writeFile(cmdArgs[1], data, (err: NodeJS.ErrnoException): void => {
-          if (err) console.error("\nError!\n" + err);
-          else console.log("Tasks exported successfully!");
-        });
+        await fs.promises
+          .writeFile(cmdArgs[1], data)
+          .then((): void => {
+            console.log("Tasks exported successfully!");
+          })
+          .catch((err: NodeJS.ErrnoException): void => {
+            console.error(err);
+          });
         break;
       case "help":
         console.log(help);
+        break;
+      case "":
         break;
       default:
         console.log("Unknown command '" + cmd + "'." + typeHelp);
