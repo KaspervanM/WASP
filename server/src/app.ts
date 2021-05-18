@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import cors from "cors";
 import { sha512 } from "js-sha512";
 import fs from "fs";
+import readline from "readline";
 
 const app = express();
 const port: number = 3000;
@@ -59,12 +60,14 @@ EXPORT <FILEPATH> Exports the tasklist to the specified file.
 const typeHelp: string = " Type 'help' to get more information.";
 
 function cmdLoop(): void {
-  const readline = require("readline").createInterface({
+  const r = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
+    prompt: "WASP> "
   });
-  readline.question("WASP> ", (cmd: string): void => {
-    const cmdArgs: Array<string> = cmd.split(" ");
+  r.prompt();
+  r.on("line", (cmd: string): void => {
+    const cmdArgs: Array<string> = cmd.trim().split(" ");
     switch (cmdArgs[0].toLowerCase()) {
       case "export":
         if (!cmdArgs[1]) {
@@ -89,8 +92,10 @@ function cmdLoop(): void {
       default:
         console.log("Unknown command '" + cmd + "'." + typeHelp);
     }
-    readline.close();
-    cmdLoop();
+    r.prompt();
+  }).on("close", () => {
+    console.log("Have a great day!");
+    process.exit(0);
   });
 }
 
