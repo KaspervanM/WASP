@@ -79,6 +79,7 @@ function cmdLoop(): void {
         break;
       case "help":
         console.log(help);
+        break;
       default:
         console.log("Unknown command '" + cmd + "'." + typeHelp);
     }
