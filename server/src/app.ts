@@ -55,7 +55,8 @@ let tasks: TaskList = {};
 
 const help: string = `
 HELP              Shows this help screen.
-EXPORT <FILEPATH> Exports the tasklist to the specified file.
+EXPORT <FILEPATH> Exports the tasklist to the specified file. (JSON)
+IMPORT <FILEPATH> Imports the tasklist from the specified file. (JSON)
 `;
 const typeHelp: string = " Type 'help' to get more information.";
 
@@ -82,9 +83,35 @@ function cmdLoop(): void {
         }
         const data: string = JSON.stringify(tasks);
         await fs.promises
-          .writeFile(cmdArgs[1], data)
+          .writeFile(cmdArgs[1], data, "utf8")
           .then((): void => {
             console.log("Tasks exported successfully!");
+          })
+          .catch((err: NodeJS.ErrnoException): void => {
+            console.error(err);
+          });
+        break;
+      case "import":
+        if (!cmdArgs[1]) {
+          console.error("Please specify the input file path." + typeHelp);
+          break;
+        }
+        if (/[<>:"|?*]/i.test(cmdArgs[1])) {
+          console.error(
+            "A filepath can't contain any of the following characters:\n: * ? \" < > | "
+          );
+          break;
+        }
+        await fs.promises
+          .readFile(cmdArgs[1], "utf8")
+          .then((data: string): void => {
+            const importedTasks: TaskList = JSON.parse(data);
+            if (!importedTasks) {
+              console.error("Error: The imported file is invalid!");
+              return;
+            }
+            tasks = { ...tasks, ...importedTasks };
+            console.log("Tasks imported successfully!");
           })
           .catch((err: NodeJS.ErrnoException): void => {
             console.error(err);
