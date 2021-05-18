@@ -57,6 +57,7 @@ const help: string = `
 HELP              Shows this help screen.
 EXPORT <FILEPATH> Exports the tasklist to the specified file. (JSON)
 IMPORT <FILEPATH> Imports the tasklist from the specified file. (JSON)
+CTRL + C          Stops the server.
 `;
 const typeHelp: string = " Type 'help' to get more information.";
 
