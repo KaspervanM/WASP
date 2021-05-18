@@ -71,6 +71,12 @@ function cmdLoop(): void {
           console.error("Please specify the output file path." + typeHelp);
           break;
         }
+        if (/[<>:"|?*]/i.test(cmdArgs[1])) {
+          console.error(
+            "A filepath can't contain any of the following characters:\n: * ? \" < > | "
+          );
+          break;
+        }
         const data: string = JSON.stringify(tasks);
         fs.writeFile(cmdArgs[1], data, (err: NodeJS.ErrnoException): void => {
           if (err) console.error("\nError!\n" + err);
