@@ -88,7 +88,7 @@
           <label>Your code:</label>
           <b-form-textarea
             id="input-5"
-            v-model="task.code"
+            v-model="code"
             placeholder="Enter code"
             ref="ta"
             @keydown.native.tab.exact.prevent="tab"
@@ -97,6 +97,16 @@
             required
           ></b-form-textarea>
         </div>
+        <b-alert
+          id="code-alert"
+          :show="!!errors.length"
+          style="z-index: 2000"
+          variant="warning"
+        >
+          <div v-for="err in errors" :key="err">
+            {{ err }}
+          </div>
+        </b-alert>
         <br />
         <div>
           <b-button class="button" type="submit" variant="primary"
@@ -134,8 +144,30 @@ let task: Task = {
 };
 export default Vue.extend({
   name: "AddTask",
-  data(): { task: Task; tooltip: string } {
+  data(): {
+    code: string;
+    codeChecks: Array<string>;
+    errors: Array<string>;
+    task: Task;
+    tooltip: string;
+    isValid: boolean;
+  } {
     return {
+      code: "",
+      codeChecks: [
+        "window",
+        "document",
+        "console",
+        "alert",
+        "prompt",
+        "confirm",
+        "eval",
+        "import",
+        "export",
+        "XMLHttpRequest",
+        "fetch"
+      ],
+      errors: [],
       task,
       tooltip: `interface Config {
   START: number;
@@ -144,7 +176,8 @@ export default Vue.extend({
   RESULT: string;
   PUBLIC_RESULT?: boolean;
   ALLOW_ANONYMOUS_USERS?: boolean;
-}`
+}`,
+      isValid: true
     };
   },
   mounted() {
@@ -157,9 +190,59 @@ export default Vue.extend({
   "ALLOW_ANONYMOUS_USERS": true
 }`;
   },
+  watch: {
+    code: function (): void {
+      this.errors = [];
+      for (let i = 0; i < this.codeChecks.length; i++) {
+        if (this.contains(this.codeChecks[i])) {
+          this.errors.push("Hey, " + this.codeChecks[i] + " is forbidden!");
+        }
+      }
+      if (this.errors.length === 0) {
+        this.isValid = true;
+        this.task.code = this.code;
+        return;
+      }
+      this.isValid = false;
+      return;
+    }
+  },
   methods: {
-    onSubmit(event: Event): void {
+    createToast: function (err: string): void {
+      this.$bvToast.toast(err, {
+        title: "Error!",
+        variant: "danger",
+        autoHideDelay: 5000
+      }); // Toast the error
+    },
+    contains: function (
+      toFind: string,
+      indexList: Array<number> = []
+    ): boolean {
+      const len: number = indexList.length;
+      const code: string = this.code; //.replace(/\s|\r?\n|\r/g, "");
+      if (indexList[len - 1] === 0) {
+        indexList.pop();
+        for (let i = 0; i < len; i++) {
+          // Needs to be changed, this is a bad way of checking
+          if (code[indexList[i] - 2] === "\\") {
+            indexList.splice(i, 1);
+          }
+        }
+        return indexList.length > 0;
+      }
+      return this.contains(
+        toFind,
+        indexList.concat([
+          code.indexOf(toFind, len > 0 ? indexList[len - 1] : 0) + 1
+        ])
+      );
+    },
+    onSubmit: function (event: Event): void {
       event.preventDefault();
+      if (!this.isValid) {
+        return this.createToast("There are still errors in your code.");
+      }
       taskService
         .addTask(this.task)
         .then((id: string): void => {
@@ -192,6 +275,7 @@ export default Vue.extend({
       this.task.description = "";
       this.task.config = "";
       this.task.code = "";
+      this.code = "";
     },
     tab(): void {
       const index: number = ((this as unknown) as {
@@ -199,8 +283,7 @@ export default Vue.extend({
           ta: HTMLInputElement;
         };
       }).$refs.ta.selectionStart as number;
-      this.task.code =
-        this.task.code.slice(0, index) + "\t" + this.task.code.slice(index);
+      this.code = this.code.slice(0, index) + "\t" + this.code.slice(index);
       this.$nextTick((): void => {
         ((this as unknown) as {
           $refs: {
@@ -255,6 +338,9 @@ export default Vue.extend({
 #input-5 {
   flex-grow: 1;
   max-height: 95vh;
+}
+#code-alert {
+  margin: 10px;
 }
 .button {
   margin: 5px;
