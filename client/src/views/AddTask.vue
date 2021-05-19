@@ -60,29 +60,39 @@
               required
             ></b-form-textarea>
           </b-form-group>
-          <b-form-group
-            id="input-group-4"
-            class="block-elem"
-            label="Task Configuration:"
-            label-for="input-4"
-            label-align-sm="left"
-          >
-            <b-form-textarea
-              id="input-4"
-              v-model="task.config"
-              placeholder="Enter configuration"
-              rows="8"
-              no-resize
-              required
-            ></b-form-textarea>
-          </b-form-group>
-          <b-tooltip
-            custom-class="custom-tooltip"
-            target="input-group-4"
-            triggers="focus"
-          >
-            <pre>{{ tooltip }}</pre>
-          </b-tooltip>
+          <div id="config-container" class="block-elem">
+            <b-form-group
+              id="input-group-4"
+              label="Task Configuration:"
+              label-for="input-4"
+              label-align-sm="left"
+            >
+              <b-form-textarea
+                id="input-4"
+                v-model="config"
+                placeholder="Enter configuration"
+                rows="8"
+                no-resize
+                required
+              ></b-form-textarea>
+            </b-form-group>
+            <b-alert
+              id="config-alert"
+              :show="!!configErrors.length"
+              variant="warning"
+            >
+              <div v-for="err in configErrors" :key="err">
+                {{ err }}
+              </div>
+            </b-alert>
+            <b-tooltip
+              custom-class="custom-tooltip"
+              target="input-group-4"
+              triggers="focus"
+            >
+              <pre>{{ tooltip }}</pre>
+            </b-tooltip>
+          </div>
         </div>
         <div id="input-group-5">
           <label>Your code:</label>
@@ -97,13 +107,8 @@
             required
           ></b-form-textarea>
         </div>
-        <b-alert
-          id="code-alert"
-          :show="!!errors.length"
-          style="z-index: 2000"
-          variant="warning"
-        >
-          <div v-for="err in errors" :key="err">
+        <b-alert id="code-alert" :show="!!codeErrors.length" variant="warning">
+          <div v-for="err in codeErrors" :key="err">
             {{ err }}
           </div>
         </b-alert>
@@ -146,13 +151,25 @@ export default Vue.extend({
   name: "AddTask",
   data(): {
     code: string;
+    config: string;
     codeChecks: Array<string>;
-    errors: Array<string>;
+    codeErrors: Array<string>;
+    configChecks1: Array<Array<string>>;
+    configChecks2: Array<Array<string>>;
+    configErrors: Array<string>;
     task: Task;
     tooltip: string;
   } {
     return {
       code: "",
+      config: `{
+  "START": 0,
+  "END": 10,
+  "BATCH_SIZE": 1,
+  "RESULT": "sum",
+  "PUBLIC_RESULT": false,
+  "ALLOW_ANONYMOUS_USERS": true
+}`,
       codeChecks: [
         "window",
         "document",
@@ -166,40 +183,74 @@ export default Vue.extend({
         "XMLHttpRequest",
         "fetch"
       ],
-      errors: [],
+      codeErrors: [],
+      configChecks1: [
+        ["START", "number"],
+        ["END", "number"],
+        ["BATCH_SIZE", "number"],
+        ["RESULT", "string"],
+        ["PUBLIC_RESULT", "boolean"]
+      ],
+      configChecks2: [["ALLOW_ANONYMOUS_USERS", "boolean"]],
+      configErrors: [],
       task,
       tooltip: `interface Config {
   START: number;
   END: number;
   BATCH_SIZE: number;
   RESULT: string;
-  PUBLIC_RESULT?: boolean;
+  PUBLIC_RESULT: boolean;
   ALLOW_ANONYMOUS_USERS?: boolean;
 }`
     };
   },
   mounted() {
-    this.task.config = `{
-  "START": 0,
-  "END": 10,
-  "BATCH_SIZE": 1,
-  "RESULT": "sum",
-  "PUBLIC_RESULT": false,
-  "ALLOW_ANONYMOUS_USERS": true
-}`;
+    this.task.config = this.config;
   },
   watch: {
     code: function (): void {
-      this.errors = [];
+      this.codeErrors = [];
       for (let i = 0; i < this.codeChecks.length; i++) {
         if (this.contains(this.codeChecks[i])) {
-          this.errors.push("Hey, " + this.codeChecks[i] + " is forbidden!");
+          this.codeErrors.push("Hey, " + this.codeChecks[i] + " is forbidden!");
         }
       }
-      if (this.errors.length === 0) {
+      if (this.codeErrors.length === 0) {
         this.task.code = this.code;
       }
       return;
+    },
+    config: function () {
+      this.configErrors = [];
+      try {
+        const config = JSON.parse(this.config);
+        const keys: Array<string> = Object.keys(config);
+        const concatenated = this.configChecks1.concat(this.configChecks2);
+        for (let i = 0; i < keys.length; i++) {
+          let index = -1;
+          concatenated.forEach(function (item, indx) {
+            if (item[0] === keys[i]) {
+              index = indx;
+              return;
+            }
+          });
+          if (index === -1) {
+            this.configErrors.push(keys[i] + " is an invalid key!");
+          } else if (typeof config[keys[i]] !== concatenated[index][1]) {
+            this.configErrors.push(keys[i] + " has an invalid type!");
+          }
+        }
+        for (let i = 0; i < this.configChecks1.length; i++) {
+          if (!keys.includes(this.configChecks1[i][0])) {
+            this.configErrors.push(this.configChecks1[i][0] + " is missing!");
+          }
+        }
+      } catch (err) {
+        this.configErrors.push(err);
+      }
+      if (this.configErrors.length === 0) {
+        this.task.config = this.config;
+      }
     }
   },
   methods: {
@@ -211,8 +262,8 @@ export default Vue.extend({
       }); // Toast the error
     },
     evaluateCode: function (): Promise<string> {
-      let code: string = this.code;
-      let task: Task = this.task;
+      const code: string = this.code;
+      const task: Task = this.task;
       const createToast: (err: string) => void = this.createToast;
       return new Promise(function (resolve, reject) {
         import("@/services/evaluateCode")
@@ -238,13 +289,37 @@ export default Vue.extend({
           });
       });
     },
+    checkType: function (
+      res: string | number | Array<string | number>
+    ): boolean {
+      if (JSON.parse(task.config)["RESULT"] === "sum") {
+        if (typeof res !== "number") {
+          if (typeof res === "string") {
+            if (isNaN(parseInt(res))) {
+              return false;
+            }
+            return true;
+          }
+          return false;
+        }
+        return true;
+      }
+      return true;
+    },
     onSubmit: function (event: Event): void {
       event.preventDefault();
-      if (this.errors.length) {
+      if (this.configErrors.length) {
+        return this.createToast("There are still errors in your config.");
+      }
+      if (this.codeErrors.length) {
         return this.createToast("There are still errors in your code.");
       }
       this.evaluateCode()
-        .then(() => {
+        .then((res: string | number | Array<string | number>) => {
+          if (!this.checkType(res)) {
+            console.error("Wrong return type in main.");
+            return this.codeErrors.push("Wrong return type in main.");
+          }
           taskService
             .addTask(this.task)
             .then((id: string): void => {
@@ -267,7 +342,7 @@ export default Vue.extend({
         })
         .catch((err) => {
           console.error(err);
-          this.errors.push(err); // Toast the error
+          this.codeErrors.push(err);
         });
     },
     onReset(event: Event): void {
