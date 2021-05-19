@@ -292,6 +292,7 @@ export default Vue.extend({
     checkType: function (
       res: string | number | Array<string | number>
     ): boolean {
+      // To be fixed
       if (JSON.parse(task.config)["RESULT"] === "sum") {
         if (typeof res !== "number") {
           if (typeof res === "string") {
