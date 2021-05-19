@@ -150,7 +150,6 @@ export default Vue.extend({
     errors: Array<string>;
     task: Task;
     tooltip: string;
-    isValid: boolean;
   } {
     return {
       code: "",
@@ -176,8 +175,7 @@ export default Vue.extend({
   RESULT: string;
   PUBLIC_RESULT?: boolean;
   ALLOW_ANONYMOUS_USERS?: boolean;
-}`,
-      isValid: true
+}`
     };
   },
   mounted() {
@@ -199,11 +197,8 @@ export default Vue.extend({
         }
       }
       if (this.errors.length === 0) {
-        this.isValid = true;
         this.task.code = this.code;
-        return;
       }
-      this.isValid = false;
       return;
     }
   },
@@ -214,6 +209,76 @@ export default Vue.extend({
         variant: "danger",
         autoHideDelay: 5000
       }); // Toast the error
+    },
+    evaluateCode: function (): Promise<string> {
+      let code: string = this.code;
+      let task: Task = this.task;
+      const createToast: (err: string) => void = this.createToast;
+      return new Promise(function (resolve, reject) {
+        import("@/services/evaluateCode")
+          .then((module): void => {
+            module
+              .evaluate(
+                code,
+                JSON.parse(task.config)["START"],
+                JSON.parse(task.config)["START"] + 1
+              )
+              .then((): void => {
+                resolve("No errors");
+              })
+              .catch((err: string): void => {
+                reject(err);
+              });
+          })
+          .catch((err: Error): void => {
+            console.error(err); // Log the real error
+            createToast(
+              "An error occurred while importing the evaluateCode module!"
+            ); // Toast the error
+          });
+      });
+    },
+    onSubmit: function (event: Event): void {
+      event.preventDefault();
+      if (this.errors.length) {
+        return this.createToast("There are still errors in your code.");
+      }
+      this.evaluateCode()
+        .then(() => {
+          taskService
+            .addTask(this.task)
+            .then((id: string): void => {
+              this.task.id = id;
+              console.log(`Created task with id: ${id}`);
+              this.$bvToast.toast(
+                `Task with ID: ${id} created succesfully! Click here to view your task`,
+                {
+                  to: "/id/" + id,
+                  title: "Success!",
+                  variant: "success",
+                  autoHideDelay: 5000
+                }
+              ); // Toast the success
+            })
+            .catch((err: string): void => {
+              console.error(err);
+              this.createToast(err); // Toast the error
+            });
+        })
+        .catch((err) => {
+          console.error(err);
+          this.errors.push(err); // Toast the error
+        });
+    },
+    onReset(event: Event): void {
+      event.preventDefault();
+      // Reset our form values
+      this.task.password = "";
+      this.task.title = "";
+      this.task.description = "";
+      this.task.config = "";
+      this.task.code = "";
+      this.code = "";
     },
     contains: function (
       toFind: string,
@@ -237,45 +302,6 @@ export default Vue.extend({
           code.indexOf(toFind, len > 0 ? indexList[len - 1] : 0) + 1
         ])
       );
-    },
-    onSubmit: function (event: Event): void {
-      event.preventDefault();
-      if (!this.isValid) {
-        return this.createToast("There are still errors in your code.");
-      }
-      taskService
-        .addTask(this.task)
-        .then((id: string): void => {
-          this.task.id = id;
-          console.log(`Created task with id: ${id}`);
-          this.$bvToast.toast(
-            `Task with ID: ${id} created succesfully! Click here to view your task`,
-            {
-              to: "/id/" + id,
-              title: "Success!",
-              variant: "success",
-              autoHideDelay: 5000
-            }
-          ); // Toast the success
-        })
-        .catch((err: string): void => {
-          console.error(err);
-          this.$bvToast.toast(err, {
-            title: "Error!",
-            variant: "danger",
-            autoHideDelay: 5000
-          }); // Toast the error
-        });
-    },
-    onReset(event: Event): void {
-      event.preventDefault();
-      // Reset our form values
-      this.task.password = "";
-      this.task.title = "";
-      this.task.description = "";
-      this.task.config = "";
-      this.task.code = "";
-      this.code = "";
     },
     tab(): void {
       const index: number = ((this as unknown) as {
