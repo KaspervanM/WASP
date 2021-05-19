@@ -2,6 +2,8 @@ import express from "express";
 import { v4 as uuidv4 } from "uuid";
 import cors from "cors";
 import { sha512 } from "js-sha512";
+import fs from "fs";
+import readline from "readline";
 
 const app = express();
 const port: number = 3000;
@@ -50,6 +52,86 @@ interface Task {
 type TaskList = { [id: string]: Task };
 
 let tasks: TaskList = {};
+
+const help: string = `
+HELP              Shows this help screen.
+EXPORT <FILEPATH> Exports the tasklist to the specified file. (JSON)
+IMPORT <FILEPATH> Imports the tasklist from the specified file. (JSON)
+CTRL + C          Stops the server.
+`;
+const typeHelp: string = " Type 'help' to get more information.";
+
+function cmdLoop(): void {
+  const r = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    prompt: "WASP> "
+  });
+  r.prompt();
+  r.on("line", async (cmd: string): Promise<void> => {
+    const cmdArgs: Array<string> = cmd.trim().split(" ");
+    switch (cmdArgs[0].toLowerCase()) {
+      case "export":
+        if (!cmdArgs[1]) {
+          console.error("Please specify the output file path." + typeHelp);
+          break;
+        }
+        if (/[<>:"|?*]/i.test(cmdArgs[1])) {
+          console.error(
+            "A filepath can't contain any of the following characters:\n: * ? \" < > | "
+          );
+          break;
+        }
+        const data: string = JSON.stringify(tasks);
+        await fs.promises
+          .writeFile(cmdArgs[1], data, "utf8")
+          .then((): void => {
+            console.log("Tasks exported successfully!");
+          })
+          .catch((err: NodeJS.ErrnoException): void => {
+            console.error(err);
+          });
+        break;
+      case "import":
+        if (!cmdArgs[1]) {
+          console.error("Please specify the input file path." + typeHelp);
+          break;
+        }
+        if (/[<>:"|?*]/i.test(cmdArgs[1])) {
+          console.error(
+            "A filepath can't contain any of the following characters:\n: * ? \" < > | "
+          );
+          break;
+        }
+        await fs.promises
+          .readFile(cmdArgs[1], "utf8")
+          .then((data: string): void => {
+            const importedTasks: TaskList = JSON.parse(data);
+            if (!importedTasks) {
+              console.error("Error: The imported file is invalid!");
+              return;
+            }
+            tasks = { ...tasks, ...importedTasks };
+            console.log("Tasks imported successfully!");
+          })
+          .catch((err: NodeJS.ErrnoException): void => {
+            console.error(err);
+          });
+        break;
+      case "help":
+        console.log(help);
+        break;
+      case "":
+        break;
+      default:
+        console.log("Unknown command '" + cmd + "'." + typeHelp);
+    }
+    r.prompt();
+  }).on("close", () => {
+    console.log("Have a great day!");
+    process.exit(0);
+  });
+}
 
 function createSubtasks(
   start: number,
@@ -328,6 +410,7 @@ app.delete("/task/:id", (req, res) => {
 });
 
 /* Start the server */
-app.listen(port, () => {
-  return console.log(`Server is listening on ${port}`);
+app.listen(port, (): void => {
+  console.log(`Server is listening on ${port}`);
+  cmdLoop();
 });
