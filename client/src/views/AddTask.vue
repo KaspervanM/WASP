@@ -211,7 +211,7 @@ export default Vue.extend({
     code: function (): void {
       this.codeErrors = [];
       for (let i = 0; i < this.codeChecks.length; i++) {
-        if (this.contains(this.codeChecks[i])) {
+        if (new RegExp(this.codeChecks[i]).test(this.code)) {
           this.codeErrors.push("Hey, " + this.codeChecks[i] + " is forbidden!");
         }
       }
@@ -355,29 +355,6 @@ export default Vue.extend({
       this.task.config = "";
       this.task.code = "";
       this.code = "";
-    },
-    contains: function (
-      toFind: string,
-      indexList: Array<number> = []
-    ): boolean {
-      const len: number = indexList.length;
-      const code: string = this.code; //.replace(/\s|\r?\n|\r/g, "");
-      if (indexList[len - 1] === 0) {
-        indexList.pop();
-        for (let i = 0; i < len; i++) {
-          // Needs to be changed, this is a bad way of checking
-          if (code[indexList[i] - 2] === "\\") {
-            indexList.splice(i, 1);
-          }
-        }
-        return indexList.length > 0;
-      }
-      return this.contains(
-        toFind,
-        indexList.concat([
-          code.indexOf(toFind, len > 0 ? indexList[len - 1] : 0) + 1
-        ])
-      );
     },
     tab(): void {
       const index: number = ((this as unknown) as {
