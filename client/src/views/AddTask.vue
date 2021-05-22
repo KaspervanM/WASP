@@ -321,7 +321,7 @@ export default Vue.extend({
       if (JSON.parse(task.config)["RESULT"] === "sum") {
         if (typeof res !== "number") {
           if (typeof res === "string") {
-            if (isNaN(parseInt(res))) {
+            if (isNaN(parseFloat(res))) {
               return false;
             }
             return true;
