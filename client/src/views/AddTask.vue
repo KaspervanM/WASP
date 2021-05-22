@@ -283,6 +283,9 @@ export default Vue.extend({
     evaluateCode: function (): Promise<string> {
       const code: string = this.code;
       const task: Task = this.task;
+      const checkType: (
+        res: string | number | (string | number)[]
+      ) => boolean = this.checkType;
       const createToast: (err: string) => void = this.createToast;
       return new Promise(function (resolve, reject) {
         import("@/services/evaluateCode")
@@ -293,7 +296,10 @@ export default Vue.extend({
                 JSON.parse(task.config)["START"],
                 JSON.parse(task.config)["START"] + 1
               )
-              .then((): void => {
+              .then((res: string | number | Array<string | number>): void => {
+                if (!checkType(res)) {
+                  return reject("Wrong return type in main.");
+                }
                 resolve("No errors");
               })
               .catch((err: string): void => {
@@ -335,11 +341,7 @@ export default Vue.extend({
         return this.createToast("There are still errors in your code.");
       }
       this.evaluateCode()
-        .then((res: string | number | Array<string | number>) => {
-          if (!this.checkType(res)) {
-            console.error("Wrong return type in main.");
-            return this.codeErrors.push("Wrong return type in main.");
-          }
+        .then(() => {
           taskService
             .addTask(this.task)
             .then((id: string): void => {
@@ -360,7 +362,7 @@ export default Vue.extend({
               this.createToast(err); // Toast the error
             });
         })
-        .catch((err) => {
+        .catch((err: string) => {
           console.error(err);
           this.codeErrors.push(err);
         });
