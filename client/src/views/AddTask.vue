@@ -210,15 +210,15 @@ export default Vue.extend({
   watch: {
     code: function (): void {
       this.codeErrors = [];
-      for (let i = 0; i < this.codeChecks.length; i++) {
-        if (new RegExp(this.codeChecks[i]).test(this.code)) {
-          this.codeErrors.push("Hey, " + this.codeChecks[i] + " is forbidden!");
-        }
-      }
-      if (this.codeErrors.length === 0) {
+      const regex = new RegExp(this.codeChecks.join("|"), "g");
+      const found: RegExpMatchArray | null = this.code.match(regex);
+      if (!found) {
         this.task.code = this.code;
+        return;
       }
-      return;
+      found.forEach((item) => {
+        this.codeErrors.push("Hey, " + item + " is forbidden!");
+      });
     },
     config: function () {
       this.configErrors = [];
@@ -243,6 +243,25 @@ export default Vue.extend({
         for (let i = 0; i < this.configChecks1.length; i++) {
           if (!keys.includes(this.configChecks1[i][0])) {
             this.configErrors.push(this.configChecks1[i][0] + " is missing!");
+          }
+        }
+        if (keys.includes("BATCH_SIZE")) {
+          if (config["BATCH_SIZE"] < 1) {
+            this.configErrors.push(
+              "Invalid batch size! It should be equal or greater than 1."
+            );
+          }
+        }
+        if (keys.includes("RESULT")) {
+          switch (config["RESULT"]) {
+            case "sum":
+            case "string":
+            case "array":
+              break;
+            default:
+              this.configErrors.push(
+                'This result type is not accepted! Use "sum", "string" of "array".'
+              );
           }
         }
       } catch (err) {
