@@ -177,7 +177,14 @@ function resultHandler(
   const config = tasks[id].config;
   switch (config["RESULT"]) {
     case "sum":
-      (tasks[id].result as number) += subResult as number;
+      switch (typeof subResult) {
+        case "number":
+          (tasks[id].result as number) += subResult as number;
+          break;
+        case "string":
+          (tasks[id].result as number) += parseFloat(subResult);
+          break;
+      }
       return true;
     case "string":
     case "array":
