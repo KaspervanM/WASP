@@ -86,7 +86,7 @@ export default Vue.extend({
       this.id = "";
     },
 
-    toast(toaster, append = false): void {
+    toast(toaster: string | undefined, append = false): void {
       this.toastCount++;
       if (this.toastCount < 2) {
         this.$bvToast.toast(
