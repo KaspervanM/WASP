@@ -15,7 +15,8 @@
         width="100%"
       ></b-img>
       <b-nav class="bd-sidebar" vertical pills @click="hideSidebar()">
-        <b-nav-item to="/" exact exact-active-class="active"
+        <b-nav-item to="/" exact exact-active-class="active">Home</b-nav-item>
+        <b-nav-item to="/dashboard" exact exact-active-class="active"
           >Dashboard</b-nav-item
         >
         <b-nav-item to="/viewtasks" exact exact-active-class="active"
