@@ -28,7 +28,8 @@ export default Vue.extend({
   components: {
     TheSidebar
   },
-  data(): { id: string } {
+  data(): { id: string; toastCount: number } {
+
     return {
       id: "",
       toastCount: 0
