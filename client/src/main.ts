@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import VueCookies from "vue-cookies";
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
+import VueTyperPlugin from "vue-typer";
 
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import "bootstrap/dist/css/bootstrap.css";
@@ -15,6 +16,8 @@ Vue.use(IconsPlugin);
 
 Vue.use(VueCookies);
 Vue.$cookies.config("7d");
+
+Vue.use(VueTyperPlugin);
 
 Vue.config.productionTip = false;
 

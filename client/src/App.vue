@@ -157,4 +157,9 @@ export default Vue.extend({
   font-size: 3rem;
   font-weight: bold;
 }
+.header2 {
+  padding: 4px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.8rem;
+}
 </style>
