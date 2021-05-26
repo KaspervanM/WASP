@@ -10,7 +10,7 @@
 
 #### One task
 
-`curl -X GET http://localhost:3000/task/1default-task-uuid-wasp-twelvecharss`
+`curl -X GET http://localhost:3000/task/123e4567-e89b-12d3-a456-426614174000`
 
 ### POST
 
@@ -22,4 +22,4 @@
 
 ### DELETE
 
-`curl -X DELETE http://localhost:3000/task/1default-task-uuid-wasp-twelvecharss`
+`curl -X DELETE http://localhost:3000/task/123e4567-e89b-12d3-a456-426614174000`

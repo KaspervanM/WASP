@@ -35,7 +35,7 @@ export default Vue.extend({
   } {
     return {
       taskProgress: {
-        value: 60,
+        value: 0.0,
         max: 100
       },
       timeLeft: 0,
@@ -47,17 +47,32 @@ export default Vue.extend({
       this.startProgressLoop();
     }
   },
+  watch: {
+    taskProgress: function () {
+      console.log(this.taskProgress.value);
+      if (this.taskProgress.value === this.taskProgress.max) {
+        console.log("done");
+        this.$emit("task-done");
+      }
+    }
+  },
   methods: {
-    async startProgressLoop(): Promise<void> {
+    startProgressLoop(): void {
       this.progressInterval = setInterval(
-        async function (this: {
+        function (this: {
           taskProgress: TaskProgress;
           timeLeft: number;
           taskId: string;
-        }): Promise<void> {
-          const progress = await taskService.getTaskProgress(this.taskId);
-          this.taskProgress = progress[0];
-          this.timeLeft = progress[1];
+        }): void {
+          taskService
+            .getTaskProgress(this.taskId)
+            .then((res: [TaskProgress, number]): void => {
+              this.taskProgress = res[0];
+              this.timeLeft = res[1];
+            })
+            .catch((err: string): void => {
+              console.error(err);
+            });
         }.bind(this),
         1000
       );

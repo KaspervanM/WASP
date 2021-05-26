@@ -37,8 +37,19 @@ export default Vue.extend({
     let tasks: TaskList = {};
     return { tasks };
   },
-  async mounted(): Promise<void> {
-    this.tasks = await taskService.getTasks();
+  mounted(): void {
+    taskService.getTasks
+      .then((tasks): void => {
+        this.tasks = tasks as TaskList;
+      })
+      .catch((err: string): void => {
+        console.error(err);
+        this.$bvToast.toast(err, {
+          title: "Error!",
+          variant: "danger",
+          autoHideDelay: 5000
+        }); // Toast the error
+      });
   }
 });
 </script>

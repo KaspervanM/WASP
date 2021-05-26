@@ -7,6 +7,7 @@
           :taskId="taskId"
           v-if="taskId.length > 0"
           :key="NaN"
+          @task-done="showResults"
         ></TheProgressBar>
         <p>Congratulations: {{ taskId }} is now running!</p>
         <b-button
@@ -31,7 +32,6 @@
                 id="input-1"
                 v-model="runTaskId"
                 type="text"
-                @input="showSuccessAlert = showErrorAlert = false"
                 :state="taskIdState"
                 placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                 aria-describedby="input-live-help input-live-feedback"
@@ -67,11 +67,9 @@ export default Vue.extend({
   name: "Dashboard",
   components: { TheProgressBar },
   props: { taskId: String },
-  data(): { runTaskId: string; max: number; value: number } {
+  data(): { runTaskId: string } {
     return {
-      runTaskId: "",
-      max: 100,
-      value: 60.0
+      runTaskId: ""
     };
   },
   computed: {
@@ -87,6 +85,9 @@ export default Vue.extend({
       if (this.taskIdState) {
         this.$router.push("/id/" + this.runTaskId);
       }
+    },
+    showResults: function (): void {
+      this.$router.push("/results");
     }
   }
 });

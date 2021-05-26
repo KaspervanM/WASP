@@ -7,10 +7,9 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "TaskStarter",
-  created() {
+  created(): void {
     this.$emit("start-task", this.$route.params.id);
     this.$router.push("/");
   }
 });
 </script>
->
