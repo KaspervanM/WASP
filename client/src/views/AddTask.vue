@@ -106,6 +106,14 @@
             no-resize
             required
           ></b-form-textarea>
+          <label>Or upload a file:</label>
+          <input
+            type="file"
+            id="file"
+            ref="file"
+            v-on:change="handleFileUpload()"
+            accept=".js"
+          />
         </div>
         <b-alert id="code-alert" :show="!!codeErrors.length" variant="warning">
           <div v-for="err in codeErrors" :key="err">
@@ -157,6 +165,7 @@ export default Vue.extend({
     configChecks1: Array<Array<string>>;
     configChecks2: Array<Array<string>>;
     configErrors: Array<string>;
+    file: File;
     task: Task;
     tooltip: string;
   } {
@@ -194,6 +203,7 @@ export default Vue.extend({
       configChecks2: [["ALLOW_ANONYMOUS_USERS", "boolean"]],
       configErrors: [],
       task,
+      file: new File([], ""),
       tooltip: `interface Config {
   START: number;
   END: number;
@@ -280,12 +290,45 @@ export default Vue.extend({
         autoHideDelay: 5000
       }); // Toast the error
     },
+    errorHandler: function (e: ProgressEvent<FileReader>): void {
+      const err = (e.target as FileReader).error as DOMException;
+      switch (err.code) {
+        case 1:
+          return this.createToast("The file does not exist.");
+        case 2:
+          return this.createToast(
+            "Unspecified security issues prevent the browser from reading the file."
+          );
+        case 3:
+          return this.createToast("The attempt to read the file was aborted.");
+        case 4:
+          return this.createToast(
+            "The file is not readable, perhaps because its permissions have changed or because another process has locked it."
+          );
+        default:
+          this.createToast("An error occurred reading this file.");
+      }
+    },
+    handleFileUpload: function () {
+      this.file = (
+        this as unknown as { $refs: { file: { files: FileList } } }
+      ).$refs.file.files[0];
+      var reader = new FileReader();
+      reader.onerror = this.errorHandler;
+      reader.onload = function (
+        this: { code: string },
+        e: ProgressEvent<FileReader>
+      ): void {
+        (this as unknown as { code: string }).code = (e.target as FileReader)
+          .result as string;
+      }.bind(this as unknown as { code: string });
+      reader.readAsText(this.file);
+    },
     evaluateCode: function (): Promise<string> {
       const code: string = this.code;
       const task: Task = this.task;
-      const checkType: (
-        res: string | number | (string | number)[]
-      ) => boolean = this.checkType;
+      const checkType: (res: string | number | (string | number)[]) => boolean =
+        this.checkType;
       const createToast: (err: string) => void = this.createToast;
       return new Promise(function (resolve, reject) {
         import("@/services/evaluateCode")
@@ -378,18 +421,22 @@ export default Vue.extend({
       this.code = "";
     },
     tab(): void {
-      const index: number = ((this as unknown) as {
-        $refs: {
-          ta: HTMLInputElement;
-        };
-      }).$refs.ta.selectionStart as number;
-      this.code = this.code.slice(0, index) + "\t" + this.code.slice(index);
-      this.$nextTick((): void => {
-        ((this as unknown) as {
+      const index: number = (
+        this as unknown as {
           $refs: {
             ta: HTMLInputElement;
           };
-        }).$refs.ta.setSelectionRange(index + 1, index + 1);
+        }
+      ).$refs.ta.selectionStart as number;
+      this.code = this.code.slice(0, index) + "\t" + this.code.slice(index);
+      this.$nextTick((): void => {
+        (
+          this as unknown as {
+            $refs: {
+              ta: HTMLInputElement;
+            };
+          }
+        ).$refs.ta.setSelectionRange(index + 1, index + 1);
       });
     }
   }

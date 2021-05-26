@@ -71,7 +71,7 @@ export default Vue.extend({
     return {
       showPrompt: false,
       password: "",
-      nameState: (null as unknown) as boolean,
+      nameState: null as unknown as boolean,
       invalidFeedback: "Password is required"
     };
   },
@@ -139,15 +139,17 @@ export default Vue.extend({
         });
     },
     checkFormValidity(): boolean {
-      return ((this as unknown) as {
-        $refs: {
-          form: HTMLInputElement;
-        };
-      }).$refs.form.checkValidity();
+      return (
+        this as unknown as {
+          $refs: {
+            form: HTMLInputElement;
+          };
+        }
+      ).$refs.form.checkValidity();
     },
     resetModal(): void {
       this.password = "";
-      this.nameState = (null as unknown) as boolean;
+      this.nameState = null as unknown as boolean;
     },
     handleOk(bvModalEvt: Event): void {
       // Prevent modal from closing
