@@ -5,26 +5,31 @@
   </div>
 </template>
 
-<script lang="typescript">
-</script>
+<script lang="ts"></script>
 
 <style lang="scss" scoped>
 .dashboard {
+  border: 2px solid tomato;
   width: 100%;
   height: auto;
 }
 .parallax {
-	min-height: 500px;
-	background-attachment: fixed;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
+  border: 2px solid orange;
+  width: 100%;
+  min-height: 500px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .image1 {
-	background-image: url("../assets/hide-the-pain-harold-why-you-should-not-use-stock-photos.jpg");
-	image-orientation: from-image;
+  border: 2px solid teal;
+  background-image: url("../assets/hide-the-pain-harold-why-you-should-not-use-stock-photos.jpg");
+  image-orientation: from-image;
 }
 #title {
+  border: 2px solid khaki;
   float: left;
   display: inline-flex;
 }
+</style>
