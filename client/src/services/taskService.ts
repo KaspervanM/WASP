@@ -89,16 +89,18 @@ function errToString(err: Error | AxiosError): string {
 
 const taskService = {
   /* Get an array of tasks */
-  getTasks: new Promise(function (resolve, reject) {
-    axios
-      .get<TaskList>(serverURL + "task")
-      .then((res: AxiosResponse<TaskList>): void => {
-        resolve(res.data);
-      })
-      .catch((err: Error | AxiosError): void => {
-        reject(errToString(err));
-      });
-  }),
+  getTasks: function (): Promise<TaskList> {
+    return new Promise<TaskList>(function (resolve, reject) {
+      axios
+        .get<TaskList>(serverURL + "task")
+        .then((res: AxiosResponse<TaskList>): void => {
+          resolve(res.data);
+        })
+        .catch((err: Error | AxiosError): void => {
+          reject(errToString(err));
+        });
+    });
+  },
 
   /* Get information about specific task */
   getTask: function (id: string): Promise<Task> {

@@ -38,7 +38,8 @@ export default Vue.extend({
     return { tasks };
   },
   mounted(): void {
-    taskService.getTasks
+    taskService
+      .getTasks()
       .then((tasks): void => {
         this.tasks = tasks as TaskList;
       })
