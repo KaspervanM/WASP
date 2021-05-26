@@ -15,21 +15,27 @@
         width="100%"
       ></b-img>
       <b-nav class="bd-sidebar" vertical pills @click="hideSidebar()">
-        <b-nav-item to="/" exact exact-active-class="active">Home</b-nav-item>
+        <b-nav-item to="/" exact exact-active-class="active"
+          ><span><b-icon-house-door></b-icon-house-door> Home</span></b-nav-item
+        >
         <b-nav-item to="/dashboard" exact exact-active-class="active"
-          >Dashboard</b-nav-item
+          ><span
+            ><b-icon-pie-chart></b-icon-pie-chart> Dashboard</span
+          ></b-nav-item
         >
         <b-nav-item to="/viewtasks" exact exact-active-class="active"
-          >View Tasks</b-nav-item
+          ><span
+            ><b-icon-layout-wtf></b-icon-layout-wtf> View Tasks</span
+          ></b-nav-item
         >
         <b-nav-item to="/addtask" exact exact-active-class="active"
-          >Add Task</b-nav-item
+          ><span><b-icon-pencil></b-icon-pencil> Add Task</span></b-nav-item
         >
         <b-nav-item to="/deletetask" exact exact-active-class="active"
-          >Delete Task</b-nav-item
+          ><span><b-icon-trash></b-icon-trash> Delete Task</span></b-nav-item
         >
         <b-nav-item to="/about" exact exact-active-class="active"
-          >About</b-nav-item
+          ><span><b-icon-people></b-icon-people> About</span></b-nav-item
         >
       </b-nav>
     </b-collapse>
@@ -77,6 +83,9 @@ export default Vue.extend({
   display: none;
 }
 .sidebar {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
   position: sticky;
   width: 20vw;
   min-width: 200px;
@@ -85,6 +94,16 @@ export default Vue.extend({
   background-color: lightgrey;
   left: 0;
   top: 0;
+}
+.bd-sidebar {
+  width: 100%;
+  text-align: left;
+  span {
+    margin-left: 15px;
+  }
+}
+.nav-item {
+  margin-left: 5px;
 }
 .mobile {
   position: absolute;
