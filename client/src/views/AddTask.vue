@@ -283,9 +283,8 @@ export default Vue.extend({
     evaluateCode: function (): Promise<string> {
       const code: string = this.code;
       const task: Task = this.task;
-      const checkType: (
-        res: string | number | (string | number)[]
-      ) => boolean = this.checkType;
+      const checkType: (res: string | number | (string | number)[]) => boolean =
+        this.checkType;
       const createToast: (err: string) => void = this.createToast;
       return new Promise(function (resolve, reject) {
         import("@/services/evaluateCode")
@@ -378,18 +377,22 @@ export default Vue.extend({
       this.code = "";
     },
     tab(): void {
-      const index: number = ((this as unknown) as {
-        $refs: {
-          ta: HTMLInputElement;
-        };
-      }).$refs.ta.selectionStart as number;
-      this.code = this.code.slice(0, index) + "\t" + this.code.slice(index);
-      this.$nextTick((): void => {
-        ((this as unknown) as {
+      const index: number = (
+        this as unknown as {
           $refs: {
             ta: HTMLInputElement;
           };
-        }).$refs.ta.setSelectionRange(index + 1, index + 1);
+        }
+      ).$refs.ta.selectionStart as number;
+      this.code = this.code.slice(0, index) + "\t" + this.code.slice(index);
+      this.$nextTick((): void => {
+        (
+          this as unknown as {
+            $refs: {
+              ta: HTMLInputElement;
+            };
+          }
+        ).$refs.ta.setSelectionRange(index + 1, index + 1);
       });
     }
   }

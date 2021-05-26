@@ -10,7 +10,7 @@
     <b-collapse v-model="visible" :class="['sidebar', { mobile: isMobile() }]">
       <b-img
         class="wasplogo"
-        :src="require('../assets/logo.png')"
+        :src="require('@/assets/logo.png')"
         alt="WASP logo"
         width="100%"
       ></b-img>
