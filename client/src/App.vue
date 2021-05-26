@@ -29,13 +29,12 @@ export default Vue.extend({
     TheSidebar
   },
   data(): { id: string; toastCount: number } {
-
     return {
       id: "",
       toastCount: 0
     };
   },
-  mounted() {
+  mounted(): void {
     this.toast("b-toaster-bottom-center");
     if (this.$cookies.isKey("TaskId")) {
       this.startTaskLoop(this.$cookies.get("TaskId"));
@@ -144,7 +143,7 @@ export default Vue.extend({
       this.id = "";
     },
 
-    toast(toaster: string | undefined, append = false): void {
+    toast: function (toaster: string | undefined, append = false): void {
       this.toastCount++;
       if (this.toastCount < 2) {
         this.$bvToast.toast(
