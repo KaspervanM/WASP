@@ -77,14 +77,14 @@ export default Vue.extend({
   display: none;
 }
 .sidebar {
-  position: static;
+  position: sticky;
   width: 20vw;
   min-width: 200px;
   max-width: 300px;
-  height: 100%;
   min-height: 100vh;
   background-color: lightgrey;
   left: 0;
+  top: 0;
 }
 .mobile {
   position: absolute;
