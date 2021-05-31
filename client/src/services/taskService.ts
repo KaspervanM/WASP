@@ -134,9 +134,12 @@ const taskService = {
   returnSubresult: function (
     id: string,
     subtask: Subtask,
-    result: string | number | Array<string | number>
+    result: string | number | bigint | Array<string | number>
   ): Promise<void> {
     return new Promise<void>(function (resolve, reject) {
+      if (typeof result === "bigint") {
+        result = result.toString();
+      }
       axios
         .post<void>(
           serverURL + "task/return-subresult",

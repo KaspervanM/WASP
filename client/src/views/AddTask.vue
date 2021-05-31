@@ -265,6 +265,7 @@ export default Vue.extend({
         if (keys.includes("RESULT")) {
           switch (config["RESULT"]) {
             case "sum":
+            case "bigsum":
             case "string":
             case "array":
               break;
@@ -360,11 +361,24 @@ export default Vue.extend({
     checkType: function (
       res: string | number | Array<string | number>
     ): boolean {
-      // To be fixed
       if (JSON.parse(task.config)["RESULT"] === "sum") {
         if (typeof res !== "number") {
           if (typeof res === "string") {
             if (isNaN(parseFloat(res))) {
+              return false;
+            }
+            return true;
+          }
+          return false;
+        }
+        return true;
+      }
+      if (JSON.parse(task.config)["RESULT"] === "bigsum") {
+        if (typeof res !== "bigint") {
+          if (typeof res === "string") {
+            try {
+              BigInt(res);
+            } catch (err) {
               return false;
             }
             return true;

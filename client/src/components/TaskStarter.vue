@@ -9,7 +9,7 @@ export default Vue.extend({
   name: "TaskStarter",
   created(): void {
     this.$emit("start-task", this.$route.params.id);
-    this.$router.push("/");
+    this.$router.push("/dashboard");
   }
 });
 </script>
