@@ -25,27 +25,26 @@
 
     <main>
       <section>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
-        <p>haha</p>
+        <div class="section-block">
+          <p class="header2">What is WASP?</p>
+          <p>
+            WASP is a web service that makes your parallel processes be
+            completed faster. It enables you to run your code without using any
+            resources on your device. WASP accomplishes this by running the
+            process in the browsers of users of this site. So, upload your code
+            and send a link to your friends.
+          </p>
+        </div>
+        <div class="section-block" id="diagram1"></div>
       </section>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </main>
   </div>
 </template>
@@ -94,5 +93,27 @@ export default Vue.extend({
 }
 .underlined {
   border-bottom: 3px solid lightgrey;
+}
+section {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: left;
+  align-items: left;
+}
+.section-block {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: left;
+  align-items: left;
+  width: 40%;
+  margin: 10px 5% 10px 5%;
+  text-align: left;
+}
+#diagram1 {
+  background: url("../assets/Diagram1.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  min-height: 300px;
 }
 </style>
