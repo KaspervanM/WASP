@@ -34,7 +34,7 @@ export default Vue.extend({
       toastCount: 0
     };
   },
-  mounted(): void {
+  mounted() {
     this.toast("b-toaster-bottom-center");
     if (this.$cookies.isKey("TaskId")) {
       this.startTaskLoop(this.$cookies.get("TaskId"));
@@ -176,5 +176,15 @@ export default Vue.extend({
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 3rem;
   font-weight: bold;
+}
+.header2 {
+  padding: 4px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.8rem;
+}
+.header3 {
+  padding: 2px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.4rem;
 }
 </style>
