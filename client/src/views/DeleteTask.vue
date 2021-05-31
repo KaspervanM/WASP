@@ -134,6 +134,7 @@ export default Vue.extend({
               autoHideDelay: 5000
             }
           ); // Toast the success
+          this.id = "";
         })
         .catch((err: string): void => {
           this.invalidFeedback = err;
