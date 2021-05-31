@@ -64,10 +64,16 @@
       </section>
       <br />
       <br />
-      <br />
-      <br />
-      <br />
-      <br />
+      <section>
+        <div class="section-block">
+          <p class="header2">How to use this site</p>
+          <p>
+            To read the guide about how to upload your code, go to
+            <a href="/about">this</a> page. To read the guide about how to help
+            processes, go to <a href="/about">this</a> page.
+          </p>
+        </div>
+      </section>
       <br />
       <br />
     </main>
