@@ -46,7 +46,7 @@ interface Task {
   config: Config | string;
   code: string;
   subtasks: Subtask[];
-  result: number | Array<string | number>;
+  result: number | string | Array<string | number>;
   speed: number;
 }
 type TaskList = { [id: string]: Task };
@@ -158,10 +158,12 @@ function createResults(
   res: string,
   start?: number,
   end?: number
-): number | Array<number | string> {
+): number | string | Array<number | string> {
   switch (res) {
     case "sum":
       return 0;
+    case "bigsum":
+      return "0";
     case "string":
     case "array":
       return new Array(end - start + 1).fill(0);
@@ -185,6 +187,12 @@ function resultHandler(
           (tasks[id].result as number) += parseFloat(subResult);
           break;
       }
+      return true;
+    case "bigsum":
+      (tasks[id].result as any as string) = (
+        BigInt(tasks[id].result as any as string) +
+        BigInt(subResult as any as string)
+      ).toString();
       return true;
     case "string":
     case "array":
