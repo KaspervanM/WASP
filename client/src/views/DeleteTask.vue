@@ -1,34 +1,64 @@
 <template>
   <div class="deletetask">
     <p class="header1" id="title">Delete Task</p>
-    <b-container title="Remove a task" id="form-container" bg-variant="light">
-      <b-form id="form" @submit="onSubmit">
+    <b-container id="form-container" bg-variant="light">
+      <b-form
+        id="form"
+        @submit.stop.prevent="
+          if (taskState) {
+            showPrompt = true;
+          }
+        "
+      >
         <b-form-group
           id="input-group-1"
           label="Task ID:"
           label-for="input-1"
           label-align-sm="left"
+          :invalid-feedback="taskInvalidFeedback"
+          :state="taskState"
           description="The task ID is given to you when you create a new task."
         >
           <b-form-input
             id="input-1"
-            v-model="taskId"
+            v-model="id"
             type="text"
-            :state="taskIdState"
+            :state="taskState"
             placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            aria-describedby="input-live-help input-live-feedback"
             required
           ></b-form-input>
-          <b-form-invalid-feedback id="input-live-feedback">
-            It should be a uuid. Example: 123e4567-e89b-12d3-a456-426614174000
-          </b-form-invalid-feedback>
         </b-form-group>
-
         <div>
           <b-button type="submit" variant="primary">Submit</b-button>
         </div>
       </b-form>
     </b-container>
+    <b-modal
+      id="password-prompt"
+      v-model="showPrompt"
+      ref="modal"
+      title="Enter Password"
+      @show="resetModal"
+      @hidden="resetModal"
+      @ok="handleOk"
+    >
+      <form ref="form" @submit.stop.prevent="onSubmit">
+        <b-form-group
+          label="Password"
+          label-for="password-input"
+          :invalid-feedback="invalidFeedback"
+          :state="nameState"
+        >
+          <b-form-input
+            id="password-input"
+            type="password"
+            v-model="password"
+            :state="nameState"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </form>
+    </b-modal>
   </div>
 </template>
 
@@ -38,43 +68,96 @@ import taskService from "@/services/taskService";
 
 export default Vue.extend({
   name: "DeleteTask",
-  data(): { taskId: string } {
-    return { taskId: "" };
+  data(): {
+    id: string;
+    showPrompt: boolean;
+    password: string;
+    taskState: boolean;
+    nameState: boolean;
+    invalidFeedback: string;
+    taskInvalidFeedback: string;
+  } {
+    return {
+      id: "",
+      showPrompt: false,
+      password: "",
+      taskState: null as unknown as boolean,
+      nameState: null as unknown as boolean,
+      invalidFeedback: "Password required",
+      taskInvalidFeedback:
+        "It should be a uuid. Example: 123e4567-e89b-12d3-a456-426614174000"
+    };
   },
-  computed: {
-    taskIdState: function (): boolean {
-      return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-        this.taskId
-      );
+  watch: {
+    id(id): void {
+      if (
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+          id
+        )
+      ) {
+        this.taskInvalidFeedback =
+          "It should be a uuid. Example: 123e4567-e89b-12d3-a456-426614174000";
+        this.taskState = false;
+        return;
+      }
+      taskService
+        .getTask(id)
+        .then(() => {
+          this.taskState = true;
+        })
+        .catch((err): void => {
+          this.taskInvalidFeedback = err;
+          this.taskState = false;
+          return;
+        });
     }
   },
   methods: {
-    onSubmit(event: Event): void {
-      event.preventDefault();
-      if (this.taskIdState) {
-        taskService
-          .deleteTask(this.taskId)
-          .then((): void => {
-            console.log(`Deleted task with id: ${this.taskId}`);
-            this.$bvToast.toast(
-              `Task with ID: ${this.taskId} deleted succesfully! Click here to create a new task`,
-              {
-                to: "/addtask",
-                title: "Success!",
-                variant: "success",
-                autoHideDelay: 5000
-              }
-            ); // Toast the success
-          })
-          .catch((err: string): void => {
-            console.error(err);
-            this.$bvToast.toast(err, {
-              title: "Error!",
-              variant: "danger",
-              autoHideDelay: 5000
-            }); // Toast the error
-          });
+    onSubmit: function (): void {
+      if (!this.checkFormValidity()) {
+        this.invalidFeedback = "Password required";
+        this.nameState = false;
+        return;
       }
+      const id: string = this.id;
+      const pass: string = this.password;
+      taskService
+        .deleteTask(id, pass)
+        .then((): void => {
+          this.$bvModal.hide("password-prompt");
+          this.$bvToast.toast(
+            `Task with ID: ${id} deleted succesfully! Click here to create a new task`,
+            {
+              to: "/addtask",
+              title: "Success!",
+              variant: "success",
+              autoHideDelay: 5000
+            }
+          ); // Toast the success
+        })
+        .catch((err: string): void => {
+          this.invalidFeedback = err;
+          this.nameState = false;
+        });
+    },
+    checkFormValidity(): boolean {
+      return (
+        this as unknown as {
+          $refs: {
+            form: HTMLInputElement;
+          };
+        }
+      ).$refs.form.checkValidity();
+    },
+    resetModal(): void {
+      this.password = "";
+      this.nameState = null as unknown as boolean;
+    },
+    handleOk(bvModalEvt: Event): void {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault();
+      // Trigger submit handler
+      this.onSubmit();
     }
   }
 });

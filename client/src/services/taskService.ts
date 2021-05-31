@@ -211,10 +211,15 @@ const taskService = {
   },
 
   /* Delete task */
-  deleteTask: function (id: string): Promise<void> {
+  deleteTask: function (id: string, password: string): Promise<void> {
     return new Promise<void>(function (resolve, reject) {
       axios
-        .delete<void>(serverURL + "task/" + id)
+        .delete<void>(serverURL + "task/", {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          data: { id, password }
+        })
         .then(() => {
           resolve();
         })
@@ -226,14 +231,14 @@ const taskService = {
 
   /* Get the results of a task */
   downloadResult: function (
-    taskId: string,
+    id: string,
     password?: string
   ): Promise<number | Array<number | string>> {
     return new Promise(function (resolve, reject) {
       axios
         .post<number | Array<number | string>>(
           serverURL + "task/results/",
-          { id: taskId, password: password ? password : "filler" },
+          { id, password: password ? password : "filler" },
           {
             headers: {
               "Content-Type": "application/json"
