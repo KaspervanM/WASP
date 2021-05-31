@@ -57,21 +57,30 @@
             arduous for a computer and take a long time. With WASP, however this
             is no longer the case. Just upload the code and ask your friends to
             help. When the process has finished, you can download the code and
-            see the result. View <a href="/about">this</a> page for an example
-            of the code.
+            see the result.
+            <i
+              >View <a href="/about">this</a> page for an example of the
+              code.</i
+            >
           </p>
         </div>
       </section>
       <br />
       <br />
       <section>
-        <div class="section-block">
+        <div class="section-block" id="explanation">
           <p class="header2">How to use this site</p>
           <p>
-            To read the guide about how to upload your code, go to
-            <a href="/about">this</a> page. To read the guide about how to help
-            processes, go to <a href="/about">this</a> page.
+            <i
+              >To read the in-depth guide about how to upload your code, go to
+              <a href="/about">this</a> page. To read the in-depth guide about
+              how to help processes, go to <a href="/about">this</a> page.</i
+            >
           </p>
+          <p class="header3">Prerequisites</p>
+          <ul>
+            <li>The code must be written in Javascript.</li>
+          </ul>
         </div>
       </section>
       <br />
@@ -146,5 +155,8 @@ section {
   background-size: contain;
   background-position: center;
   min-height: 300px;
+}
+#explanation {
+  width: 100%;
 }
 </style>
