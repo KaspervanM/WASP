@@ -404,7 +404,7 @@ app.put("/task", (req, res) => {
 });
 
 /* Delete task */
-app.delete("/task/:id", (req, res) => {
+app.delete("/task", (req, res) => {
   if (!(req.body.id && req.body.password)) {
     return res.sendStatus(400); // Bad Request
   }
