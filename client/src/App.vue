@@ -28,10 +28,14 @@ export default Vue.extend({
   components: {
     TheSidebar
   },
-  data(): { id: string } {
-    return { id: "" };
+  data(): { id: string; toastCount: number } {
+    return {
+      id: "",
+      toastCount: 0
+    };
   },
-  mounted() {
+  mounted(): void {
+    this.toast("b-toaster-bottom-center");
     if (this.$cookies.isKey("TaskId")) {
       this.startTaskLoop(this.$cookies.get("TaskId"));
     }
@@ -137,6 +141,22 @@ export default Vue.extend({
     stopTaskLoop: function (): void {
       this.$cookies.remove("TaskId");
       this.id = "";
+    },
+
+    toast: function (toaster: string | undefined, append = false): void {
+      this.toastCount++;
+      if (this.toastCount < 2) {
+        this.$bvToast.toast(
+          `By using this site, you consent to these cookies.`,
+          {
+            title: `This site uses functional cookies.`,
+            noAutoHide: true,
+            solid: true,
+            toaster: toaster,
+            appendToast: append
+          }
+        );
+      }
     }
   }
 });
