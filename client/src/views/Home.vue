@@ -37,6 +37,31 @@
         </div>
         <div class="section-block" id="diagram1"></div>
       </section>
+      <section>
+        <div class="section-block">
+          <p class="header2">Why use it?</p>
+          <p>
+            WASP can be used regardless of your device. Where you would have
+            needed a monster pc, with WASP you just need friends with an
+            internet connection.
+          </p>
+          <p>
+            Some processes can make your computer run slowely and prevent you
+            from doing anything else. With WASP this is no longer the case.
+          </p>
+        </div>
+        <div class="section-block">
+          <p class="header2">An example</p>
+          <p>
+            The calculation of thousands of digits of pi is known to be very
+            arduous for a computer and take a long time. With WASP, however this
+            is no longer the case. Just upload the code and ask your friends to
+            help. When the process has finished, you can download the code and
+            see the result. View <a href="/about">this</a> page for an example
+            of the code.
+          </p>
+        </div>
+      </section>
       <br />
       <br />
       <br />
