@@ -1,5 +1,5 @@
 <template>
-  <b-card title="Progress bar" id="progress-container" bg-variant="light">
+  <b-card title="Progress" id="progress-container" bg-variant="light">
     <b-progress id="progress" :max="taskProgress.max">
       <b-progress-bar
         :value="taskProgress.value"
