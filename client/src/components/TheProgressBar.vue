@@ -27,7 +27,7 @@ interface TaskProgress {
 
 export default Vue.extend({
   name: "TheProgressBar",
-  props: { taskId: String },
+  props: { id: String },
   data(): {
     taskProgress: TaskProgress;
     timeLeft: number;
@@ -43,13 +43,12 @@ export default Vue.extend({
     };
   },
   mounted(): void {
-    if (this.taskId.length > 0) {
+    if (this.id.length > 0) {
       this.startProgressLoop();
     }
   },
   watch: {
     taskProgress: function () {
-      console.log(this.taskProgress.value);
       if (this.taskProgress.value === this.taskProgress.max) {
         console.log("done");
         this.$emit("task-done");
@@ -62,10 +61,10 @@ export default Vue.extend({
         function (this: {
           taskProgress: TaskProgress;
           timeLeft: number;
-          taskId: string;
+          id: string;
         }): void {
           taskService
-            .getTaskProgress(this.taskId)
+            .getTaskProgress(this.id)
             .then((res: [TaskProgress, number]): void => {
               this.taskProgress = res[0];
               this.timeLeft = res[1];
