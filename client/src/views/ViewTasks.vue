@@ -1,21 +1,23 @@
 <template>
   <div class="viewtasks">
     <p class="header1" id="title">View Tasks</p>
-    <b-container id="task-container">
-      <b-card
-        :title="task.title"
-        id="task"
-        v-for="task in tasks"
-        v-bind:key="task.id"
-      >
-        <b-card-text>
-          {{ task.description }}
-        </b-card-text>
-        <b-button :href="'/id/' + task.id" variant="primary"
-          >Help this task</b-button
-        >
-      </b-card>
-    </b-container>
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="rows"
+      :per-page="perPage"
+      first-number
+      last-number
+    ></b-pagination>
+    <b-table
+      :items="tasks"
+      :per-page="perPage"
+      :current-page="currentPage"
+      fixed
+      hover
+      ><template #cell(id)="id">
+        <router-link :to="`/id/${id.value}`">{{ id.value }}</router-link>
+      </template></b-table
+    >
   </div>
 </template>
 
@@ -23,25 +25,58 @@
 import Vue from "vue";
 import taskService from "@/services/taskService";
 
+interface Subtask {
+  start: number;
+  end: number;
+  finished: boolean;
+}
+
+interface Config {
+  START: number;
+  END: number;
+  BATCH_SIZE: number;
+  RESULT: string;
+  PUBLIC_RESULT?: boolean;
+  ALLOW_ANONYMOUS_USERS?: boolean;
+}
+
 interface Task {
   id: string;
+  password?: string;
   title: string;
   description: string;
-  code: string;
+  config?: Config | string;
+  code?: string;
+  subtasks?: Subtask[];
+  result?: number | string | Array<string | number>;
+  speed?: number;
 }
-type TaskList = { [id: string]: Task };
+type TaskList = Task[];
 
 export default Vue.extend({
   name: "ViewTasks",
-  data(): { tasks: TaskList } {
-    let tasks: TaskList = {};
-    return { tasks };
+  data(): { tasks: TaskList; perPage: number; currentPage: number } {
+    let tasks: TaskList = [];
+    return { tasks: tasks, perPage: 10, currentPage: 1 };
+  },
+  computed: {
+    rows(): number {
+      return this.tasks.length;
+    }
   },
   mounted(): void {
     taskService
       .getTasks()
-      .then((tasks): void => {
-        this.tasks = tasks as TaskList;
+      .then((tasks: TaskList): void => {
+        tasks.forEach((e: Task) => {
+          delete e.password;
+          delete e.config;
+          delete e.code;
+          delete e.subtasks;
+          delete e.result;
+          delete e.speed;
+        });
+        this.tasks = tasks;
       })
       .catch((err: string): void => {
         console.error(err);
@@ -65,18 +100,5 @@ export default Vue.extend({
 #title {
   float: left;
   display: inline-flex;
-}
-#task-container {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: flex-start;
-  align-content: flex-start;
-  justify-content: space-evenly;
-  #task {
-    margin: 1vh;
-    display: flex;
-    flex-direction: column;
-    white-space: pre-wrap;
-  }
 }
 </style>
