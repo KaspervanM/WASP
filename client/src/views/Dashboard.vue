@@ -190,13 +190,10 @@ export default Vue.extend({
   flex-grow: 1;
   margin-left: auto;
   order: 2;
-  border: 2px solid black;
 }
 #task-name {
   font-size: 2.5rem;
   text-align: left;
   display: inline-flex;
-  border-left: 2px solid blue;
-  border-bottom: 2px solid blue;
 }
 </style>
