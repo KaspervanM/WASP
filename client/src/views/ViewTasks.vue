@@ -86,21 +86,18 @@ export default Vue.extend({
   name: "ViewTasks",
   data(): {
     tasks: TaskList;
-    fields: Array<string>;
-    shownData: any;
+    fields: string[];
     perPage: number;
     currentPage: number;
     selected: Task;
     busy: boolean;
   } {
-    let tasks: TaskList = [];
     return {
-      tasks: tasks,
+      tasks: [] as TaskList,
       fields: ["id", "title"],
-      shownData: [],
       perPage: 10,
       currentPage: 1,
-      selected: <Task>{},
+      selected: {} as Task,
       busy: true
     };
   },
@@ -112,8 +109,9 @@ export default Vue.extend({
       if (!this.selected) {
         return;
       }
-      this.tasks.find((task) => task.id === this.selected.id)._showDetails =
-        true;
+      (
+        this.tasks.find((task) => task.id === this.selected.id) as Task
+      )._showDetails = true;
     }
   },
   computed: {
