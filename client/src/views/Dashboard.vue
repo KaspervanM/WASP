@@ -182,6 +182,7 @@ export default Vue.extend({
   width: 25vw;
   min-width: 250px;
   max-width: 350px;
+  max-height: 100vh;
 }
 #right-subsidebar {
   width: 20vw;
@@ -190,10 +191,16 @@ export default Vue.extend({
   flex-grow: 1;
   margin-left: auto;
   order: 2;
+  word-wrap: break-word;
+  overflow: auto;
 }
 #task-name {
-  font-size: 2.5rem;
   text-align: left;
-  display: inline-flex;
+  word-wrap: break-word;
+}
+#task-name > p {
+  font-size: 2.5em;
+  padding: 0;
+  line-height: 1;
 }
 </style>
