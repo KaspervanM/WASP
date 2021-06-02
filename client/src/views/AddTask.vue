@@ -22,6 +22,7 @@
               type="text"
               @input="showSuccessAlert = showErrorAlert = false"
               placeholder="Enter title"
+              maxlength="40"
               required
             ></b-form-input>
           </b-form-group>
@@ -39,6 +40,7 @@
               type="password"
               @input="showSuccessAlert = showErrorAlert = false"
               placeholder="Enter password"
+              maxlength="100"
               required
             ></b-form-input>
           </b-form-group>
@@ -55,6 +57,7 @@
               id="input-3"
               v-model="task.description"
               placeholder="Enter description"
+              maxlength="1000"
               rows="8"
               no-resize
               required
@@ -103,6 +106,7 @@
             ref="ta"
             @keydown.native.tab.exact.prevent="tab"
             max-rows="100"
+            maxlength="50000"
             no-resize
             required
           ></b-form-textarea>
