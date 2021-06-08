@@ -7,6 +7,8 @@ import ViewTasks from "../views/ViewTasks.vue";
 import AddTask from "../views/AddTask.vue";
 import DeleteTask from "../views/DeleteTask.vue";
 import TaskStarter from "../components/TaskStarter.vue";
+import About from "../views/About.vue";
+import Team from "../views/Team.vue";
 
 Vue.use(VueRouter);
 
@@ -49,11 +51,12 @@ const routes: Array<RouteConfig> = [
   {
     path: "/about",
     name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+    component: About
+  },
+  {
+    path: "/team",
+    name: "Team",
+    component: Team
   }
 ];
 

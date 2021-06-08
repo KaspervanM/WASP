@@ -34,8 +34,8 @@
         <b-nav-item to="/deletetask" exact exact-active-class="active"
           ><span><b-icon-trash></b-icon-trash> Delete Task</span></b-nav-item
         >
-        <b-nav-item to="/about" exact exact-active-class="active"
-          ><span><b-icon-people></b-icon-people> About</span></b-nav-item
+        <b-nav-item to="/team" exact exact-active-class="active"
+          ><span><b-icon-people></b-icon-people> Our Team</span></b-nav-item
         >
       </b-nav>
     </b-collapse>
