@@ -37,8 +37,11 @@ interface Task {
   description: string;
   config: Config | string;
   code: string;
+  subtasks?: Subtask[];
+  result?: number | string | Array<string | number>;
+  speed?: number;
 }
-type TaskList = { [id: string]: Task };
+type TaskList = Task[];
 
 /* Convert errors into a developer-friendly string*/
 function errToString(err: Error | AxiosError): string {

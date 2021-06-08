@@ -151,14 +151,6 @@ interface Task {
   code: string;
 }
 
-let task: Task = {
-  id: "", //To be filled by server
-  password: "", //To be filled by user/server
-  title: "", //To be filled by user
-  description: "", //To be filled by user
-  config: "",
-  code: "" //To be filled by user
-};
 export default Vue.extend({
   name: "AddTask",
   data(): {
@@ -206,7 +198,7 @@ export default Vue.extend({
       ],
       configChecks2: [["ALLOW_ANONYMOUS_USERS", "boolean"]],
       configErrors: [],
-      task,
+      task: {} as Task,
       file: new File([], ""),
       tooltip: `interface Config {
   START: number;
@@ -365,7 +357,7 @@ export default Vue.extend({
     checkType: function (
       res: string | number | Array<string | number>
     ): boolean {
-      if (JSON.parse(task.config)["RESULT"] === "sum") {
+      if (JSON.parse(this.task.config)["RESULT"] === "sum") {
         if (typeof res !== "number") {
           if (typeof res === "string") {
             if (isNaN(parseFloat(res))) {
@@ -377,7 +369,7 @@ export default Vue.extend({
         }
         return true;
       }
-      if (JSON.parse(task.config)["RESULT"] === "bigsum") {
+      if (JSON.parse(this.task.config)["RESULT"] === "bigsum") {
         if (typeof res !== "bigint") {
           if (typeof res === "string") {
             try {
