@@ -92,6 +92,7 @@
               custom-class="custom-tooltip"
               target="input-group-4"
               triggers="focus"
+              placement="left"
             >
               <pre>{{ tooltip }}</pre>
             </b-tooltip>
@@ -200,13 +201,13 @@ export default Vue.extend({
       configErrors: [],
       task: {} as Task,
       file: new File([], ""),
-      tooltip: `interface Config {
-  START: number;
-  END: number;
-  BATCH_SIZE: number;
-  RESULT: string;
-  PUBLIC_RESULT: boolean;
-  ALLOW_ANONYMOUS_USERS?: boolean;
+      tooltip: `{
+  "START": 0 | 1 | 2 | 3 | ...;
+  "END": START + 0 | 1 | 2 | 3 | ...;
+  "BATCH_SIZE": 1 | 2 | 3 | ...;
+  "RESULT": "sum" | "bigsum" | "string" | "array";
+  "PUBLIC_RESULT": true | false;
+  "ALLOW_ANONYMOUS_USERS": true | false (optional);
 }`
     };
   },
