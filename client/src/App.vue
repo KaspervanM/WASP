@@ -187,4 +187,8 @@ export default Vue.extend({
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1.4rem;
 }
+
+.custom-tooltip > .tooltip-inner {
+  max-width: none;
+}
 </style>

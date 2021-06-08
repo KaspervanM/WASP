@@ -92,6 +92,7 @@
               custom-class="custom-tooltip"
               target="input-group-4"
               triggers="focus"
+              placement="left"
             >
               <pre>{{ tooltip }}</pre>
             </b-tooltip>
