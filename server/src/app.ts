@@ -35,7 +35,7 @@ interface Config {
   BATCH_SIZE: number;
   RESULT: string;
   PUBLIC_RESULT: boolean;
-  ALLOW_ANONYMOUS_USERS?: boolean;
+  REQ_TIMEOUT: number; // In seconds
 }
 
 interface Task {
@@ -230,15 +230,14 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
     END: 30000,
     BATCH_SIZE: 4,
     RESULT: "array",
-    PUBLIC_RESULT: false
+    PUBLIC_RESULT: false,
+    REQ_TIMEOUT: 5
   },
   code: 'function main(start, end) {\n\treturn (() => {\n\t\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\t\tlet arr = []\n\t\tfor (let i = start; i <= end; i++) {\n\t\t\tarr.push(str + " " + i.toString());\n\t\t}\n\t\treturn arr;\n\t})();\n}\n',
   subtasks: createSubtasks(0, 30000, 4),
   result: createResults("array", 0, 30000),
   speed: 0
 };
-
-const TIMEOUT_DURATION: number = 5000;
 
 /* Get an array of tasks */
 app.get("/task", (req, res) => {
@@ -271,7 +270,7 @@ app.get("/task/request-subtask/:id", (req, res) => {
     // Reset status if task is not handed in in time
     if (tasks[id].subtasks[index].status != 2)
       tasks[id].subtasks[index].status = 0;
-  }, TIMEOUT_DURATION);
+  }, tasks[id].config["REQ_TIMEOUT"] * 1000);
 
   return res.status(200).send([tasks[id].subtasks[index], tasks[id].code]); // OK
 });
