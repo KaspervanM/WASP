@@ -160,7 +160,6 @@ export default Vue.extend({
     codeChecks: Array<string>;
     codeErrors: Array<string>;
     configChecks1: Array<Array<string>>;
-    configChecks2: Array<Array<string>>;
     configErrors: Array<string>;
     file: File;
     task: Task;
@@ -174,7 +173,7 @@ export default Vue.extend({
   "BATCH_SIZE": 1,
   "RESULT": "sum",
   "PUBLIC_RESULT": false,
-  "ALLOW_ANONYMOUS_USERS": true
+  "REQ_TIMEOUT": 120
 }`,
       codeChecks: [
         "window",
@@ -195,9 +194,9 @@ export default Vue.extend({
         ["END", "number"],
         ["BATCH_SIZE", "number"],
         ["RESULT", "string"],
-        ["PUBLIC_RESULT", "boolean"]
+        ["PUBLIC_RESULT", "boolean"],
+        ["REQ_TIMEOUT", "number"]
       ],
-      configChecks2: [["ALLOW_ANONYMOUS_USERS", "boolean"]],
       configErrors: [],
       task: {} as Task,
       file: new File([], ""),
@@ -207,7 +206,7 @@ export default Vue.extend({
   "BATCH_SIZE": 1 | 2 | 3 | ...;
   "RESULT": "sum" | "bigsum" | "string" | "array";
   "PUBLIC_RESULT": true | false;
-  "ALLOW_ANONYMOUS_USERS": true | false (optional);
+  "REQ_TIMEOUT": 0 | 1 | 2 | 3 | ... (in seconds);
 }`
     };
   },
@@ -232,10 +231,9 @@ export default Vue.extend({
       try {
         const config = JSON.parse(this.config);
         const keys: Array<string> = Object.keys(config);
-        const concatenated = this.configChecks1.concat(this.configChecks2);
         for (let i = 0; i < keys.length; i++) {
           let index = -1;
-          concatenated.forEach(function (item, indx) {
+          this.configChecks1.forEach(function (item, indx) {
             if (item[0] === keys[i]) {
               index = indx;
               return;
@@ -243,7 +241,7 @@ export default Vue.extend({
           });
           if (index === -1) {
             this.configErrors.push(keys[i] + " is an invalid key!");
-          } else if (typeof config[keys[i]] !== concatenated[index][1]) {
+          } else if (typeof config[keys[i]] !== this.configChecks1[index][1]) {
             this.configErrors.push(keys[i] + " has an invalid type!");
           }
         }
@@ -256,6 +254,13 @@ export default Vue.extend({
           if (config["BATCH_SIZE"] < 1) {
             this.configErrors.push(
               "Invalid batch size! It should be equal or greater than 1."
+            );
+          }
+        }
+        if (keys.includes("START") && keys.includes("END")) {
+          if (config["END"] < config["START"]) {
+            this.configErrors.push(
+              "Invalid END! It should be equal or greater than START."
             );
           }
         }
