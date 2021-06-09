@@ -70,5 +70,5 @@ function main(start, end) {
     k += 1n;
     if (k > bigEnd) break;
   }
-  return (A * a_sum + B * b_sum).toString();
+  return A * a_sum + B * b_sum;
 }

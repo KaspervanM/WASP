@@ -24,5 +24,5 @@ function main(start, end) {
     k += 1n;
     if (k > bigEnd) break;
   }
-  return sum.toString();
+  return sum;
 }
