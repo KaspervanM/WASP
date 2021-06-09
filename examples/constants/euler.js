@@ -20,10 +20,6 @@
 "use strict";
 const DP = 10n ** BigInt(1e5) + 64n; // Decimal precision
 
-// function fact(n) {
-//   return n > 1 ? n * fact(n - 1n) : 1n;
-// }
-
 function fact(n) {
   if (n === 0n || n === 1n) return 1n;
   for (let i = n - 1n; i >= 1n; i--) {
