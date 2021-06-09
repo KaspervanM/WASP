@@ -25,8 +25,8 @@ const DP = 10n ** BigInt(1e5) + 64n; // Decimal precision
 // }
 
 function fact(n) {
-  if (n === 0 || n === 1) return 1;
-  for (let i = n - 1; i >= 1; i--) {
+  if (n === 0n || n === 1n) return 1n;
+  for (let i = n - 1n; i >= 1n; i--) {
     n *= i;
   }
   return n;
