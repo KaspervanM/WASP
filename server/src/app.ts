@@ -233,7 +233,7 @@ tasks["123e4567-e89b-12d3-a456-426614174000"] = {
     PUBLIC_RESULT: false,
     REQ_TIMEOUT: 5
   },
-  code: 'function main(start, end) {\n\treturn (() => {\n\t\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\t\tlet arr = []\n\t\tfor (let i = start; i <= end; i++) {\n\t\t\tarr.push(str + " " + i.toString());\n\t\t}\n\t\treturn arr;\n\t})();\n}\n',
+  code: 'function main(start, end) {\n\tlet str = "Congratulations! WASP is working correctly. Numbers:";\n\tlet arr = [];\n\tfor (let i = start; i <= end; i++) {\n\t\tarr.push(str + " " + i.toString());\n\t}\n\t\treturn arr;\n}\n',
   subtasks: createSubtasks(0, 30000, 4),
   result: createResults("array", 0, 30000),
   speed: 0
