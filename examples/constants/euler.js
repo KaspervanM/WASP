@@ -1,6 +1,7 @@
 /*
  * Euler computation in Javascript using the BigInt type
  * No post-processing needed, just add a dot at index 1 (eg. 271 => 2.71)
+ * Start with k = 0
  * Terms vs. correct digits (including starting 2)
  * 1	0
  * 2	1

@@ -1,6 +1,7 @@
 /*
  * Liouville's constant computation in Javascript using the BigInt type
  * No post-processing needed, just "0." in front of the results (eg. 110001 => 0.110001)
+ * Start with k = 1
  */
 "use strict";
 const DP = 10n ** BigInt(1e5) + 64n; // Decimal precision

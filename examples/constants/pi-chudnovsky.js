@@ -1,5 +1,8 @@
 /*
  * PI computation in Javascript using the Chudnovsky algorithm and the BigInt type
+ * Post-processing with "pi-chudnovsky-post-processing.js"
+ * Start with k = 0
+ * Gives ~ 14 digits per term
  */
 "use strict";
 const DP = 10n ** BigInt(1e5) + 64n; // Decimal precision
