@@ -170,7 +170,7 @@ export default Vue.extend({
   text-align: center;
   color: #2c3e50;
   display: flex;
-  font-size: 1.15rem;
+  font-size: 1rem;
 }
 .header1 {
   padding: 5px;

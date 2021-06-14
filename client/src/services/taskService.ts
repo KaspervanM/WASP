@@ -26,8 +26,8 @@ interface Config {
   END: number;
   BATCH_SIZE: number;
   RESULT: string;
-  PUBLIC_RESULT?: boolean;
-  ALLOW_ANONYMOUS_USERS?: boolean;
+  PUBLIC_RESULT: boolean;
+  REQ_TIMEOUT: number;
 }
 
 interface Task {
