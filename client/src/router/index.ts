@@ -7,7 +7,7 @@ import ViewTasks from "../views/ViewTasks.vue";
 import AddTask from "../views/AddTask.vue";
 import DeleteTask from "../views/DeleteTask.vue";
 import TaskStarter from "../components/TaskStarter.vue";
-import About from "../views/About.vue";
+import Guide from "../views/Guide.vue";
 import Team from "../views/Team.vue";
 
 Vue.use(VueRouter);
@@ -49,9 +49,9 @@ const routes: Array<RouteConfig> = [
     component: DeleteTask
   },
   {
-    path: "/about",
-    name: "About",
-    component: About
+    path: "/guide",
+    name: "Guide",
+    component: Guide
   },
   {
     path: "/team",

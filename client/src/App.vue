@@ -170,6 +170,7 @@ export default Vue.extend({
   text-align: center;
   color: #2c3e50;
   display: flex;
+  font-size: 1rem;
 }
 .header1 {
   padding: 5px;
@@ -178,12 +179,14 @@ export default Vue.extend({
   font-weight: bold;
 }
 .header2 {
-  padding: 4px;
+  padding-top: 4px;
+  margin-bottom: 20px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1.8rem;
 }
 .header3 {
-  padding: 2px;
+  padding-top: 2px;
+  margin-bottom: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1.4rem;
 }

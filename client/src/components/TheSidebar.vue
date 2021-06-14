@@ -25,7 +25,8 @@
         >
         <b-nav-item to="/viewtasks" exact exact-active-class="active"
           ><span
-            ><b-icon-layout-wtf></b-icon-layout-wtf> View Tasks</span
+            ><b-icon-layout-text-sidebar-reverse></b-icon-layout-text-sidebar-reverse>
+            View Tasks</span
           ></b-nav-item
         >
         <b-nav-item to="/addtask" exact exact-active-class="active"
@@ -33,6 +34,9 @@
         >
         <b-nav-item to="/deletetask" exact exact-active-class="active"
           ><span><b-icon-trash></b-icon-trash> Delete Task</span></b-nav-item
+        >
+        <b-nav-item to="/guide" exact exact-active-class="active"
+          ><span><b-icon-book></b-icon-book> Guide</span></b-nav-item
         >
         <b-nav-item to="/team" exact exact-active-class="active"
           ><span><b-icon-people></b-icon-people> Our Team</span></b-nav-item
