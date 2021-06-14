@@ -32,7 +32,7 @@
             label="Task password:"
             label-for="input-2"
             label-align-sm="left"
-            description="Use this password if you want to see the results if private is set to true."
+            description="To delete the task or to see the results when PUBLIC_RESULT is set to false."
           >
             <b-form-input
               id="input-2"
