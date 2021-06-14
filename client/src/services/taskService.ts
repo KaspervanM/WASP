@@ -7,7 +7,7 @@
 
 import axios, { AxiosError, AxiosResponse } from "axios";
 
-const serverURL = "http://10.26.20.88:3000/";
+const serverURL = "http://localhost:3000/";
 
 interface Subtask {
   start: number;
