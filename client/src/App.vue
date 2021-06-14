@@ -37,7 +37,7 @@ export default Vue.extend({
   watch: {
     $route: {
       immediate: true,
-      handler(to, from) {
+      handler(to) {
         document.title = "WASP - " + (to.name || "Some Default Title");
       }
     }
@@ -108,7 +108,6 @@ export default Vue.extend({
     taskloop: function (): void {
       if (!this.$cookies.isKey("TaskId")) {
         this.id = "";
-        console.log("stopped");
         return;
       }
       taskService
@@ -117,10 +116,7 @@ export default Vue.extend({
           this.evaluateCode(subtask);
         })
         .catch((err: string): void => {
-          if (err.includes("finished")) {
-            //(Go to results)
-            console.log("finished");
-          } else {
+          if (!err.includes("finished")) {
             console.error(err); // Log the error
             this.$bvToast.toast(err, {
               title: "Error!",

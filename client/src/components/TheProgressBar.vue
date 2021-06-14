@@ -50,7 +50,6 @@ export default Vue.extend({
   watch: {
     taskProgress: function () {
       if (this.taskProgress.value === this.taskProgress.max) {
-        console.log("done");
         this.$emit("task-done");
       }
     }
