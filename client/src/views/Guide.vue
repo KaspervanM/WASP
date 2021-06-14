@@ -30,22 +30,31 @@
         This is a guide for those that want to upload their code for others to
         help with.
       </p>
-      <p class="header3">Upload code</p>
-      <p></p>
+      <p class="header3">The form</p>
+      <p>
+        When you click on 'Add Task' on the sidebar, a form appears. This form
+        contains five input fields with one, 'Task Configuration', already
+        filled out. The first input is for the title. This is the first thing
+        people will see when they search for tasks. There is a limit on how long
+        you can make the title: 40 characters. Next to it, you must enter a
+        password. This password is used for deleting the task or, when the
+        PUBLIC_RESULT configuration parameter is set to false and the task has
+        finished, it is used to request the result. Next is the task
+        description.
+      </p>
       <p class="header3">Acceptable code</p>
       <p>
         When you want to use this site to run your code on other people's
-        devices, there are a few things you need to consider. Your code must:
+        devices, there are a few things you need to consider. Your code:
       </p>
       <ul>
-        <li>be written in Javascript.</li>
+        <li>must be written in Javascript.</li>
         <li>
-          contain a 'main' function with two parameters. This is the function
-          that will be called and its start and end value will be passed
-          respectively.
+          must contain a 'main' function. This is the function that will be
+          called and its start and end value will be passed respectively.
         </li>
         <li>
-          not contain the following keywords:
+          mustn't contain the following keywords:
           <ul>
             <li>window</li>
             <li>document</li>
@@ -60,6 +69,7 @@
             <li>fetch</li>
           </ul>
         </li>
+        <li>will not be shown to any user of the site.</li>
       </ul>
       <p class="header3">Configuration settings</p>
       <p class="header3">What to take into account</p>
