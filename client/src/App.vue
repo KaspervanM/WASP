@@ -34,6 +34,14 @@ export default Vue.extend({
       toastCount: 0
     };
   },
+  watch: {
+    $route: {
+      immediate: true,
+      handler(to, from) {
+        document.title = "WASP - " + (to.name || "Some Default Title");
+      }
+    }
+  },
   mounted() {
     this.toast("b-toaster-bottom-center");
     if (this.$cookies.isKey("TaskId")) {
