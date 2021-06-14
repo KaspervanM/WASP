@@ -142,3 +142,60 @@ Alle wijzigingen die nu ingevoerd worden, worden lokaal ingevoerd. Dit houdt in 
 2. Client opstarten: `$ npm run serve`
 
 Vanaf dit punt is het mogelijk om lokale aanpassingen op de client en server te maken. Bovendien kunnen er nu pull requests worden ingediend om die veranderingen met master te samenvoegen. Hierbij verwachten we wel dat de _Issue_ en _Pull Request Templates_ worden gevolgd.
+
+## Scrum methode
+
+Wij gebruiken GitHub Projecs. Het projectbord is zo ingericht dat het bestaat uit de volgende statussen:
+
+- een Backlog
+- een To-do lijst
+- een In progress lijst
+- een Blocked lijst
+- een Review lijst
+- een Done lijst
+
+### Algemeen
+
+Dit bord werkt volgens een bepaald systeem. Hierbij voeren we taken uit in sprints (perioden) van twee weken. Het is dan de bedoeling dat alle taken binnen de sprint periode uitgevoerd worden zodat we kunnen focussen op wat wij op dat moment belangrijk vinden. De andere taken worden in de volgende sprint opgepakt.
+Ook is het van belang dat tweemaal per week (donderdag en zondag) contact opnemen met elkaar om onze voortgang te bespreken: de stand-up. Dit geeft ons allen dan een goed beeld hoe ver iedereen is. Dit doen we dan via Google Meet. Deze meetings gaan niet over de inhoud, maar puur over de voortgang: wat we gaan doen, wat we hebben gedaan, wat niet lukte. Een oplossing zoeken voor eventuele problemen of Blocked taken gebeurt in een andere meeting, evt. aansluitend hierop, want de stand-up duurt maximaal vijf tot tien minuten.
+Niets in deze methode staat vast, maar staat open voor verandering. Vandaar dat we aan het eind van iedere sprint ook een reflectie meeting hebben waarin we bespreken hoe we deze methode vinden en hoe we het zouden kunnen verbeteren: de retrospective.
+Als je iets hebt gedaan aan een taak, meld dat dan in een comment of commit in de desbetreffende taak op het bord.
+
+### De Backlog
+
+Hierin stop je alles wat je kunt bedenken wat nog uitgevoerd moet worden: dingen voor nu, voor later, voor waar we nog niet eens aan begonnen zijn en alles daar tussen in. Iedere week worden de nieuwe backlog taken besproken in een meeting: de Backlog refinement. Hierbij wordt gekeken of de taken voor iedereen duidelijk en volledig zijn. Deze zullen dan gemarkeerd zijn als besproken met een blauw stipje (standaard hebben ze een groene).
+Eens in de twee weken, aan het begin van iedere sprint, zullen we bespreken aan welke taken we die sprint zullen werken: de sprintplanning. Die worden dan in de To-do lijst gezet op volgorde van prioriteit. Mochten er taken van vorige sprint over zijn gebleven, dan zullen we bespreken hoe deze dan alsnog (gezamenlijk) afgemaakt kunnen worden.
+
+### De To-do lijst
+
+Hierin staan alle taken die we in een sprint gaan uitvoeren. Het is de bedoeling dat een taak wordt opgenomen door één persoon. Samenwerken mag uiteraard, maar de persoon die de taak opgenomen heeft is verantwoordelijk. Het oppakken van een taak houdt in:
+
+- De taak op jouw naam zetten met Assign
+- De taak slepen naar In progress
+  Dit doe je pas als je er echt aan gaat beginnen. Pak altijd de bovenste taak uit de lijst, tenzij anders aangeduid.
+
+### De In progress lijst
+
+Hierin staan alle taken die op dat moment in behandeling zijn. Als je klaar bent met een taak sleep je deze naar:
+
+- Review als er nog naar gekeken moet worden door iemand anders. Let wel op dat je dan jouw naam er vanaf haalt zodat iemand anders deze taak weer op kan pakken.
+- Done als Review niet nodig is
+  Als je niet verder kunt sleep je de taak naar:
+- Blocked
+
+### De Blocked lijst
+
+Dit is waar alle taken in staan waarmee op dat moment geen voortgang meer gemaakt kan worden, maar ook niet Done zijn. Bespreek het met elkaar en als we er nog steeds niet uitkomen, laat de taak dan in Blocked zitten. In de sprint planning worden de taken die nog steeds in Blocked zitten weer besproken.
+
+### De Review lijst
+
+Deze lijst wordt gebruikt als je wil dat iemand jouw taak nog reviewt. Dit is altijd iemand die niet de taak heeft uitgevoerd. Samen reviewen kan natuurlijk ook.
+
+### De Done lijst
+
+Hierin staan alle taken die afgerond zijn.
+
+### Kortom,
+
+Ons team werk in sprints van twee weken. Voorafgaande de sprints bespreken we waar we de komende twee weken onze aandacht aan zullen besteden in de sprint planning. Na iedere sprint zullen we ook reflecteren over hoe we deze methode tot dan toe vinden en hoe we het zouden kunnen verbeteren in de retrospective. Daarnaast bespreken we iedere week de taken in de Backlog in de Backlog refinement. Ook zullen we om de één à twee dagen vijf tot tien minuten bijeen komen om onze voortgang te delen in de stand-up. Deze meetings zullen allen op Google Meet plaatsvinden.
+In het bord zie je in een oogopslag de voortgang.
