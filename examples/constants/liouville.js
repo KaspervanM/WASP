@@ -5,22 +5,22 @@
  */
 "use strict";
 const DP = 10n ** BigInt(1e5) + 64n; // Decimal precision
+var fact = [1n, 1n];
 
-function fact(n) {
-  if (n === 0n || n === 1n) return 1n;
-  for (let i = n - 1n; i >= 1n; i--) {
-    n *= i;
+function facts(n) {
+  for (let i = 2n; i <= n; i++) {
+    fact.push(fact[i - 1n] * i);
   }
-  return n;
 }
 
 function main(start, end) {
   const bigEnd = BigInt(end);
+  facts(bigEnd);
   let sum = 0n;
   let k = BigInt(start);
 
   for (;;) {
-    sum += DP / 10n ** fact(k);
+    sum += DP / 10n ** fact[k];
     k += 1n;
     if (k > bigEnd) break;
   }

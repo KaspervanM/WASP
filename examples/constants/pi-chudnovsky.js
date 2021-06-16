@@ -6,6 +6,7 @@
  */
 "use strict";
 const DP = 10n ** BigInt(1e5) + 64n; // Decimal precision
+var fact = [1n, 1n];
 
 function floor_log2(a) {
   var k_max, a1, k, i;
@@ -43,28 +44,26 @@ function int_sqrt(a) {
   return s;
 }
 
-function fact(n) {
-  if (n === 0n || n === 1n) return 1n;
-  for (let i = n - 1n; i >= 1n; i--) {
-    n *= i;
+function facts(n) {
+  for (let i = 2n; i <= n; i++) {
+    fact.push(fact[i - 1n] * i);
   }
-  return n;
 }
 
 function main(start, end) {
-  const bigStart = BigInt(start);
   const bigEnd = BigInt(end);
+  facts(6n * bigEnd);
   const A = 13591409n;
   const B = 545140134n;
   const C3 = 262537412640768000n; // C ** 3
   let a_sum = 0n;
   let b_sum = 0n;
-  let k = bigStart;
+  let k = BigInt(start);
 
   for (;;) {
     let a_k = DP;
-    a_k *= (-1n) ** k * fact(6n * k);
-    a_k /= fact(3n * k) * fact(k) ** 3n * C3 ** k;
+    a_k *= (-1n) ** k * fact[6n * k];
+    a_k /= fact[3n * k] * fact[k] ** 3n * C3 ** k;
     a_sum += a_k;
     b_sum += k * a_k;
     k += 1n;
